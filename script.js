@@ -932,6 +932,8 @@ function enableEditing() {
   editing = true;
   document.body.classList.add("is-editing");
   editorBar.hidden = false;
+  const loginEntry = document.getElementById("login-entry");
+  if (loginEntry) loginEntry.hidden = true;
   // 静态文本可编辑
   document.querySelectorAll("[data-edit]").forEach((el) => {
     if (el.closest("#works-grid")) return;
@@ -947,6 +949,8 @@ function exitEdit() {
   editing = false;
   document.body.classList.remove("is-editing");
   editorBar.hidden = true;
+  const loginEntry = document.getElementById("login-entry");
+  if (loginEntry) loginEntry.hidden = false;
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
   history.replaceState(null, "", location.pathname);
   paint();
