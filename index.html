@@ -12,7 +12,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -22,20 +22,25 @@
       <a href="#hero" class="nav__logo">李欣怡</a>
       <ul class="nav__links">
         <li><a href="#about">关于</a></li>
+        <li><a href="#skills">技能</a></li>
+        <li><a href="#experience">经历</a></li>
         <li><a href="#portfolio">作品</a></li>
-        <li><a href="#resume">简历</a></li>
         <li><a href="#contact">联系</a></li>
       </ul>
-      <a href="#portfolio" class="btn btn--small">查看作品</a>
+      <a href="#portfolio" class="btn btn--small btn--dark">查看作品</a>
     </div>
   </nav>
 
   <!-- 首屏 -->
   <header id="hero" class="hero">
-    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__deco" data-edit="hero-deco">创造性的</div>
+    <div class="hero__visual">
+      <img src="assets/hero-feature.jpg" alt="精选作品" onerror="this.style.display='none'" />
+      <div class="hero__visual-placeholder" data-edit="hero-visual-placeholder">精选栏目 · 主厨密码</div>
+    </div>
     <div class="hero__inner">
       <div class="hero__text">
-        <p class="hero__eyebrow" data-edit="hero-eyebrow">2027 届 · 中国传媒大学广告学</p>
+        <p class="hero__hello" data-edit="hero-hello">您好，我是</p>
         <h1 class="hero__name" data-edit="hero-name">李欣怡</h1>
         <p class="hero__role" data-edit="hero-role">内容策划 / 短视频编导 / 新媒体运营</p>
         <div class="hero__tags" data-edit="hero-tags">
@@ -61,123 +66,233 @@
   <main>
     <!-- 关于我 -->
     <section id="about" class="section about reveal">
-      <div class="section__head">
-        <span class="section__index">01</span>
-        <h2 class="section__title" data-edit="title-about">关于我</h2>
+      <div class="section__head section--narrow">
+        <span class="section__index">关于我</span>
+        <h2 class="section__title" data-edit="title-about">介绍</h2>
       </div>
       <div class="about__grid">
         <div class="about__intro">
           <p class="about__summary" data-edit="about-summary">
-            中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva；作品获全国大学生广告艺术大赛北京赛区三等奖。
+            欢迎来到我的作品集！<br><br>
+            我热衷于将创意与技术融合。中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva。
           </p>
-          <div class="edu">
-            <div class="edu__row"><span>学校</span><strong data-edit="edu-school">中国传媒大学 · 广告学</strong></div>
-            <div class="edu__row"><span>时间</span><strong data-edit="edu-time">2023.09 – 2027.06（预计）</strong></div>
-            <div class="edu__row"><span>绩点</span><strong data-edit="edu-gpa">GPA 3.8 / 4（专业前 20%）</strong></div>
-            <div class="edu__row"><span>荣誉</span><strong data-edit="edu-honor">国家励志奖学金 · 校级三好学生</strong></div>
+          <div class="about__fields" data-edit="about-fields">
+            <div class="about__field">短视频编导</div>
+            <div class="about__field">内容策划</div>
+            <div class="about__field">社媒运营</div>
+            <div class="about__field">KOC 拓展</div>
           </div>
         </div>
-        <aside class="about__side">
-          <h3 class="about__subtitle">核心能力</h3>
-          <ul class="skillcloud" data-edit="skill-cloud">
-            <li>短视频剪辑</li><li>脚本策划</li><li>活动拍摄</li>
-            <li>内容运营</li><li>KOC 拓展</li><li>PR</li>
-            <li>剪映</li><li>PS</li><li>Canva</li>
-          </ul>
-          <h3 class="about__subtitle">数据亮点</h3>
-          <div class="stats">
-            <div class="stat"><span class="stat__num" data-edit="stat-0-num">三等奖</span><span class="stat__label" data-edit="stat-0-label">大广赛北京赛区</span></div>
-            <div class="stat"><span class="stat__num" data-edit="stat-1-num">800+</span><span class="stat__label" data-edit="stat-1-label">社媒涨粉</span></div>
-            <div class="stat"><span class="stat__num" data-edit="stat-2-num">10,000+</span><span class="stat__label" data-edit="stat-2-label">KOC 触达</span></div>
-            <div class="stat"><span class="stat__num" data-edit="stat-3-num">卫视</span><span class="stat__label" data-edit="stat-3-label">海南卫视播出</span></div>
+        <div class="about__visual">
+          <div class="about__img about__img--1">
+            <img src="assets/about-1.jpg" alt="工作照" onerror="this.style.display='none'" />
           </div>
-        </aside>
+          <div class="about__img about__img--2">
+            <img src="assets/about-2.jpg" alt="工作照" onerror="this.style.display='none'" />
+          </div>
+          <div class="about__swirl"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 技能 -->
+    <section id="skills" class="section skills reveal">
+      <div class="section__head section--narrow">
+        <span class="section__index">核心能力</span>
+        <h2 class="section__title" data-edit="title-skills">专业知识 <span class="title-sec">技能</span></h2>
+      </div>
+      <div class="skills-grid" data-edit="skills-grid">
+        <div class="skill-card">
+          <div class="skill-card__icon">🎬</div>
+          <div class="skill-card__title">短视频编导</div>
+          <div class="skill-card__desc">从选题策划、脚本撰写到现场拍摄与后期剪辑，把控内容节奏与视觉调性。</div>
+          <div class="skill-card__tags">
+            <span class="tag">PR</span><span class="tag">剪映</span><span class="tag">分镜</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">🎤</div>
+          <div class="skill-card__title">活动拍摄</div>
+          <div class="skill-card__desc">完成线下活动全流程拍摄，熟悉多机位调度与现场执行，输出多版本视频。</div>
+          <div class="skill-card__tags">
+            <span class="tag">现场统筹</span><span class="tag">多版本剪辑</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">✍️</div>
+          <div class="skill-card__title">内容运营</div>
+          <div class="skill-card__desc">撰写种草文案与社媒内容，支撑账号从 0 到 1 冷启动，实现可持续涨粉。</div>
+          <div class="skill-card__tags">
+            <span class="tag">小红书</span><span class="tag">即刻</span><span class="tag">文案</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">🤝</div>
+          <div class="skill-card__title">KOC 拓展</div>
+          <div class="skill-card__desc">筛选并对接目标 KOC，建立达人资源池，推动活动传播与报名转化。</div>
+          <div class="skill-card__tags">
+            <span class="tag">达人筛选</span><span class="tag">传播</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">🎨</div>
+          <div class="skill-card__title">视觉设计</div>
+          <div class="skill-card__desc">使用 PS / Canva 制作封面、海报与视觉物料，统一品牌视觉风格。</div>
+          <div class="skill-card__tags">
+            <span class="tag">PS</span><span class="tag">Canva</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">📊</div>
+          <div class="skill-card__title">数据分析</div>
+          <div class="skill-card__desc">关注内容数据表现，通过用户反馈与数据迭代选题与投放策略。</div>
+          <div class="skill-card__tags">
+            <span class="tag">数据复盘</span><span class="tag">用户洞察</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">🎥</div>
+          <div class="skill-card__title">访谈栏目</div>
+          <div class="skill-card__desc">参与嘉宾策划、提纲设计与现场拍摄统筹，输出卫视级栏目版本。</div>
+          <div class="skill-card__tags">
+            <span class="tag">嘉宾策划</span><span class="tag">卫视版</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card__icon">🏆</div>
+          <div class="skill-card__title">广告竞赛</div>
+          <div class="skill-card__desc">主导品牌广告短片从创意到成片，获全国大学生广告艺术大赛北京赛区三等奖。</div>
+          <div class="skill-card__tags">
+            <span class="tag">大广赛</span><span class="tag">创意</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 经历 -->
+    <section id="experience" class="section experience reveal">
+      <div class="section__head section--narrow">
+        <span class="section__index">经历</span>
+        <h2 class="section__title" data-edit="title-resume">经验 <span class="title-sec">工作</span></h2>
+      </div>
+      <div class="experience__wrap">
+        <div class="experience__line"></div>
+        <div class="experience__items">
+          <div class="experience__item">
+            <div class="exp-year">2026</div>
+            <div class="exp-card">
+              <span class="exp-card__tag">实习</span>
+              <h3 data-edit="tl-0-title">腾讯 CDG · 青腾</h3>
+              <p data-edit="tl-0-desc">内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持</p>
+              <div class="exp-card__meta">2026.05 – 至今</div>
+            </div>
+          </div>
+          <div class="experience__item">
+            <div class="exp-year">2026</div>
+            <div class="exp-card">
+              <span class="exp-card__tag">4A</span>
+              <h3 data-edit="tl-1-title">蓝色光标 · 《玉见》导演组</h3>
+              <p data-edit="tl-1-desc">导演组实习生｜嘉宾策划、拍摄统筹、多版本剪辑（卫视版登陆海南卫视）</p>
+              <div class="exp-card__meta">2026.03 – 2026.05</div>
+            </div>
+          </div>
+          <div class="experience__item">
+            <div class="exp-year">2025</div>
+            <div class="exp-card">
+              <span class="exp-card__tag">栏目</span>
+              <h3 data-edit="tl-2-title">欣和企业 · 市场运营中心</h3>
+              <p data-edit="tl-2-desc">编导实习生｜《主厨密码》栏目全链路编导，成片登陆爱奇艺</p>
+              <div class="exp-card__meta">2025.10 – 2026.01</div>
+            </div>
+          </div>
+          <div class="experience__item">
+            <div class="exp-year">2024</div>
+            <div class="exp-card">
+              <span class="exp-card__tag">竞赛</span>
+              <h3 data-edit="tl-3-title">全国大学生广告艺术大赛</h3>
+              <p data-edit="tl-3-desc">创作核心成员｜品牌广告短片获北京赛区三等奖</p>
+              <div class="exp-card__meta">2024 – 2025</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 教育 -->
+    <section id="education" class="section education reveal">
+      <div class="section__head section--narrow">
+        <span class="section__index">教育</span>
+        <h2 class="section__title" data-edit="title-education">教育</h2>
+      </div>
+      <div class="education__wrap">
+        <div class="education__visual">
+          <img src="assets/edu-1.jpg" alt="校园" onerror="this.style.display='none'" />
+          <img src="assets/edu-2.jpg" alt="校园" onerror="this.style.display='none'" />
+        </div>
+        <div class="education__list">
+          <div class="education__item">
+            <h3 data-edit="edu-school">中国传媒大学 · 广告学</h3>
+            <div class="edu-meta">
+              <span data-edit="edu-time">2023.09 – 2027.06（预计）</span>
+              <span data-edit="edu-gpa">GPA 3.8 / 4</span>
+            </div>
+            <ul data-edit="edu-honor">
+              <li>国家励志奖学金</li>
+              <li>校级三好学生</li>
+              <li>专业前 20%</li>
+            </ul>
+          </div>
+          <div class="education__item">
+            <h3>竞赛与荣誉</h3>
+            <ul>
+              <li>全国大学生广告艺术大赛北京赛区三等奖</li>
+              <li>大广赛品牌广告短片创作核心成员</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- 作品集 -->
     <section id="portfolio" class="section portfolio reveal">
-      <div class="section__head">
-        <span class="section__index">02</span>
-        <h2 class="section__title" data-edit="title-portfolio">作品集</h2>
+      <div class="section__head section--narrow">
+        <span class="section__index">作品</span>
+        <h2 class="section__title" data-edit="title-portfolio">精选作品 <span class="title-sec">项目与设计</span></h2>
       </div>
-      <div class="filters" id="filters">
-        <button class="filter is-active" data-filter="all">全部</button>
+      <div class="portfolio__wrap">
+        <div class="filters" id="filters">
+          <button class="filter is-active" data-filter="all">全部</button>
+        </div>
+        <div class="grid" id="works-grid"><!-- JS 渲染 --></div>
       </div>
-      <div class="grid" id="works-grid"><!-- JS 渲染 --></div>
     </section>
 
-    <!-- 简历 -->
-    <section id="resume" class="section resume reveal">
-      <div class="section__head">
-        <span class="section__index">03</span>
-        <h2 class="section__title" data-edit="title-resume">简历</h2>
-      </div>
-      <div class="resume__actions">
-        <a href="resume_optimized.md" class="btn btn--primary" download>下载简历 PDF</a>
-        <p class="resume__hint">提示：当前链接为 Markdown 源文件，可于浏览器中「打印 → 另存为 PDF」导出；建议后续替换为正式 PDF。</p>
-      </div>
-      <ol class="timeline">
-        <li class="timeline__item">
-          <span class="timeline__time">2026.05 – 至今</span>
-          <div>
-            <h3 data-edit="tl-0-title">腾讯 CDG · 青腾</h3>
-            <p data-edit="tl-0-desc">内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持</p>
-          </div>
-        </li>
-        <li class="timeline__item">
-          <span class="timeline__time">2026.03 – 2026.05</span>
-          <div>
-            <h3 data-edit="tl-1-title">蓝色光标 · 《玉见》导演组</h3>
-            <p data-edit="tl-1-desc">导演组实习生｜嘉宾策划、拍摄统筹、多版本剪辑（卫视版登陆海南卫视）</p>
-          </div>
-        </li>
-        <li class="timeline__item">
-          <span class="timeline__time">2025.10 – 2026.01</span>
-          <div>
-            <h3 data-edit="tl-2-title">欣和企业 · 市场运营中心</h3>
-            <p data-edit="tl-2-desc">编导实习生｜《主厨密码》栏目全链路编导，成片登陆爱奇艺</p>
-          </div>
-        </li>
-        <li class="timeline__item">
-          <span class="timeline__time">2024 – 2025</span>
-          <div>
-            <h3 data-edit="tl-3-title">全国大学生广告艺术大赛</h3>
-            <p data-edit="tl-3-desc">创作核心成员｜品牌广告短片获北京赛区三等奖</p>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <!-- 联系 -->
-    <section id="contact" class="section contact reveal">
-      <div class="section__head">
-        <span class="section__index">04</span>
-        <h2 class="section__title" data-edit="title-contact">联系我</h2>
-      </div>
-      <div class="contact__grid">
-        <div class="contact__item">
-          <span class="contact__label">邮箱</span>
-          <a href="mailto:19571618312@139.com" data-edit="contact-email">19571618312@139.com</a>
+    <!-- 联系 CTA -->
+    <section id="contact" class="cta reveal">
+      <div class="cta__deco">LET'S WORK <span>Together</span></div>
+      <div class="cta__card">
+        <p class="cta__text" data-edit="contact-summary">
+          我正在积极寻找机会，运用我的技能和见解，为创新项目做出有意义的贡献。我热爱与志同道合的团队一起创作，如果你对我的作品感兴趣，欢迎随时联系。
+        </p>
+        <div class="cta__actions">
+          <a href="resume_optimized.md" class="btn btn--primary" download>下载简历</a>
+          <a href="mailto:19571618312@139.com" class="btn btn--dark">联系我</a>
         </div>
-        <div class="contact__item">
-          <span class="contact__label">电话</span>
-          <a href="tel:19571618312" data-edit="contact-phone">195-7161-8312</a>
-        </div>
-        <div class="contact__item">
-          <span class="contact__label">微信</span>
-          <span class="contact__qr" data-edit="contact-wechat">[ 微信二维码图片：assets/wechat-qr.png ]</span>
-        </div>
-        <div class="contact__item">
-          <span class="contact__label">作品集</span>
-          <span class="contact__qr" data-edit="contact-portfolio">[ 作品集二维码：assets/portfolio-qr.png ]</span>
-        </div>
-        <div class="contact__item contact__item--full">
-          <span class="contact__label">社交主页</span>
-          <div class="contact__social" data-edit="contact-social">
-            <a href="#" class="tag">小红书</a>
-            <a href="#" class="tag">即刻</a>
-            <a href="#" class="tag">B 站</a>
+        <div class="cta__contacts">
+          <div class="cta__contact">
+            <div class="cta__contact-icon">✉️</div>
+            <div class="cta__contact-label">电子邮件</div>
+            <div class="cta__contact-value" data-edit="contact-email">19571618312@139.com</div>
+          </div>
+          <div class="cta__contact">
+            <div class="cta__contact-icon">📱</div>
+            <div class="cta__contact-label">电话</div>
+            <div class="cta__contact-value" data-edit="contact-phone">195-7161-8312</div>
+          </div>
+          <div class="cta__contact">
+            <div class="cta__contact-icon">💬</div>
+            <div class="cta__contact-label">微信</div>
+            <div class="cta__contact-value" data-edit="contact-wechat">Li_Xinyi</div>
           </div>
         </div>
       </div>
@@ -208,7 +323,7 @@
     </div>
   </div>
 
-  <!-- 作品新增 / 编辑模态框（编辑模式下，支持多类型：视频 / 策划 / 文案） -->
+  <!-- 作品新增 / 编辑模态框 -->
   <div class="wm-modal" id="wm-modal" aria-hidden="true">
     <div class="wm-modal__backdrop" data-wm-close></div>
     <div class="wm-modal__panel" role="dialog" aria-modal="true">
@@ -264,7 +379,7 @@
     </div>
   </div>
 
-  <!-- 视频管理模态框（编辑模式下，支持上传本地视频 + 多平台链接） -->
+  <!-- 视频管理模态框 -->
   <div class="vm-modal" id="vm-modal" aria-hidden="true">
     <div class="vm-modal__backdrop" data-vm-close></div>
     <div class="vm-modal__panel" role="dialog" aria-modal="true">
@@ -282,7 +397,7 @@
   </div>
   <input type="file" id="vm-file" accept="video/*" hidden />
 
-  <!-- 栏目管理模态框（编辑模式下，可添加 / 重命名 / 删除栏目） -->
+  <!-- 栏目管理模态框 -->
   <div class="cat-modal" id="cat-modal" aria-hidden="true">
     <div class="cat-modal__backdrop" data-cat-close></div>
     <div class="cat-modal__panel" role="dialog" aria-modal="true">
@@ -300,11 +415,11 @@
     </div>
   </div>
 
-  <!-- 自定义内容层（编辑模式下添加的图片 / 视频 / 文本） -->
+  <!-- 自定义内容层 -->
   <div id="overlay-layer"></div>
 
   <!-- 编辑模式工具栏（仅站长可见） -->
-  <div id="editor-bar" class="editor-bar" hidden>
+  <div id="editor-bar" class="editor-bar is-hidden" hidden>
     <span class="editor-bar__title">编辑模式</span>
     <button type="button" data-add="work" class="is-feature">＋ 作品</button>
     <button type="button" data-add="cat" class="is-feature">栏目</button>
@@ -318,7 +433,7 @@
   </div>
   <input type="file" id="img-input" accept="image/*" hidden />
 
-  <!-- 站长登录入口（低调，仅你知道密码） -->
+  <!-- 站长登录入口 -->
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
 
   <script src="config.js"></script>
