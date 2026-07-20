@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>李欣怡 · 内容策划 / 短视频编导作品集</title>
+  <meta name="description" content="中国传媒大学广告学应届生，短视频编导 + 4A 导演组 + 互联网内容运营三重实战背景；代表作含海南卫视播出栏目、爱奇艺分发作品。" />
+  <meta property="og:title" content="李欣怡 · 内容策划 / 短视频编导作品集" />
+  <meta property="og:description" content="短视频编导 / 内容策划 / 新媒体运营作品集，含卫视播出栏目与多平台内容运营实战。" />
+  <meta property="og:image" content="assets/og-cover.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 导航 -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">李欣怡</a>
+      <ul class="nav__links">
+        <li><a href="#about">关于</a></li>
+        <li><a href="#portfolio">作品</a></li>
+        <li><a href="#resume">简历</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
+      <a href="#portfolio" class="btn btn--small">查看作品</a>
+    </div>
+  </nav>
+
+  <!-- 首屏 -->
+  <header id="hero" class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__inner">
+      <p class="hero__eyebrow" data-edit="hero-eyebrow">2027 届 · 中国传媒大学广告学</p>
+      <h1 class="hero__name" data-edit="hero-name">李欣怡</h1>
+      <p class="hero__role" data-edit="hero-role">内容策划 / 短视频编导 / 新媒体运营</p>
+      <div class="hero__tags" data-edit="hero-tags">
+        <span class="tag">短视频编导</span>
+        <span class="tag">4A 导演组</span>
+        <span class="tag">内容运营</span>
+        <span class="tag">KOC 拓展</span>
+      </div>
+      <div class="hero__cta">
+        <a href="#portfolio" class="btn btn--primary">查看作品</a>
+        <a href="resume_optimized.md" class="btn btn--ghost" download>下载简历</a>
+      </div>
+    </div>
+    <a href="#about" class="hero__scroll" aria-label="向下滚动">↓</a>
+  </header>
+
+  <main>
+    <!-- 关于我 -->
+    <section id="about" class="section about reveal">
+      <div class="section__head">
+        <span class="section__index">01</span>
+        <h2 class="section__title" data-edit="title-about">关于我</h2>
+      </div>
+      <div class="about__grid">
+        <div class="about__intro">
+          <p class="about__summary" data-edit="about-summary">
+            中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva；作品获全国大学生广告艺术大赛北京赛区三等奖。
+          </p>
+          <div class="edu">
+            <div class="edu__row"><span>学校</span><strong data-edit="edu-school">中国传媒大学 · 广告学</strong></div>
+            <div class="edu__row"><span>时间</span><strong data-edit="edu-time">2023.09 – 2027.06（预计）</strong></div>
+            <div class="edu__row"><span>绩点</span><strong data-edit="edu-gpa">GPA 3.8 / 4（专业前 20%）</strong></div>
+            <div class="edu__row"><span>荣誉</span><strong data-edit="edu-honor">国家励志奖学金 · 校级三好学生</strong></div>
+          </div>
+        </div>
+        <aside class="about__side">
+          <h3 class="about__subtitle">核心能力</h3>
+          <ul class="skillcloud" data-edit="skill-cloud">
+            <li>短视频剪辑</li><li>脚本策划</li><li>活动拍摄</li>
+            <li>内容运营</li><li>KOC 拓展</li><li>PR</li>
+            <li>剪映</li><li>PS</li><li>Canva</li>
+          </ul>
+          <h3 class="about__subtitle">数据亮点</h3>
+          <div class="stats">
+            <div class="stat"><span class="stat__num" data-edit="stat-0-num">三等奖</span><span class="stat__label" data-edit="stat-0-label">大广赛北京赛区</span></div>
+            <div class="stat"><span class="stat__num" data-edit="stat-1-num">800+</span><span class="stat__label" data-edit="stat-1-label">社媒涨粉</span></div>
+            <div class="stat"><span class="stat__num" data-edit="stat-2-num">10,000+</span><span class="stat__label" data-edit="stat-2-label">KOC 触达</span></div>
+            <div class="stat"><span class="stat__num" data-edit="stat-3-num">卫视</span><span class="stat__label" data-edit="stat-3-label">海南卫视播出</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 作品集 -->
+    <section id="portfolio" class="section portfolio reveal">
+      <div class="section__head">
+        <span class="section__index">02</span>
+        <h2 class="section__title" data-edit="title-portfolio">作品集</h2>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter is-active" data-filter="all">全部</button>
+      </div>
+      <div class="grid" id="works-grid"><!-- JS 渲染 --></div>
+    </section>
+
+    <!-- 简历 -->
+    <section id="resume" class="section resume reveal">
+      <div class="section__head">
+        <span class="section__index">03</span>
+        <h2 class="section__title" data-edit="title-resume">简历</h2>
+      </div>
+      <div class="resume__actions">
+        <a href="resume_optimized.md" class="btn btn--primary" download>下载简历 PDF</a>
+        <p class="resume__hint">提示：当前链接为 Markdown 源文件，可于浏览器中「打印 → 另存为 PDF」导出；建议后续替换为正式 PDF。</p>
+      </div>
+      <ol class="timeline">
+        <li class="timeline__item">
+          <span class="timeline__time">2026.05 – 至今</span>
+          <div>
+            <h3 data-edit="tl-0-title">腾讯 CDG · 青腾</h3>
+            <p data-edit="tl-0-desc">内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__time">2026.03 – 2026.05</span>
+          <div>
+            <h3 data-edit="tl-1-title">蓝色光标 · 《玉见》导演组</h3>
+            <p data-edit="tl-1-desc">导演组实习生｜嘉宾策划、拍摄统筹、多版本剪辑（卫视版登陆海南卫视）</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__time">2025.10 – 2026.01</span>
+          <div>
+            <h3 data-edit="tl-2-title">欣和企业 · 市场运营中心</h3>
+            <p data-edit="tl-2-desc">编导实习生｜《主厨密码》栏目全链路编导，成片登陆爱奇艺</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__time">2024 – 2025</span>
+          <div>
+            <h3 data-edit="tl-3-title">全国大学生广告艺术大赛</h3>
+            <p data-edit="tl-3-desc">创作核心成员｜品牌广告短片获北京赛区三等奖</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 联系 -->
+    <section id="contact" class="section contact reveal">
+      <div class="section__head">
+        <span class="section__index">04</span>
+        <h2 class="section__title" data-edit="title-contact">联系我</h2>
+      </div>
+      <div class="contact__grid">
+        <div class="contact__item">
+          <span class="contact__label">邮箱</span>
+          <a href="mailto:19571618312@139.com" data-edit="contact-email">19571618312@139.com</a>
+        </div>
+        <div class="contact__item">
+          <span class="contact__label">电话</span>
+          <a href="tel:19571618312" data-edit="contact-phone">195-7161-8312</a>
+        </div>
+        <div class="contact__item">
+          <span class="contact__label">微信</span>
+          <span class="contact__qr" data-edit="contact-wechat">[ 微信二维码图片：assets/wechat-qr.png ]</span>
+        </div>
+        <div class="contact__item">
+          <span class="contact__label">作品集</span>
+          <span class="contact__qr" data-edit="contact-portfolio">[ 作品集二维码：assets/portfolio-qr.png ]</span>
+        </div>
+        <div class="contact__item contact__item--full">
+          <span class="contact__label">社交主页</span>
+          <div class="contact__social" data-edit="contact-social">
+            <a href="#" class="tag">小红书</a>
+            <a href="#" class="tag">即刻</a>
+            <a href="#" class="tag">B 站</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p data-edit="footer-text">© 2026 李欣怡 · 内容策划 / 短视频编导作品集</p>
+    <p class="footer__note">本网站作品去向均客观陈述，量化数据以简历为准。</p>
+  </footer>
+
+  <!-- 作品详情模态框 -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" data-close aria-label="关闭">×</button>
+      <div class="modal__media" id="modal-media"></div>
+      <div class="modal__body">
+        <span class="modal__cat" id="modal-cat"></span>
+        <h3 class="modal__title" id="modal-title"></h3>
+        <p class="modal__meta" id="modal-meta"></p>
+        <p class="modal__role" id="modal-role"></p>
+        <div class="modal__metrics" id="modal-metrics"></div>
+        <p class="modal__desc" id="modal-desc"></p>
+        <div class="modal__doc" id="modal-content"></div>
+        <div class="modal__links" id="modal-links"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 作品新增 / 编辑模态框（编辑模式下，支持多类型：视频 / 策划 / 文案） -->
+  <div class="wm-modal" id="wm-modal" aria-hidden="true">
+    <div class="wm-modal__backdrop" data-wm-close></div>
+    <div class="wm-modal__panel" role="dialog" aria-modal="true">
+      <h3 class="wm-modal__title" id="wm-title">新增作品</h3>
+      <div class="wm-modal__form">
+        <label class="wm-modal__full">标题 / 作品名
+          <input type="text" id="wm-title-input" placeholder="如：某品牌双十一种草策划案" />
+        </label>
+        <div class="wm-modal__row">
+          <label>所属栏目
+            <select id="wm-category"></select>
+          </label>
+          <label>作品类型
+            <select id="wm-type">
+              <option value="视频">视频</option>
+              <option value="策划">策划</option>
+              <option value="文案">文案</option>
+              <option value="图文">图文</option>
+              <option value="其他">其他</option>
+            </select>
+          </label>
+        </div>
+        <label>公司 / 机构
+          <input type="text" id="wm-company" placeholder="如：腾讯 CDG · 青腾" />
+        </label>
+        <div class="wm-modal__row">
+          <label>时间
+            <input type="text" id="wm-period" placeholder="2026.05 – 至今" />
+          </label>
+          <label>角色 / 一句话定位
+            <input type="text" id="wm-role" placeholder="如：活动社媒内容支持" />
+          </label>
+        </div>
+        <label class="wm-modal__full">简介（卡片与弹窗头部可见）
+          <textarea id="wm-desc" rows="2" placeholder="一句话概括你做了什么"></textarea>
+        </label>
+        <label class="wm-modal__full">正文（策划 / 文案类作品的核心内容，多段直接回车换行）
+          <textarea id="wm-content" rows="6" placeholder="粘贴你的策划案 / 文案正文，支持多段"></textarea>
+        </label>
+        <label class="wm-modal__full">数据亮点（每行一个「标签：值」，如：涨粉：800+）
+          <textarea id="wm-metrics" rows="3" placeholder="涨粉：800+&#10;触达：10,000+"></textarea>
+        </label>
+        <label class="wm-modal__full">外部平台链接（点击直接跳转，可填爱奇艺 / 腾讯视频 / 公众号 等）
+          <div id="wm-links" class="wm-links"></div>
+          <button type="button" id="wm-add-link" class="wm-add-link">＋ 添加链接</button>
+        </label>
+      </div>
+      <div class="wm-modal__actions">
+        <button type="button" id="wm-save" class="btn btn--primary btn--small">保存</button>
+        <button type="button" id="wm-delete" class="btn btn--ghost btn--small" hidden>删除</button>
+        <button type="button" id="wm-cancel" class="btn btn--ghost btn--small">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 视频管理模态框（编辑模式下，支持上传本地视频 + 多平台链接） -->
+  <div class="vm-modal" id="vm-modal" aria-hidden="true">
+    <div class="vm-modal__backdrop" data-vm-close></div>
+    <div class="vm-modal__panel" role="dialog" aria-modal="true">
+      <h3 class="vm-modal__title">管理视频</h3>
+      <p class="vm-modal__hint">支持：① 上传本地视频（自动存为 assets/videos/ 文件，站内直接播放、无广告，无大小上限）② 粘贴可内嵌的 iframe 链接（B站 / 腾讯 embed）③ 粘贴普通平台详情页链接，将显示为「跳转观看」卡片。</p>
+      <div id="vm-list" class="vm-list"></div>
+      <div class="vm-modal__actions">
+        <button type="button" id="vm-add-link" class="btn btn--ghost btn--small">＋ 添加链接</button>
+        <button type="button" id="vm-upload" class="btn btn--ghost btn--small">📁 上传视频</button>
+        <span class="vm-spacer"></span>
+        <button type="button" id="vm-save" class="btn btn--primary btn--small">保存</button>
+        <button type="button" id="vm-cancel" class="btn btn--ghost btn--small">取消</button>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="vm-file" accept="video/*" hidden />
+
+  <!-- 栏目管理模态框（编辑模式下，可添加 / 重命名 / 删除栏目） -->
+  <div class="cat-modal" id="cat-modal" aria-hidden="true">
+    <div class="cat-modal__backdrop" data-cat-close></div>
+    <div class="cat-modal__panel" role="dialog" aria-modal="true">
+      <h3 class="cat-modal__title">管理栏目</h3>
+      <p class="cat-modal__hint">添加 / 重命名 / 删除作品栏目。删除含作品的栏目时，作品会移到你指定的其他栏目。</p>
+      <div id="cat-list" class="cat-list"></div>
+      <div class="cat-modal__addrow">
+        <input type="text" id="cat-new-input" placeholder="新栏目名称，如：平面设计" />
+        <button type="button" id="cat-add">＋ 添加栏目</button>
+      </div>
+      <div class="cat-modal__actions">
+        <button type="button" id="cat-save" class="btn btn--primary btn--small">完成</button>
+        <button type="button" id="cat-cancel" class="btn btn--ghost btn--small">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自定义内容层（编辑模式下添加的图片 / 视频 / 文本） -->
+  <div id="overlay-layer"></div>
+
+  <!-- 编辑模式工具栏（仅站长可见） -->
+  <div id="editor-bar" class="editor-bar" hidden>
+    <span class="editor-bar__title">编辑模式</span>
+    <button type="button" data-add="work" class="is-feature">＋ 作品</button>
+    <button type="button" data-add="cat" class="is-feature">栏目</button>
+    <button type="button" data-add="image">＋ 图片</button>
+    <button type="button" data-add="video">＋ 视频</button>
+    <button type="button" data-add="text">＋ 文本</button>
+    <span class="editor-bar__sep"></span>
+    <button type="button" data-action="save" class="is-primary">保存</button>
+    <button type="button" data-action="exit">退出</button>
+    <span id="editor-status" class="editor-bar__status"></span>
+  </div>
+  <input type="file" id="img-input" accept="image/*" hidden />
+
+  <!-- 站长登录入口（低调，仅你知道密码） -->
+  <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
