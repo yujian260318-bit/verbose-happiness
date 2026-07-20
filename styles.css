@@ -322,6 +322,8 @@ p { margin: 0; }
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
   background: #2b2520; color: #fff; padding: 10px 14px; border-radius: 999px; box-shadow: 0 14px 40px rgba(0, 0, 0, .3);
 }
+.editor-bar[hidden] { display: none !important; }
+.login-entry[hidden] { display: none !important; }
 .editor-bar__title { font-weight: 700; font-size: 13px; opacity: .8; padding-right: 4px; }
 .editor-bar button { font-family: inherit; border: none; background: rgba(255, 255, 255, .14); color: #fff; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background .2s; }
 .editor-bar button:hover { background: rgba(255, 255, 255, .26); }
