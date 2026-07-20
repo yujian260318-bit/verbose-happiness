@@ -12,7 +12,7 @@ const DEFAULT_WORKS = [
     id: "zhupassword", title: "《主厨密码》短视频纪实栏目", category: "栏目纪实", type: "视频",
     company: "欣和企业 · 市场运营中心", period: "2025.10 – 2026.01",
     role: "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
-    cover: "linear-gradient(135deg, #ff6b5b, #ff9a76)", videoUrls: [],
+    cover: "linear-gradient(135deg, #A9BF7D, #8DA361)", videoUrls: [],
     metrics: [{ label: "成片", value: "3 正片 + 3 预告" }, { label: "分发", value: "公众号 + 爱奇艺" }],
     description: "参与短视频纪实栏目《主厨密码》从选题策划、脚本构思、现场勘景拍摄到后期剪辑包装的全链路内容制作，把控栏目整体内容调性；成片发布于企业公众号并登陆爱奇艺平台。",
     content: "", links: [{ platform: "爱奇艺", url: "" }]
@@ -21,7 +21,7 @@ const DEFAULT_WORKS = [
     id: "yujian", title: "《玉见》访谈栏目", category: "栏目纪实", type: "视频",
     company: "蓝色光标 · 《玉见》导演组", period: "2026.03 – 2026.05",
     role: "导演组实习生：嘉宾内容策划、现场拍摄统筹、多版本视频剪辑。",
-    cover: "linear-gradient(135deg, #2d6cdf, #5b8def)", videoUrls: [],
+    cover: "linear-gradient(135deg, #2A3654, #3E4D70)", videoUrls: [],
     metrics: [{ label: "播出", value: "卫视版登陆海南卫视" }],
     description: "梳理嘉宾人物背景与故事脉络，参与访谈逻辑提纲设计，独立撰写拍摄脚本框架；统筹对接嘉宾、摄影及现场执行团队；独立完成多版本视频（含卫视版）粗剪与精剪，其中卫视版在海南卫视播出。",
     content: "", links: []
@@ -30,7 +30,7 @@ const DEFAULT_WORKS = [
     id: "ai-next", title: "AI Next 疯享会（活动拍摄 + 传播）", category: "活动拍摄", type: "视频",
     company: "腾讯 CDG · 青腾", period: "2026.05 – 至今",
     role: "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
-    cover: "linear-gradient(135deg, #7b5bff, #b18bff)", videoUrls: [],
+    cover: "linear-gradient(135deg, #D4A574, #C47E54)", videoUrls: [],
     metrics: [{ label: "触达", value: "10,000+" }, { label: "每场报名", value: "约 10 人（线上）" }, { label: "涨粉", value: "800+" }],
     description: "完成 AI Next 疯享会线下活动全程现场拍摄；线上筛选并对接活动相关 KOC，累计触达 10,000+ 人，额外带动每场约 10 人经线上渠道自主报名；为小红书 / 即刻账号提供剪辑与文案，支撑冷启动涨粉 800+。",
     content: "", links: [{ platform: "小红书", url: "" }, { platform: "即刻", url: "" }]
@@ -39,7 +39,7 @@ const DEFAULT_WORKS = [
     id: "social", title: "小红书 / 即刻 社媒内容", category: "社媒内容", type: "视频",
     company: "腾讯 CDG · 青腾", period: "2026.05 – 至今",
     role: "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
-    cover: "linear-gradient(135deg, #ff4d7e, #ff8aa8)", videoUrls: [],
+    cover: "linear-gradient(135deg, #8DA361, #A9BF7D)", videoUrls: [],
     metrics: [{ label: "涨粉", value: "800+" }, { label: "关注者", value: "含大几千至万粉量级用户" }],
     description: "负责小红书、即刻双平台活动账号的短视频剪辑与种草文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引含大几千至万粉量级的行业用户关注。",
     content: "", links: [{ platform: "小红书", url: "" }, { platform: "即刻", url: "" }]
@@ -48,7 +48,7 @@ const DEFAULT_WORKS = [
     id: "ad-award", title: "大广赛品牌广告短片", category: "广告片", type: "视频",
     company: "全国大学生广告艺术大赛", period: "2024 – 2025",
     role: "创作核心成员：主导脚本撰写、现场拍摄、后期全片剪辑。",
-    cover: "linear-gradient(135deg, #1d1d1f, #4a4a52)", videoUrls: [],
+    cover: "linear-gradient(135deg, #5A5A5A, #8A8A8A)", videoUrls: [],
     metrics: [{ label: "奖项", value: "北京赛区三等奖" }, { label: "时长", value: "约 60s" }],
     description: "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
     content: "", links: []
@@ -58,10 +58,10 @@ const DEFAULT_WORKS = [
 /* 作品类型与栏目配色 */
 const WORK_TYPES = ["视频", "策划", "文案", "图文", "其他"];
 const COVER_PALETTE = {
-  "栏目纪实": "linear-gradient(135deg, #ff6b5b, #ff9a76)",
-  "活动拍摄": "linear-gradient(135deg, #7b5bff, #b18bff)",
-  "社媒内容": "linear-gradient(135deg, #ff4d7e, #ff8aa8)",
-  "广告片": "linear-gradient(135deg, #1d1d1f, #4a4a52)"
+  "栏目纪实": "linear-gradient(135deg, #A9BF7D, #8DA361)",
+  "活动拍摄": "linear-gradient(135deg, #D4A574, #C47E54)",
+  "社媒内容": "linear-gradient(135deg, #8DA361, #A9BF7D)",
+  "广告片": "linear-gradient(135deg, #5A5A5A, #8A8A8A)"
 };
 function pickCover(category) { return COVER_PALETTE[category] || "linear-gradient(135deg, #ff6b5b, #ff9a76)"; }
 
@@ -928,12 +928,30 @@ async function saveContent() {
 /* ============================================================
    编辑模式开关
    ============================================================ */
+function showEditorBar(show) {
+  const bar = document.getElementById("editor-bar");
+  const login = document.getElementById("login-entry");
+  if (!bar || !login) return;
+  if (show) {
+    bar.classList.remove("is-hidden");
+    bar.hidden = false;
+    bar.style.display = "flex";
+    login.classList.add("is-hidden");
+    login.hidden = true;
+    login.style.display = "none";
+  } else {
+    bar.classList.add("is-hidden");
+    bar.hidden = true;
+    bar.style.display = "none";
+    login.classList.remove("is-hidden");
+    login.hidden = false;
+    login.style.display = "block";
+  }
+}
 function enableEditing() {
   editing = true;
   document.body.classList.add("is-editing");
-  editorBar.hidden = false;
-  const loginEntry = document.getElementById("login-entry");
-  if (loginEntry) loginEntry.hidden = true;
+  showEditorBar(true);
   // 静态文本可编辑
   document.querySelectorAll("[data-edit]").forEach((el) => {
     if (el.closest("#works-grid")) return;
@@ -948,14 +966,15 @@ function enableEditing() {
 function exitEdit() {
   editing = false;
   document.body.classList.remove("is-editing");
-  editorBar.hidden = true;
-  const loginEntry = document.getElementById("login-entry");
-  if (loginEntry) loginEntry.hidden = false;
+  showEditorBar(false);
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
   history.replaceState(null, "", location.pathname);
   paint();
   renderOverlays();
 }
+
+// 初始化：确保编辑栏默认隐藏
+showEditorBar(false);
 editorBar.addEventListener("click", (e) => {
   const add = e.target.dataset.add;
   const act = e.target.dataset.action;
