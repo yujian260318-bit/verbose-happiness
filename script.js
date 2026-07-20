@@ -291,7 +291,7 @@ function openModal(w) {
 
   const vids = w.videoUrls || [];
   if (!vids.length) {
-    modalMedia.innerHTML = `<span>▶ 视频链接待补充 —— 编辑模式下点卡片「🎬 视频」逐条添加</span>`;
+    modalMedia.innerHTML = `<div class="media-placeholder">▶ 视频链接待补充 —— 编辑模式下点卡片「🎬 视频」逐条添加</div>`;
   } else if (vids.length === 1) {
     modalMedia.innerHTML = renderVideo(vids[0]);
     initVideoWraps(modalMedia);
