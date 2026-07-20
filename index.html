@@ -10,6 +10,9 @@
   <meta property="og:image" content="assets/og-cover.jpg" />
   <meta property="og:type" content="website" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -31,18 +34,25 @@
   <header id="hero" class="hero">
     <div class="hero__bg" aria-hidden="true"></div>
     <div class="hero__inner">
-      <p class="hero__eyebrow" data-edit="hero-eyebrow">2027 届 · 中国传媒大学广告学</p>
-      <h1 class="hero__name" data-edit="hero-name">李欣怡</h1>
-      <p class="hero__role" data-edit="hero-role">内容策划 / 短视频编导 / 新媒体运营</p>
-      <div class="hero__tags" data-edit="hero-tags">
-        <span class="tag">短视频编导</span>
-        <span class="tag">4A 导演组</span>
-        <span class="tag">内容运营</span>
-        <span class="tag">KOC 拓展</span>
+      <div class="hero__text">
+        <p class="hero__eyebrow" data-edit="hero-eyebrow">2027 届 · 中国传媒大学广告学</p>
+        <h1 class="hero__name" data-edit="hero-name">李欣怡</h1>
+        <p class="hero__role" data-edit="hero-role">内容策划 / 短视频编导 / 新媒体运营</p>
+        <div class="hero__tags" data-edit="hero-tags">
+          <span class="tag">短视频编导</span>
+          <span class="tag">4A 导演组</span>
+          <span class="tag">内容运营</span>
+          <span class="tag">KOC 拓展</span>
+        </div>
+        <div class="hero__cta">
+          <a href="#portfolio" class="btn btn--primary">查看作品</a>
+          <a href="resume_optimized.md" class="btn btn--ghost" download>下载简历</a>
+        </div>
       </div>
-      <div class="hero__cta">
-        <a href="#portfolio" class="btn btn--primary">查看作品</a>
-        <a href="resume_optimized.md" class="btn btn--ghost" download>下载简历</a>
+      <div class="hero__portrait">
+        <img src="assets/portrait.jpg" alt="李欣怡" onerror="this.style.display='none'" />
+        <span class="ph-initial">李</span>
+        <span class="ph-deco"></span>
       </div>
     </div>
     <a href="#about" class="hero__scroll" aria-label="向下滚动">↓</a>
