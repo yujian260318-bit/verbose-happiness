@@ -12,12 +12,12 @@
       "role": "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
       "cover": "linear-gradient(135deg, #ff6b5b, #ff9a76)",
       "videoUrls": [
-        { "type": "mp4", "url": "assets/videos/《主厨密码》Talib_web.mp4" },
-        { "type": "mp4", "url": "assets/videos/《主厨密码》Talib预告片_web.mp4" },
-        { "type": "mp4", "url": "assets/videos/《主厨密码》冯国正_web.mp4" },
-        { "type": "mp4", "url": "assets/videos/《主厨密码》冯国正预告片_web.mp4" },
-        { "type": "mp4", "url": "assets/videos/《主厨密码》王兴顺_web.mp4" },
-        { "type": "mp4", "url": "assets/videos/《主厨密码》王兴顺预告片_web.mp4" }
+        { "type": "mp4", "url": "assets/videos/《主厨密码》Talib_web.mp4", "poster": "assets/videos/《主厨密码》Talib_web_poster.jpg", "label": "Talib 正片" },
+        { "type": "mp4", "url": "assets/videos/《主厨密码》Talib预告片_web.mp4", "poster": "assets/videos/《主厨密码》Talib预告片_web_poster.jpg", "label": "Talib 预告" },
+        { "type": "mp4", "url": "assets/videos/《主厨密码》冯国正_web.mp4", "poster": "assets/videos/《主厨密码》冯国正_web_poster.jpg", "label": "冯国正 正片" },
+        { "type": "mp4", "url": "assets/videos/《主厨密码》冯国正预告片_web.mp4", "poster": "assets/videos/《主厨密码》冯国正预告片_web_poster.jpg", "label": "冯国正 预告" },
+        { "type": "mp4", "url": "assets/videos/《主厨密码》王兴顺_web.mp4", "poster": "assets/videos/《主厨密码》王兴顺_web_poster.jpg", "label": "王兴顺 正片" },
+        { "type": "mp4", "url": "assets/videos/《主厨密码》王兴顺预告片_web.mp4", "poster": "assets/videos/《主厨密码》王兴顺预告片_web_poster.jpg", "label": "王兴顺 预告" }
       ],
       "metrics": [
         { "label": "成片", "value": "3 正片 + 3 预告" },
