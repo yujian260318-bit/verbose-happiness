@@ -149,10 +149,16 @@ function renderCards(list) {
     const metricsHtml = w.metrics.map((m, i) =>
       `<span class="tag"${editing ? ` data-edit="metric-${w.id}-${i}"` : ""}>${m.value}</span>`
     ).join("");
+    const firstPoster = (w.videoUrls && w.videoUrls[0] && w.videoUrls[0].poster) ? w.videoUrls[0].poster : "";
+    const hasVideo = !!(w.videoUrls && w.videoUrls.length);
+    const coverStyle = firstPoster ? "" : `style="background:${w.cover}"`;
+    const coverMedia = firstPoster ? `<img src="${firstPoster}" alt="${w.title}" />` : "";
+    const playBadge = hasVideo ? `<div class="card__play"><span>▶</span></div>` : "";
     card.innerHTML = `
-      <div class="card__cover" style="background:${w.cover}">
+      <div class="card__cover" ${coverStyle}>
+        ${coverMedia}
         <span class="card__type">${w.type}</span>
-        ${w.title}
+        ${playBadge}
       </div>
       <div class="card__body">
         <span class="card__cat"${editing ? ` data-edit="cat-${w.id}"` : ""}>${w.category}</span>
@@ -208,10 +214,16 @@ filters.addEventListener("click", (e) => {
 const modal = document.getElementById("modal");
 const modalMedia = document.getElementById("modal-media");
 
+function videoLabel(v, i) {
+  if (v && v.label) return v.label;
+  const name = (v && v.url ? v.url : "").split("/").pop().replace(/\.mp4$/i, "").replace(/_web$/, "").replace(/《主厨密码》/g, "");
+  return name || ("视频 " + (i + 1));
+}
 function renderVideo(v) {
   if (!v || !v.url) return "";
   if (v.type === "mp4") {
-    return `<video src="${v.url}" controls preload="none" playsinline></video>`;
+    const poster = v.poster ? ` poster="${v.poster}"` : "";
+    return `<div class="video-wrap"><video src="${v.url}"${poster} controls preload="none" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
   }
   if (v.type === "iframe") {
     return `<iframe src="${v.url}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
@@ -232,6 +244,18 @@ function renderVideo(v) {
       <a class="btn btn--primary modal__link-card-btn" href="${v.url}" target="_blank" rel="noopener">${label} ↗</a>
       <p class="modal__link-card-note">外链页面由对应平台提供，可能需要观看广告或登录，敬请谅解。</p>
     </div>`;
+}
+
+function initVideoWraps(root) {
+  (root || document).querySelectorAll(".video-wrap").forEach((wrap) => {
+    const video = wrap.querySelector("video");
+    const play = wrap.querySelector(".video-play");
+    if (!video || !play) return;
+    play.addEventListener("click", () => { video.play(); });
+    video.addEventListener("play", () => wrap.classList.add("is-playing"));
+    video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
+    video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
+  });
 }
 
 function openModal(w) {
@@ -270,6 +294,7 @@ function openModal(w) {
     modalMedia.innerHTML = `<span>▶ 视频链接待补充 —— 编辑模式下点卡片「🎬 视频」逐条添加</span>`;
   } else if (vids.length === 1) {
     modalMedia.innerHTML = renderVideo(vids[0]);
+    initVideoWraps(modalMedia);
   } else {
     modalMedia.innerHTML = `<div id="vm-player">${renderVideo(vids[0])}</div>`;
     const bar = document.createElement("div");
@@ -278,15 +303,18 @@ function openModal(w) {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "tag" + (i === 0 ? " is-active" : "");
-      b.textContent = "视频 " + (i + 1);
+      b.textContent = videoLabel(v, i);
       b.addEventListener("click", () => {
-        document.getElementById("vm-player").innerHTML = renderVideo(v);
+        const vp = document.getElementById("vm-player");
+        vp.innerHTML = renderVideo(v);
+        initVideoWraps(vp);
         bar.querySelectorAll("button").forEach((x) => x.classList.remove("is-active"));
         b.classList.add("is-active");
       });
       bar.appendChild(b);
     });
     modalMedia.appendChild(bar);
+    initVideoWraps(modalMedia);
   }
 
   modal.classList.add("is-open");
