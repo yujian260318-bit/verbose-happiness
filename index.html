@@ -12,7 +12,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Outfit:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -411,12 +411,71 @@
     </div>
   </div>
 
+  <!-- 设计面板（颜色 / 字体 / 排版） -->
+  <div class="theme-modal" id="theme-modal" aria-hidden="true">
+    <div class="theme-modal__backdrop" data-tm-close></div>
+    <div class="theme-modal__panel" role="dialog" aria-modal="true">
+      <div class="theme-modal__head">
+        <h3 class="theme-modal__title">🎨 设计 · 配色 / 字体 / 排版</h3>
+        <button type="button" id="tm-close" class="theme-modal__close" aria-label="关闭">×</button>
+      </div>
+      <p class="theme-modal__hint">改完点编辑栏「保存」才会上线。下面所有调整实时预览。</p>
+
+      <div class="theme-modal__group">
+        <div class="theme-modal__group-title">配色</div>
+        <div class="theme-modal__colors">
+          <label>主色 / 强调 <input type="color" id="tm-sage"></label>
+          <label>主色深 <input type="color" id="tm-sageDark"></label>
+          <label>主色浅 <input type="color" id="tm-sageSoft"></label>
+          <label>深色文字 / 按钮 <input type="color" id="tm-ink"></label>
+          <label>页面底色 <input type="color" id="tm-bg"></label>
+          <label>藏蓝区块底 <input type="color" id="tm-bgDark"></label>
+          <label>卡片白底 <input type="color" id="tm-surface"></label>
+          <label>次要文字 <input type="color" id="tm-muted"></label>
+          <label>边框线 <input type="color" id="tm-line"></label>
+        </div>
+      </div>
+
+      <div class="theme-modal__group">
+        <div class="theme-modal__group-title">字体</div>
+        <label class="theme-modal__row">标题字体
+          <select id="tm-display"></select>
+        </label>
+        <label class="theme-modal__row">正文字体
+          <select id="tm-body"></select>
+        </label>
+      </div>
+
+      <div class="theme-modal__group">
+        <div class="theme-modal__group-title">排版</div>
+        <label class="theme-modal__range">卡片圆角 <span id="tm-radius-val">20px</span>
+          <input type="range" id="tm-radius" min="0" max="40" step="1">
+        </label>
+        <label class="theme-modal__range">内容最大宽度 <span id="tm-maxw-val">1160px</span>
+          <input type="range" id="tm-maxw" min="720" max="1400" step="20">
+        </label>
+        <label class="theme-modal__range">整体字号缩放 <span id="tm-fontScale-val">1.00×</span>
+          <input type="range" id="tm-fontScale" min="0.8" max="1.4" step="0.05">
+        </label>
+        <label class="theme-modal__range">区块上下间距 <span id="tm-sectionPad-val">100px</span>
+          <input type="range" id="tm-sectionPad" min="48" max="160" step="4">
+        </label>
+      </div>
+
+      <div class="theme-modal__actions">
+        <button type="button" id="tm-reset" class="btn btn--ghost btn--small">恢复默认</button>
+        <button type="button" id="tm-done" class="btn btn--primary btn--small" data-tm-close>完成</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 自定义内容层 -->
   <div id="overlay-layer"></div>
 
   <!-- 编辑模式工具栏（仅站长可见） -->
   <div id="editor-bar" class="editor-bar is-hidden" hidden>
     <span class="editor-bar__title">编辑模式</span>
+    <button type="button" data-action="theme" class="is-feature">🎨 设计</button>
     <button type="button" data-add="work" class="is-feature">＋ 作品</button>
     <button type="button" data-add="cat" class="is-feature">栏目</button>
     <button type="button" data-add="image">＋ 图片</button>
