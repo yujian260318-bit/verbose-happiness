@@ -96,18 +96,13 @@ p { margin: 0; }
 .hero__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
 .hero__cta { display: flex; gap: 14px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
 .hero__portrait {
-  position: relative; width: 260px; height: 260px; border-radius: 50%; overflow: hidden;
-  margin: 44px auto 0; border: 8px solid var(--sage); box-shadow: var(--shadow-hover);
-  background: linear-gradient(135deg, #d4a574, #c47e54); display: flex; align-items: center; justify-content: center;
+  position: relative; width: 240px; height: 240px; border-radius: 50%; overflow: hidden;
+  margin: 44px auto 0; border: 2px dashed var(--sage); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
 }
 .hero__portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-.hero__portrait .ph-initial {
-  font-family: var(--display); font-size: 90px; color: rgba(255, 255, 255, .92); font-weight: 700; z-index: 0;
-}
-.hero__portrait .ph-deco {
-  position: absolute; top: -14px; right: -20px; width: 52px; height: 52px; z-index: 2;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10,50 Q30,10 50,50 T90,50' fill='none' stroke='%23A9BF7D' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
-}
+.hero__portrait .ph-placeholder { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.6; z-index: 0; padding: 10px; }
+.hero__portrait .ph-placeholder small { display: block; font-size: 11px; opacity: .65; margin-top: 4px; word-break: break-all; }
 .hero__scroll {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   font-size: 24px; color: var(--muted); animation: bob 2s infinite; z-index: 1;
@@ -124,20 +119,24 @@ p { margin: 0; }
 .about__field::before {
   content: "▶"; color: var(--sage); font-size: 10px; margin-top: 6px; flex-shrink: 0;
 }
-.about__visual { position: relative; min-height: 360px; }
-.about__img {
-  position: absolute; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
-  transition: transform .3s ease;
+/* 图片占位槽：无图显示虚线框 + 提示，有图自动覆盖 */
+.img-slot {
+  position: relative; overflow: hidden; border-radius: var(--radius);
+  background: var(--sage-soft); border: 2px dashed var(--sage);
+  display: flex; align-items: center; justify-content: center; min-height: 180px;
 }
-.about__img img { width: 100%; height: 100%; object-fit: cover; }
-.about__img--1 { width: 58%; left: 0; top: 0; transform: rotate(-6deg); z-index: 2; }
-.about__img--2 { width: 52%; right: 0; bottom: 0; transform: rotate(8deg); z-index: 1; }
-.about__visual:hover .about__img--1 { transform: rotate(-3deg) translateY(-4px); }
-.about__visual:hover .about__img--2 { transform: rotate(5deg) translateY(-4px); }
-.about__swirl {
-  position: absolute; top: 10%; right: 10%; width: 90px; height: 90px; z-index: 3;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M80,20 Q50,60 20,30' fill='none' stroke='%232A3654' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat; opacity: .7;
+.img-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.img-slot.is-empty img { display: none; }
+.img-slot__hint {
+  position: relative; z-index: 0; text-align: center; color: var(--sage-dark);
+  font-size: 13px; line-height: 1.6; padding: 12px;
 }
+.img-slot__hint small { display: block; font-size: 11px; opacity: .7; margin-top: 4px; word-break: break-all; }
+
+.about__visual { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }
+.about__img { min-height: 230px; }
+.about__img--1 { transform: rotate(-4deg); }
+.about__img--2 { transform: rotate(4deg); }
 
 /* 技能 */
 .skills { background: var(--sage); color: #fff; }
@@ -198,10 +197,8 @@ p { margin: 0; }
 
 /* 教育 */
 .education__wrap { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: center; }
-.education__visual {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-radius: var(--radius); overflow: hidden;
-}
-.education__visual img { width: 100%; height: 240px; object-fit: cover; border-radius: var(--radius-sm); }
+.education__visual { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.education__visual .img-slot { min-height: 200px; }
 .education__list { display: flex; flex-direction: column; gap: 28px; }
 .education__item { position: relative; padding-left: 24px; }
 .education__item::before {
