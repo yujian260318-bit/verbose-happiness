@@ -73,6 +73,58 @@ let categories = [];
 let overlays = [];
 let editing = false;
 let currentFilter = "all";
+let theme = defaultTheme();
+let styles = {};
+
+/* ---------- 设计主题（颜色 / 字体 / 排版） ---------- */
+function defaultTheme() {
+  return {
+    colors: { sage: "#A9BF7D", sageDark: "#8DA361", sageSoft: "#E3EBD1", ink: "#2A3654", bg: "#E6E7DE", bgDark: "#2A3654", surface: "#FFFFFF", muted: "#6B7280", line: "#D1D5C7" },
+    fonts: { display: "'Outfit', 'Montserrat', 'Noto Sans SC', sans-serif", body: "'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" },
+    layout: { radius: 20, maxw: 1160, fontScale: 1, sectionPad: 100 }
+  };
+}
+const FONT_OPTIONS = [
+  { label: "思源黑体 Noto Sans SC", v: "'Noto Sans SC', sans-serif" },
+  { label: "思源宋体 Noto Serif SC", v: "'Noto Serif SC', serif" },
+  { label: "Outfit（英文无衬线）", v: "'Outfit', 'Noto Sans SC', sans-serif" },
+  { label: "Montserrat（英文无衬线）", v: "'Montserrat', 'Noto Sans SC', sans-serif" },
+  { label: "Playfair Display（英文衬线）", v: "'Playfair Display', 'Noto Serif SC', serif" },
+  { label: "Dancing Script（手写体）", v: "'Dancing Script', cursive" },
+  { label: "系统默认", v: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" }
+];
+
+function applyUserTheme() {
+  const c = theme.colors, f = theme.fonts, l = theme.layout;
+  const css = `:root{
+  --sage:${c.sage}; --sage-dark:${c.sageDark}; --sage-soft:${c.sageSoft};
+  --ink:${c.ink}; --bg:${c.bg}; --surface:${c.surface}; --muted:${c.muted};
+  --line:${c.line}; --bg-dark:${c.bgDark};
+  --display:${f.display}; --sans:${f.body};
+  --radius:${l.radius}px; --maxw:${l.maxw}px;
+  --font-scale:${l.fontScale}; --section-pad:${l.sectionPad}px;
+}`;
+  let st = document.getElementById("user-theme");
+  if (!st) { st = document.createElement("style"); st.id = "user-theme"; document.head.appendChild(st); }
+  st.textContent = css;
+  document.body.style.fontSize = (16 * l.fontScale) + "px";
+}
+
+function applyUserStyles() {
+  document.querySelectorAll("[data-edit]").forEach((el) => {
+    const s = styles[el.dataset.edit];
+    if (s) {
+      el.style.color = s.color || "";
+      el.style.fontSize = s.fontSize ? s.fontSize + "px" : "";
+      el.style.fontWeight = s.fontWeight || "";
+      el.style.textAlign = s.textAlign || "";
+    } else {
+      el.style.color = ""; el.style.fontSize = ""; el.style.fontWeight = ""; el.style.textAlign = "";
+    }
+  });
+}
+
+function applyAllStyles() { applyUserTheme(); applyUserStyles(); }
 
 const grid = document.getElementById("works-grid");
 const overlayLayer = document.getElementById("overlay-layer");
@@ -93,6 +145,15 @@ async function loadContent() {
       if (Array.isArray(data.works)) works = data.works;
       if (Array.isArray(data.categories) && data.categories.length) categories = data.categories;
       overlays = Array.isArray(data.overlays) ? data.overlays : [];
+      if (data.theme) {
+        const d = defaultTheme();
+        theme = {
+          colors: Object.assign({}, d.colors, data.theme.colors || {}),
+          fonts: Object.assign({}, d.fonts, data.theme.fonts || {}),
+          layout: Object.assign({}, d.layout, data.theme.layout || {})
+        };
+      }
+      if (data.styles && typeof data.styles === "object") styles = data.styles;
     }
   } catch (e) { /* 用兜底数据 */ }
   if (!works.length) works = DEFAULT_WORKS.map((x) => ({ ...x }));
@@ -887,10 +948,12 @@ async function commitToGitHub(str) {
   if (!res.ok) throw new Error("提交失败（" + res.status + "）");
 }
 async function saveContent() {
-  // 收集文本覆盖
+  // 收集文本覆盖（剔除样式点，避免污染数据）
   document.querySelectorAll("[data-edit]").forEach((el) => {
     if (el.closest("#works-grid")) return;
-    texts[el.dataset.edit] = el.innerHTML;
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll(".style-dot").forEach((d) => d.remove());
+    texts[el.dataset.edit] = clone.innerHTML;
   });
   // 收集文本类覆盖层
   overlays.forEach((o) => {
@@ -899,7 +962,7 @@ async function saveContent() {
       if (el) o.content = el.textContent;
     }
   });
-  const str = JSON.stringify({ texts, categories, works, overlays }, null, 2);
+  const str = JSON.stringify({ texts, categories, works, overlays, theme, styles }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
@@ -957,20 +1020,181 @@ function enableEditing() {
     if (el.closest("#works-grid")) return;
     el.setAttribute("contenteditable", "true");
     const key = el.dataset.edit;
-    el.addEventListener("input", () => { texts[key] = el.innerHTML; });
+    el.addEventListener("input", () => {
+      const clone = el.cloneNode(true);
+      clone.querySelectorAll(".style-dot").forEach((d) => d.remove());
+      texts[key] = clone.innerHTML;
+    });
   });
   paint();        // 重新渲染卡片（带编辑态）
   renderOverlays();
-  setStatus("编辑模式已开启 · 点文字直接改，卡片「🎬 视频」加多条");
+  addStyleDots();
+  applyUserStyles();
+  setStatus("编辑模式已开启 · 点文字直接改；右上角🎨调样式；工具栏「🎨 设计」改全局配色字体");
 }
 function exitEdit() {
   editing = false;
   document.body.classList.remove("is-editing");
   showEditorBar(false);
+  removeStyleDots();
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
   history.replaceState(null, "", location.pathname);
   paint();
   renderOverlays();
+}
+
+/* ============================================================
+   设计面板（颜色 / 字体 / 排版自由编辑）
+   ============================================================ */
+function openThemePanel() {
+  const panel = document.getElementById("theme-modal");
+  if (!panel) return;
+  panel.classList.add("is-open");
+  panel.setAttribute("aria-hidden", "false");
+  const c = theme.colors;
+  document.getElementById("tm-sage").value = c.sage;
+  document.getElementById("tm-sageDark").value = c.sageDark;
+  document.getElementById("tm-sageSoft").value = c.sageSoft;
+  document.getElementById("tm-ink").value = c.ink;
+  document.getElementById("tm-bg").value = c.bg;
+  document.getElementById("tm-bgDark").value = c.bgDark;
+  document.getElementById("tm-surface").value = c.surface;
+  document.getElementById("tm-muted").value = c.muted;
+  document.getElementById("tm-line").value = c.line;
+  fillFontSelect("tm-display", theme.fonts.display);
+  fillFontSelect("tm-body", theme.fonts.body);
+  document.getElementById("tm-radius").value = theme.layout.radius;
+  document.getElementById("tm-radius-val").textContent = theme.layout.radius + "px";
+  document.getElementById("tm-maxw").value = theme.layout.maxw;
+  document.getElementById("tm-maxw-val").textContent = theme.layout.maxw + "px";
+  document.getElementById("tm-fontScale").value = theme.layout.fontScale;
+  document.getElementById("tm-fontScale-val").textContent = theme.layout.fontScale.toFixed(2) + "×";
+  document.getElementById("tm-sectionPad").value = theme.layout.sectionPad;
+  document.getElementById("tm-sectionPad-val").textContent = theme.layout.sectionPad + "px";
+}
+function closeThemePanel() {
+  const panel = document.getElementById("theme-modal");
+  if (!panel) return;
+  panel.classList.remove("is-open");
+  panel.setAttribute("aria-hidden", "true");
+}
+function fillFontSelect(id, current) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  sel.innerHTML = FONT_OPTIONS.map((o) => `<option value='${o.v}'>${o.label}</option>`).join("");
+  const match = FONT_OPTIONS.find((o) => o.v === current) || FONT_OPTIONS[0];
+  sel.value = match.v;
+}
+function bindThemePanel() {
+  const bindColor = (id, path) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", () => { theme.colors[path] = el.value; applyUserTheme(); });
+  };
+  bindColor("tm-sage", "sage"); bindColor("tm-sageDark", "sageDark"); bindColor("tm-sageSoft", "sageSoft");
+  bindColor("tm-ink", "ink"); bindColor("tm-bg", "bg"); bindColor("tm-bgDark", "bgDark");
+  bindColor("tm-surface", "surface"); bindColor("tm-muted", "muted"); bindColor("tm-line", "line");
+  const disp = document.getElementById("tm-display");
+  const body = document.getElementById("tm-body");
+  if (disp) disp.addEventListener("change", () => { theme.fonts.display = disp.value; applyUserTheme(); });
+  if (body) body.addEventListener("change", () => { theme.fonts.body = body.value; applyUserTheme(); });
+  const bindRange = (id, valId, path, fmt) => {
+    const el = document.getElementById(id), val = document.getElementById(valId);
+    if (el) el.addEventListener("input", () => {
+      theme.layout[path] = parseFloat(el.value);
+      if (val) val.textContent = fmt(el.value);
+      applyUserTheme();
+    });
+  };
+  bindRange("tm-radius", "tm-radius-val", "radius", (v) => v + "px");
+  bindRange("tm-maxw", "tm-maxw-val", "maxw", (v) => v + "px");
+  bindRange("tm-fontScale", "tm-fontScale-val", "fontScale", (v) => parseFloat(v).toFixed(2) + "×");
+  bindRange("tm-sectionPad", "tm-sectionPad-val", "sectionPad", (v) => v + "px");
+  const reset = document.getElementById("tm-reset");
+  if (reset) reset.addEventListener("click", () => {
+    theme = defaultTheme(); applyUserTheme(); openThemePanel();
+    setStatus("已重置为默认主题（点保存后生效）");
+  });
+  const close = document.getElementById("tm-close");
+  if (close) close.addEventListener("click", closeThemePanel);
+  document.querySelectorAll("[data-tm-close]").forEach((el) => el.addEventListener("click", closeThemePanel));
+}
+
+/* 元素级样式点：编辑模式下每个 [data-edit] 元素右上角出现画笔，点击调样式 */
+function addStyleDots() {
+  document.querySelectorAll("[data-edit]").forEach((el) => {
+    if (el.closest("#works-grid")) return;
+    if (el.querySelector(":scope > .style-dot")) return;
+    const dot = document.createElement("span");
+    dot.className = "style-dot";
+    dot.setAttribute("contenteditable", "false");
+    dot.textContent = "🎨";
+    dot.title = "调整此元素样式（颜色 / 字号 / 对齐）";
+    dot.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); openStylePop(el); });
+    if (getComputedStyle(el).position === "static") el.style.position = "relative";
+    el.appendChild(dot);
+  });
+}
+function removeStyleDots() {
+  document.querySelectorAll(".style-dot").forEach((d) => d.remove());
+  closeStylePop();
+}
+function openStylePop(el) {
+  const key = el.dataset.edit;
+  let pop = document.getElementById("style-pop");
+  if (!pop) {
+    pop = document.createElement("div");
+    pop.id = "style-pop"; pop.className = "style-pop";
+    pop.innerHTML = `
+      <div class="style-pop__title">元素样式</div>
+      <label>文字颜色 <input type="color" id="sp-color"></label>
+      <label>字号(px) <input type="number" id="sp-size" min="10" max="120" step="1"></label>
+      <label>字重
+        <select id="sp-weight"><option value="">默认</option><option value="400">常规</option><option value="500">中黑</option><option value="700">加粗</option></select>
+      </label>
+      <label>对齐
+        <select id="sp-align"><option value="">默认</option><option value="left">左</option><option value="center">中</option><option value="right">右</option></select>
+      </label>
+      <div class="style-pop__actions">
+        <button type="button" id="sp-reset" class="btn btn--ghost btn--small">清除</button>
+        <button type="button" id="sp-close" class="btn btn--primary btn--small">完成</button>
+      </div>`;
+    document.body.appendChild(pop);
+    pop.querySelector("#sp-color").addEventListener("input", () => setStyle(key, "color", pop.querySelector("#sp-color").value));
+    pop.querySelector("#sp-size").addEventListener("input", () => setStyle(key, "fontSize", pop.querySelector("#sp-size").value));
+    pop.querySelector("#sp-weight").addEventListener("change", () => setStyle(key, "fontWeight", pop.querySelector("#sp-weight").value));
+    pop.querySelector("#sp-align").addEventListener("change", () => setStyle(key, "textAlign", pop.querySelector("#sp-align").value));
+    pop.querySelector("#sp-reset").addEventListener("click", () => { styles[key] = {}; applyUserStyles(); syncStylePop(key); setStatus("已清除该元素样式"); });
+    pop.querySelector("#sp-close").addEventListener("click", closeStylePop);
+  }
+  const s = styles[key] || {};
+  pop.querySelector("#sp-color").value = s.color || "#2A3654";
+  pop.querySelector("#sp-size").value = s.fontSize || "";
+  pop.querySelector("#sp-weight").value = s.fontWeight || "";
+  pop.querySelector("#sp-align").value = s.textAlign || "";
+  pop.dataset.key = key;
+  pop.classList.add("is-open");
+  const r = el.getBoundingClientRect();
+  pop.style.top = (window.scrollY + r.top) + "px";
+  pop.style.left = (window.scrollX + r.right + 8) + "px";
+}
+function syncStylePop(key) {
+  const pop = document.getElementById("style-pop");
+  if (!pop || pop.dataset.key !== key) return;
+  const s = styles[key] || {};
+  pop.querySelector("#sp-color").value = s.color || "#2A3654";
+  pop.querySelector("#sp-size").value = s.fontSize || "";
+  pop.querySelector("#sp-weight").value = s.fontWeight || "";
+  pop.querySelector("#sp-align").value = s.textAlign || "";
+}
+function setStyle(key, prop, val) {
+  if (!styles[key]) styles[key] = {};
+  if (val === "" || val == null) delete styles[key][prop];
+  else styles[key][prop] = (prop === "fontSize") ? parseInt(val, 10) : val;
+  applyUserStyles();
+}
+function closeStylePop() {
+  const pop = document.getElementById("style-pop");
+  if (pop) pop.classList.remove("is-open");
 }
 
 // 初始化：确保编辑栏默认隐藏
@@ -983,7 +1207,9 @@ editorBar.addEventListener("click", (e) => {
   else if (add) addOverlay(add);
   if (act === "save") saveContent();
   if (act === "exit") exitEdit();
+  if (act === "theme") openThemePanel();
 });
+bindThemePanel();
 
 /* 纯 JS SHA-256（不依赖 crypto.subtle，file:// 或受限浏览器也能用） */
 function sha256JS(s) {
@@ -1088,6 +1314,8 @@ const io = new IntersectionObserver(
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 loadContent().then(() => {
+  applyUserTheme();
   applyTexts();
   paint();
+  applyUserStyles();
 });
