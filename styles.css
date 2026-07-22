@@ -165,37 +165,58 @@ p { margin: 0; }
 .skill-card__tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .skill-card__tags .tag { background: #E6E9E0; color: var(--ink); font-size: 12px; padding: 4px 10px; }
 
-/* 经验 - 藏蓝时间轴 */
+/* 经验 - 藏蓝时间轴（参考图：左侧年份 + 右侧白卡片） */
 .experience { background: var(--bg-dark); color: #fff; }
 .experience .section__title { color: var(--sage); }
 .experience .section__title .title-sec { color: #fff; }
 .experience .section__index { color: rgba(255, 255, 255, .7); }
 .experience .section__index::before { background: var(--sage); }
-.experience__wrap { max-width: 1000px; margin: 0 auto; position: relative; }
+.experience__wrap { max-width: 900px; margin: 0 auto; position: relative; }
 .experience__line {
-  position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(169, 191, 125, .45); transform: translateX(-50%);
+  position: absolute; left: 84px; top: 8px; bottom: 8px; width: 2px;
+  background: rgba(169, 191, 125, .45);
 }
-.experience__items { display: flex; flex-direction: column; gap: 28px; position: relative; z-index: 1; }
+.experience__items { display: flex; flex-direction: column; gap: 32px; position: relative; z-index: 1; }
 .experience__item {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+  display: grid; grid-template-columns: 68px 1fr; gap: 32px; align-items: start;
 }
-.experience__item:nth-child(even) .exp-card { grid-column: 2; }
-.experience__item:nth-child(even) .exp-year { grid-column: 1; grid-row: 1; text-align: right; }
+.exp-year {
+  font-family: var(--display); font-size: 14px; color: var(--sage); font-weight: 700;
+  text-align: right; padding-top: 18px;
+}
 .exp-card {
   background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: 22px 24px;
   box-shadow: var(--shadow); position: relative;
+}
+.exp-card::before {
+  content: ""; position: absolute; left: -40px; top: 20px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--bg-dark); border: 3px solid var(--sage);
 }
 .exp-card__tag {
   position: absolute; top: 16px; right: 16px; background: var(--sage-soft); color: var(--sage-dark);
   padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
 }
-.exp-card h3 { font-size: 18px; margin-bottom: 6px; }
-.exp-card p { color: var(--muted); font-size: 14px; }
-.exp-card__meta { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 13px; color: var(--muted); }
-.exp-card__meta::before {
-  content: ""; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--sage); flex-shrink: 0;
+.exp-card__role { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--ink); padding-right: 56px; }
+.exp-card__company { font-size: 15px; color: var(--sage-dark); font-weight: 600; margin-bottom: 10px; }
+.exp-card__meta {
+  display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px;
 }
-.exp-year { font-family: var(--display); font-size: 14px; color: var(--sage); font-weight: 700; }
+.exp-card__meta span { display: inline-flex; align-items: center; gap: 5px; }
+.exp-card__meta .icon { font-size: 14px; }
+.exp-card__desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
+.exp-card__link {
+  font-size: 13px; color: var(--sage-dark); font-weight: 600;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.exp-card__link:hover { color: var(--sage); }
+.exp-card__link::after { content: "→"; }
+@media (max-width: 720px) {
+  .experience__line { left: 24px; }
+  .experience__item { grid-template-columns: 1fr; gap: 8px; }
+  .exp-year { text-align: left; padding-top: 0; padding-left: 42px; }
+  .exp-card::before { left: -28px; top: 18px; }
+}
 
 /* 教育 */
 .education__wrap { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: center; }
@@ -427,6 +448,28 @@ p { margin: 0; }
 }
 .login-entry:hover { opacity: 1; color: var(--sage-dark); }
 
+/* 站长登录弹窗 */
+.login-modal { position: fixed; inset: 0; z-index: 250; display: none; align-items: center; justify-content: center; padding: 24px; }
+.login-modal.is-open { display: flex; }
+.login-modal__backdrop { position: absolute; inset: 0; background: rgba(30, 22, 16, .55); backdrop-filter: blur(3px); }
+.login-modal__panel {
+  position: relative; z-index: 1; background: var(--surface); border-radius: var(--radius);
+  width: min(420px, 94vw); padding: 28px 30px; box-shadow: var(--shadow-hover);
+}
+.login-modal__close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; }
+.login-modal__close:hover { color: var(--ink); }
+.login-modal__title { font-family: var(--display); font-size: 22px; color: var(--ink); margin-bottom: 8px; }
+.login-modal__hint { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+.login-modal__field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.login-modal__field input {
+  font-family: inherit; font-size: 16px; padding: 12px 14px; border: 1px solid var(--line);
+  border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); letter-spacing: .06em;
+}
+.login-modal__field input:focus { outline: 2px solid var(--sage-soft); border-color: var(--sage); }
+.login-modal__error { color: #c0392b; font-size: 13px; margin: 12px 0 0; min-height: 1em; }
+.login-modal__error[hidden] { display: none; }
+.login-modal__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
 /* 滚动渐显 */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
 .reveal.is-visible { opacity: 1; transform: none; }
@@ -505,4 +548,24 @@ p { margin: 0; }
 
 @media (max-width: 600px) {
   .theme-modal__colors { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 编辑模式高亮：登录后直接在页面上编辑 */
+body.is-editing [data-edit],
+body.is-editing [data-exp] {
+  outline: 1px dashed rgba(169, 191, 125, .55);
+  outline-offset: 3px;
+  border-radius: 4px;
+  cursor: text;
+  transition: outline .15s, background .15s;
+}
+body.is-editing [data-edit]:hover,
+body.is-editing [data-exp]:hover {
+  outline: 2px dashed var(--sage);
+  background: rgba(169, 191, 125, .10);
+}
+body.is-editing .card,
+body.is-editing .experience__item,
+body.is-editing .skill-card {
+  position: relative;
 }
