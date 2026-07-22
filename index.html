@@ -169,44 +169,7 @@
       </div>
       <div class="experience__wrap">
         <div class="experience__line"></div>
-        <div class="experience__items">
-          <div class="experience__item">
-            <div class="exp-year">2026</div>
-            <div class="exp-card">
-              <span class="exp-card__tag">实习</span>
-              <h3 data-edit="tl-0-title">腾讯 CDG · 青腾</h3>
-              <p data-edit="tl-0-desc">内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持</p>
-              <div class="exp-card__meta">2026.05 – 至今</div>
-            </div>
-          </div>
-          <div class="experience__item">
-            <div class="exp-year">2026</div>
-            <div class="exp-card">
-              <span class="exp-card__tag">4A</span>
-              <h3 data-edit="tl-1-title">蓝色光标 · 《玉见》导演组</h3>
-              <p data-edit="tl-1-desc">导演组实习生｜嘉宾策划、拍摄统筹、多版本剪辑（卫视版登陆海南卫视）</p>
-              <div class="exp-card__meta">2026.03 – 2026.05</div>
-            </div>
-          </div>
-          <div class="experience__item">
-            <div class="exp-year">2025</div>
-            <div class="exp-card">
-              <span class="exp-card__tag">栏目</span>
-              <h3 data-edit="tl-2-title">欣和企业 · 市场运营中心</h3>
-              <p data-edit="tl-2-desc">编导实习生｜《主厨密码》栏目全链路编导，成片登陆爱奇艺</p>
-              <div class="exp-card__meta">2025.10 – 2026.01</div>
-            </div>
-          </div>
-          <div class="experience__item">
-            <div class="exp-year">2024</div>
-            <div class="exp-card">
-              <span class="exp-card__tag">竞赛</span>
-              <h3 data-edit="tl-3-title">全国大学生广告艺术大赛</h3>
-              <p data-edit="tl-3-desc">创作核心成员｜品牌广告短片获北京赛区三等奖</p>
-              <div class="exp-card__meta">2024 – 2025</div>
-            </div>
-          </div>
-        </div>
+        <div class="experience__items" id="experience-list"></div>
       </div>
     </section>
 
@@ -487,6 +450,24 @@
     <span id="editor-status" class="editor-bar__status"></span>
   </div>
   <input type="file" id="img-input" accept="image/*" hidden />
+
+  <!-- 站长登录弹窗（自定义，不泄露密码，也避免原生 prompt 的显示假空格问题） -->
+  <div class="login-modal" id="login-modal" aria-hidden="true">
+    <div class="login-modal__backdrop" data-login-close></div>
+    <div class="login-modal__panel" role="dialog" aria-modal="true" aria-label="站长登录">
+      <button type="button" class="login-modal__close" data-login-close aria-label="关闭">×</button>
+      <h3 class="login-modal__title">站长登录</h3>
+      <p class="login-modal__hint">请输入编辑密码以进入编辑模式。</p>
+      <label class="login-modal__field">编辑密码
+        <input type="password" id="login-pw" autocomplete="off" spellcheck="false" placeholder="请输入密码" />
+      </label>
+      <p class="login-modal__error" id="login-error" hidden></p>
+      <div class="login-modal__actions">
+        <button type="button" class="btn btn--ghost btn--small" data-login-close>取消</button>
+        <button type="button" class="btn btn--primary btn--small" id="login-ok">登录</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 站长登录入口 -->
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
