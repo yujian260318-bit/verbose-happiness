@@ -51,8 +51,7 @@
       </div>
       <div class="hero__portrait">
         <img src="assets/portrait.jpg" alt="李欣怡" onerror="this.style.display='none'" />
-        <span class="ph-initial">李</span>
-        <span class="ph-deco"></span>
+        <span class="ph-placeholder">在此放置照片<br><small>assets/portrait.jpg</small></span>
       </div>
     </div>
     <a href="#about" class="hero__scroll" aria-label="向下滚动">↓</a>
@@ -78,13 +77,14 @@
           </div>
         </div>
         <div class="about__visual">
-          <div class="about__img about__img--1">
-            <img src="assets/about-1.jpg" alt="工作照" onerror="this.style.display='none'" />
+          <div class="img-slot about__img about__img--1">
+            <img src="assets/about-1.jpg" alt="工作照" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/about-1.jpg</small></span>
           </div>
-          <div class="about__img about__img--2">
-            <img src="assets/about-2.jpg" alt="工作照" onerror="this.style.display='none'" />
+          <div class="img-slot about__img about__img--2">
+            <img src="assets/about-2.jpg" alt="工作照" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/about-2.jpg</small></span>
           </div>
-          <div class="about__swirl"></div>
         </div>
       </div>
     </section>
@@ -217,8 +217,14 @@
       </div>
       <div class="education__wrap">
         <div class="education__visual">
-          <img src="assets/edu-1.jpg" alt="校园" onerror="this.style.display='none'" />
-          <img src="assets/edu-2.jpg" alt="校园" onerror="this.style.display='none'" />
+          <div class="img-slot edu__img">
+            <img src="assets/edu-1.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/edu-1.jpg</small></span>
+          </div>
+          <div class="img-slot edu__img">
+            <img src="assets/edu-2.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/edu-2.jpg</small></span>
+          </div>
         </div>
         <div class="education__list">
           <div class="education__item">
