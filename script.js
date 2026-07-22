@@ -57,6 +57,29 @@ const DEFAULT_WORKS = [
 
 /* 作品类型与栏目配色 */
 const WORK_TYPES = ["视频", "策划", "文案", "图文", "其他"];
+const DEFAULT_EXPERIENCES = [
+  {
+    id: "exp-tencent", year: "2026", tag: "实习", role: "内容运营实习生",
+    company: "腾讯 CDG · 青腾", location: "深圳，中国", period: "2026.05 – 至今",
+    description: "负责小红书账号内容创作与 KOC 资源拓展；完成活动拍摄、多平台剪辑与社媒内容支持。", link: ""
+  },
+  {
+    id: "exp-yujian", year: "2026", tag: "4A", role: "导演组实习生",
+    company: "蓝色光标 · 《玉见》导演组", location: "北京，中国", period: "2026.03 – 2026.05",
+    description: "参与嘉宾策划、拍摄统筹、多版本剪辑；卫视版登陆海南卫视。", link: ""
+  },
+  {
+    id: "exp-zhupassword", year: "2025", tag: "栏目", role: "编导实习生",
+    company: "欣和企业 · 市场运营中心", location: "北京，中国", period: "2025.10 – 2026.01",
+    description: "《主厨密码》栏目全链路编导，独立完成素材筛选与精剪，成片登陆爱奇艺。", link: ""
+  },
+  {
+    id: "exp-adaward", year: "2024", tag: "竞赛", role: "创作核心成员",
+    company: "全国大学生广告艺术大赛", location: "北京，中国", period: "2024 – 2025",
+    description: "主导品牌广告短片从创意到成片，获北京赛区三等奖。", link: ""
+  }
+];
+
 const COVER_PALETTE = {
   "栏目纪实": "linear-gradient(135deg, #A9BF7D, #8DA361)",
   "活动拍摄": "linear-gradient(135deg, #D4A574, #C47E54)",
@@ -71,6 +94,7 @@ let texts = {};
 let works = [];
 let categories = [];
 let overlays = [];
+let experiences = [];
 let editing = false;
 let currentFilter = "all";
 let theme = defaultTheme();
@@ -145,6 +169,7 @@ async function loadContent() {
       if (Array.isArray(data.works)) works = data.works;
       if (Array.isArray(data.categories) && data.categories.length) categories = data.categories;
       overlays = Array.isArray(data.overlays) ? data.overlays : [];
+      experiences = Array.isArray(data.experience) ? data.experience : [];
       if (data.theme) {
         const d = defaultTheme();
         theme = {
@@ -158,6 +183,7 @@ async function loadContent() {
   } catch (e) { /* 用兜底数据 */ }
   if (!works.length) works = DEFAULT_WORKS.map((x) => ({ ...x }));
   if (!categories.length) categories = Array.from(new Set(works.map((w) => w.category).filter(Boolean)));
+  if (!experiences.length) experiences = DEFAULT_EXPERIENCES.map((x) => ({ ...x }));
   works.forEach((w) => {
     if (!Array.isArray(w.videoUrls)) w.videoUrls = [];
     if (!w.type) w.type = "视频";
@@ -180,6 +206,41 @@ function applyTexts() {
 function paint() {
   const list = currentFilter === "all" ? works : works.filter((w) => w.category === currentFilter);
   renderCards(list);
+}
+
+function renderExperience() {
+  const wrap = document.getElementById("experience-list");
+  if (!wrap) return;
+  wrap.innerHTML = experiences.map((exp, idx) => {
+    const linkHtml = exp.link
+      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情</a>`
+      : (editing ? `<span class="exp-card__link is-empty">查看详情（请在 content.json 填写链接）</span>` : "");
+    const editAttr = editing ? " contenteditable=\"true\"" : "";
+    return `
+      <div class="experience__item" data-exp-index="${idx}">
+        <div class="exp-year"${editAttr} data-exp="year">${exp.year}</div>
+        <div class="exp-card">
+          <span class="exp-card__tag"${editAttr} data-exp="tag">${exp.tag}</span>
+          <div class="exp-card__role"${editAttr} data-exp="role">${exp.role}</div>
+          <div class="exp-card__company"${editAttr} data-exp="company">${exp.company}</div>
+          <div class="exp-card__meta">
+            <span><span class="icon">📅</span><span${editAttr} data-exp="period">${exp.period}</span></span>
+            <span><span class="icon">📍</span><span${editAttr} data-exp="location">${exp.location}</span></span>
+          </div>
+          <div class="exp-card__desc"${editAttr} data-exp="description">${exp.description}</div>
+          ${linkHtml}
+        </div>
+      </div>`;
+  }).join("");
+  if (editing) bindExperienceEdit(wrap);
+}
+
+function bindExperienceEdit(wrap) {
+  wrap.querySelectorAll("[data-exp]").forEach((el) => {
+    const idx = Number(el.closest(".experience__item").dataset.expIndex);
+    const field = el.dataset.exp;
+    el.addEventListener("input", () => { experiences[idx][field] = el.textContent.trim(); });
+  });
 }
 
 /* ---------- 栏目筛选（动态渲染，可编辑） ---------- */
@@ -962,7 +1023,7 @@ async function saveContent() {
       if (el) o.content = el.textContent;
     }
   });
-  const str = JSON.stringify({ texts, categories, works, overlays, theme, styles }, null, 2);
+  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
@@ -1027,10 +1088,11 @@ function enableEditing() {
     });
   });
   paint();        // 重新渲染卡片（带编辑态）
+  renderExperience();
   renderOverlays();
   addStyleDots();
   applyUserStyles();
-  setStatus("编辑模式已开启 · 点文字直接改；右上角🎨调样式；工具栏「🎨 设计」改全局配色字体");
+  setStatus("已登录 · 直接点击页面上的文字即可编辑；悬浮右上角 🎨 可改单元素样式；工具栏「🎨 设计」改全局配色/字体/排版");
 }
 function exitEdit() {
   editing = false;
@@ -1040,6 +1102,7 @@ function exitEdit() {
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
   history.replaceState(null, "", location.pathname);
   paint();
+  renderExperience();
   renderOverlays();
 }
 
@@ -1274,28 +1337,67 @@ function cleanPasswordInput(raw) {
     .replace(/[\s\u00A0\u2000-\u200D\u2028\u2029\u202F\u205F\u3000\uFEFF]+/g, "")
     .trim();
 }
-function tryEnterEdit() {
-  (async () => {
-    const pw = prompt("请输入编辑密码：");
-    if (!pw) return;
-    const clean = cleanPasswordInput(pw);
-    const hash = await sha256Hex(clean);
-    if (hash === (SITE_CONFIG.editPasswordHash || "")) {
-      enableEditing();
-    } else {
-      const debug = Array.from(pw).map((c) => c.charCodeAt(0).toString(16)).join(" ");
-      alert("密码错误，无法进入编辑模式。\\n正确密码：xinyi2026（8 位字母+数字）\\n你输入的字符编码：" + debug + "\\n如果每个字符间有空格，请忽略，那是输入框显示问题。");
-    }
-  })();
+/* ---------- 自定义登录弹窗（替代原生 prompt，避免显示假空格 + 不泄露密码） ----------
+function openLoginModal() {
+  const m = document.getElementById("login-modal");
+  if (!m) return;
+  m.classList.add("is-open");
+  m.setAttribute("aria-hidden", "false");
+  const inp = document.getElementById("login-pw");
+  if (inp) { inp.value = ""; hideLoginError(); setTimeout(() => inp.focus(), 50); }
+  document.body.style.overflow = "hidden";
 }
+function closeLoginModal() {
+  const m = document.getElementById("login-modal");
+  if (!m) return;
+  m.classList.remove("is-open");
+  m.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+function showLoginError(msg) {
+  const el = document.getElementById("login-error");
+  if (el) { el.textContent = msg; el.hidden = false; }
+}
+function hideLoginError() {
+  const el = document.getElementById("login-error");
+  if (el) { el.textContent = ""; el.hidden = true; }
+}
+async function submitLogin() {
+  const inp = document.getElementById("login-pw");
+  if (!inp) return;
+  const clean = cleanPasswordInput(inp.value);
+  if (!clean) { showLoginError("请输入密码"); return; }
+  const hash = await sha256Hex(clean);
+  if (hash === (SITE_CONFIG.editPasswordHash || "")) {
+    closeLoginModal();
+    enableEditing();
+  } else {
+    // 安全：错误提示绝不回显正确密码
+    showLoginError("密码错误，请重试。");
+    inp.select();
+  }
+}
+function bindLoginModal() {
+  const m = document.getElementById("login-modal");
+  if (!m) return;
+  m.querySelectorAll("[data-login-close]").forEach((el) => el.addEventListener("click", closeLoginModal));
+  const ok = document.getElementById("login-ok");
+  if (ok) ok.addEventListener("click", submitLogin);
+  const inp = document.getElementById("login-pw");
+  if (inp) inp.addEventListener("keydown", (e) => { if (e.key === "Enter") submitLogin(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && m.classList.contains("is-open")) closeLoginModal();
+  });
+}
+bindLoginModal();
 
 // 入口 1：网址 ?edit=1
 (function initEditor() {
   const key = SITE_CONFIG.editQueryKey || "edit";
-  if (new URLSearchParams(location.search).get(key) === "1") tryEnterEdit();
+  if (new URLSearchParams(location.search).get(key) === "1") openLoginModal();
 })();
 // 入口 2：右下角「站长登录」按钮
-document.getElementById("login-entry").addEventListener("click", tryEnterEdit);
+document.getElementById("login-entry").addEventListener("click", openLoginModal);
 
 /* ============================================================
    滚动渐显 + 初始化
@@ -1317,5 +1419,6 @@ loadContent().then(() => {
   applyUserTheme();
   applyTexts();
   paint();
+  renderExperience();
   applyUserStyles();
 });
