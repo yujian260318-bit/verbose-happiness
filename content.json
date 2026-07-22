@@ -6,13 +6,13 @@
     "hero-name": "李欣怡",
     "hero-role": "内容策划 / 短视频编导 / 新媒体运营",
     "hero-tags": "<span class=\"tag\">短视频编导</span><span class=\"tag\">4A 导演组</span><span class=\"tag\">内容运营</span><span class=\"tag\">KOC 拓展</span>",
-    "title-about": "介绍",
+    "title-about": "关于我",
     "about-summary": "欢迎来到我的作品集！<br><br>我热衷于将创意与技术融合。中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva。",
     "about-fields": "<div class=\"about__field\">短视频编导</div><div class=\"about__field\">内容策划</div><div class=\"about__field\">社媒运营</div><div class=\"about__field\">KOC 拓展</div>",
-    "title-skills": "专业知识 <span class=\"title-sec\">技能</span>",
-    "title-resume": "经验 <span class=\"title-sec\">工作</span>",
-    "title-education": "教育",
-    "title-portfolio": "精选作品 <span class=\"title-sec\">项目与设计</span>",
+    "title-skills": "核心能力",
+    "title-resume": "工作经验",
+    "title-education": "教育背景",
+    "title-portfolio": "精选作品",
     "contact-summary": "我正在积极寻找机会，运用我的技能和见解，为创新项目做出有意义的贡献。我热爱与志同道合的团队一起创作，如果你对我的作品感兴趣，欢迎随时联系。",
     "contact-email": "19571618312@139.com",
     "contact-phone": "195-7161-8312",
@@ -137,5 +137,29 @@
       "links": []
     }
   ],
-  "overlays": []
+  "overlays": [],
+  "theme": {
+    "colors": {
+      "sage": "#A9BF7D",
+      "sageDark": "#8DA361",
+      "sageSoft": "#E3EBD1",
+      "ink": "#2A3654",
+      "bg": "#E6E7DE",
+      "bgDark": "#2A3654",
+      "surface": "#FFFFFF",
+      "muted": "#6B7280",
+      "line": "#D1D5C7"
+    },
+    "fonts": {
+      "display": "'Outfit', 'Montserrat', 'Noto Sans SC', sans-serif",
+      "body": "'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+    },
+    "layout": {
+      "radius": 20,
+      "maxw": 1160,
+      "fontScale": 1,
+      "sectionPad": 100
+    }
+  },
+  "styles": {}
 }
