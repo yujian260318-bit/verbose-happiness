@@ -1041,13 +1041,25 @@ async function sha256Hex(str) {
   } catch (e) { /* 降级到纯 JS */ }
   return sha256JS(str);
 }
+function cleanPasswordInput(raw) {
+  if (!raw) return "";
+  // 去掉前后空格 + 所有常见 Unicode 空白/零宽字符（包括全角空格、不间断空格、零宽空格等）
+  return raw
+    .replace(/[\s\u00A0\u2000-\u200D\u2028\u2029\u202F\u205F\u3000\uFEFF]+/g, "")
+    .trim();
+}
 function tryEnterEdit() {
   (async () => {
     const pw = prompt("请输入编辑密码：");
     if (!pw) return;
-    const hash = await sha256Hex(pw);
-    if (hash === (SITE_CONFIG.editPasswordHash || "")) enableEditing();
-    else alert("密码错误，无法进入编辑模式。请确认密码为 xinyi2026（注意大小写与前后空格）。");
+    const clean = cleanPasswordInput(pw);
+    const hash = await sha256Hex(clean);
+    if (hash === (SITE_CONFIG.editPasswordHash || "")) {
+      enableEditing();
+    } else {
+      const debug = Array.from(pw).map((c) => c.charCodeAt(0).toString(16)).join(" ");
+      alert("密码错误，无法进入编辑模式。\\n正确密码：xinyi2026（8 位字母+数字）\\n你输入的字符编码：" + debug + "\\n如果每个字符间有空格，请忽略，那是输入框显示问题。");
+    }
   })();
 }
 
