@@ -544,18 +544,28 @@ function videoLabel(v, i) {
   return name || ("视频 " + (i + 1));
 }
 function renderVideo(v) {
-  if (!v || !v.url) return "";
-  if (v.type === "mp4") {
-    const poster = v.poster ? ` poster="${v.poster}"` : "";
-    return `<div class="video-wrap"><video src="${v.url}"${poster} controls preload="metadata" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
+  if (!v) return "";
+  let url = "";
+  let meta = {};
+  if (typeof v === "string") {
+    url = v;
+  } else if (typeof v === "object") {
+    url = v.url || "";
+    meta = v;
   }
-  if (v.type === "iframe") {
-    return `<iframe src="${v.url}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+  if (!url) return "";
+  const type = meta.type || detectVideo(url);
+  if (type === "mp4") {
+    const poster = meta.poster ? ` poster="${escAttr(meta.poster)}"` : "";
+    return `<div class="video-wrap"><video src="${escAttr(url)}"${poster} controls preload="metadata" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
+  }
+  if (type === "iframe") {
+    return `<iframe src="${escAttr(url)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
   }
   // link：普通平台详情页（爱奇艺、腾讯视频、公众号等），不内嵌，改跳转卡片
   let label = "前往观看";
   try {
-    const host = new URL(v.url).hostname.replace(/^www\./, "");
+    const host = new URL(url).hostname.replace(/^www\./, "");
     if (host.includes("iqiyi")) label = "前往爱奇艺观看";
     else if (host.includes("qq.com") || host.includes("v.qq")) label = "前往腾讯视频观看";
     else if (host.includes("bilibili")) label = "前往 B 站观看";
@@ -565,7 +575,7 @@ function renderVideo(v) {
   return `
     <div class="modal__link-card">
       <p class="modal__link-card-title">该链接暂不支持站内直接播放</p>
-      <a class="btn btn--primary modal__link-card-btn" href="${v.url}" target="_blank" rel="noopener">${label} ↗</a>
+      <a class="btn btn--primary modal__link-card-btn" href="${escAttr(url)}" target="_blank" rel="noopener">${label} ↗</a>
       <p class="modal__link-card-note">外链页面由对应平台提供，可能需要观看广告或登录，敬请谅解。</p>
     </div>`;
 }
@@ -651,7 +661,13 @@ function isPortraitVideo(v) {
 function renderMediaGroups(w) {
   const groups = {};
   (w.videoUrls || []).forEach((v) => { (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v }); });
-  (w.media || []).forEach((m) => { (groups[m.kind] = groups[m.kind] || []).push({ kind: m.kind, m }); });
+  (w.media || []).forEach((m) => {
+    if (m.kind === "视频") {
+      (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v: m });
+    } else {
+      (groups[m.kind] = groups[m.kind] || []).push({ kind: m.kind, m });
+    }
+  });
   const order = ["视频", "图片", "图文", "文案", "策划", "Word", "PDF", "社媒链接", "文章", "其他"];
   const kinds = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / Word / PDF / 社媒链接 等。</div>`;
