@@ -110,6 +110,71 @@ let images = {};
 let pendingImageFiles = [];
 let currentImgSlot = null;
 
+/* ---------- 本地草稿缓存（防止换 token / 刷新丢失未保存编辑） ---------- */
+const DRAFT_KEY = "portfolio_draft_v1";
+let draftAutoSaveTimer = null;
+function collectDraft() {
+  const cleanWorks = (works || []).map((w) => {
+    const copy = { ...w };
+    copy.media = (copy.media || []).map((m) => {
+      const mc = { ...m };
+      delete mc.file;
+      delete mc.preview;
+      delete mc.dataUrl;
+      return mc;
+    });
+    return copy;
+  });
+  return {
+    savedAt: Date.now(),
+    texts: { ...texts },
+    categories: [...categories],
+    works: cleanWorks,
+    experiences: (experiences || []).map((e) => ({ ...e })),
+    overlays: (overlays || []).map((o) => ({ ...o })),
+    theme: JSON.parse(JSON.stringify(theme)),
+    styles: JSON.parse(JSON.stringify(styles)),
+    skills: [...skills],
+    sectionOrder: JSON.parse(JSON.stringify(sectionOrder)),
+    images: { ...images }
+  };
+}
+function saveDraft() {
+  if (!editing) return;
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(collectDraft()));
+  } catch (e) { console.warn("草稿保存失败", e); }
+}
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+  if (draftAutoSaveTimer) { clearInterval(draftAutoSaveTimer); draftAutoSaveTimer = null; }
+}
+function applyDraft(draft) {
+  if (!draft) return;
+  if (draft.texts) texts = draft.texts;
+  if (draft.categories) categories = draft.categories;
+  if (draft.works) works = draft.works;
+  if (draft.experiences) experiences = draft.experiences;
+  if (draft.overlays) overlays = draft.overlays;
+  if (draft.theme) theme = draft.theme;
+  if (draft.styles) styles = draft.styles;
+  if (draft.skills) skills = draft.skills;
+  if (draft.sectionOrder) sectionOrder = draft.sectionOrder;
+  if (draft.images) images = draft.images;
+}
+function startDraftAutoSave() {
+  if (draftAutoSaveTimer) clearInterval(draftAutoSaveTimer);
+  draftAutoSaveTimer = setInterval(saveDraft, 5000);
+  window.addEventListener("beforeunload", saveDraft);
+}
+
 /* ---------- 设计主题（颜色 / 字体 / 排版） ---------- */
 function defaultTheme() {
   return {
@@ -794,7 +859,11 @@ document.getElementById("vm-upload").addEventListener("click", () => document.ge
 document.getElementById("vm-file").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 100 * 1024 * 1024) { alert("视频超过 100MB，无法上传到 GitHub，请先压缩或上传到外部平台再贴链接。"); return; }
+  if (file.size > 100 * 1024 * 1024) {
+    const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
+    alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n建议方案：\n1. 用剪映 / PR / 格式工厂压缩到 100MB 以内后再上传；\n2. 或先上传到 B站、视频号、腾讯视频、优酷、YouTube 等平台，然后点击「＋ 链接」粘贴视频地址。`);
+    return;
+  }
   const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
   const name = "assets/videos/" + Date.now() + "-" + safe;
   const blobUrl = URL.createObjectURL(file);
@@ -910,7 +979,11 @@ function bindWmMediaAdd() {
     upF.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 100 * 1024 * 1024) { alert("视频超过 100MB，无法上传到 GitHub，请先压缩或上传到外部平台再贴链接。"); return; }
+      if (file.size > 100 * 1024 * 1024) {
+        const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
+        alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n建议方案：\n1. 用剪映 / PR / 格式工厂压缩到 100MB 以内后再上传；\n2. 或先上传到 B站、视频号、腾讯视频、优酷、YouTube 等平台，然后在「视频」框粘贴链接地址。`);
+        return;
+      }
       const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
       const name = "assets/videos/" + Date.now() + "-" + safe;
       const preview = URL.createObjectURL(file);
@@ -1473,7 +1546,8 @@ async function saveContent() {
       }
       pendingVideoFiles.length = 0;
       await commitToGitHub(str);
-      setStatus("已保存到 GitHub ✓");
+      clearDraft();
+      setStatus("已保存到 GitHub ✓（本地草稿已清除）");
     } catch (err) {
       setStatus("保存失败：" + err.message + "（已下载备份）");
       downloadJson(str);
@@ -1602,7 +1676,8 @@ function enableEditing() {
     slot.title = "点击上传图片";
     slot.addEventListener("click", onImgSlotClick);
   });
-  setStatus("已登录 · 直接点击页面上的文字即可编辑；悬浮右上角 🎨 可改单元素样式；工具栏「🎨 设计」改全局配色/字体/排版");
+  startDraftAutoSave();
+  setStatus("已登录 · 直接点击页面上的文字即可编辑；悬浮右上角 🎨 可改单元素样式；工具栏「🎨 设计」改全局配色/字体/排版（每 5 秒自动保存草稿到浏览器）");
 }
 function exitEdit() {
   editing = false;
@@ -1621,6 +1696,7 @@ function exitEdit() {
   renderExperience();
   renderSkills();
   renderOverlays();
+  clearDraft();
 }
 
 /* ============================================================
@@ -1936,6 +2012,17 @@ const io = new IntersectionObserver(
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 loadContent().then(() => {
+  const draft = loadDraft();
+  if (draft && draft.savedAt) {
+    const ageMin = (Date.now() - draft.savedAt) / 60000;
+    if (ageMin < 60 * 24 * 7) {
+      if (confirm(`检测到 ${new Date(draft.savedAt).toLocaleString()} 的未保存编辑草稿，是否恢复？\n点击“确定”恢复草稿，点击“取消”丢弃草稿（不可恢复）。`)) {
+        applyDraft(draft);
+      } else {
+        clearDraft();
+      }
+    }
+  }
   applyUserTheme();
   applyTexts();
   applyImages();
