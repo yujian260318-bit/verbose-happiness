@@ -50,10 +50,6 @@
           <a href="resume_optimized.md" class="btn btn--ghost" download>下载简历</a>
         </div>
       </div>
-      <div class="hero__portrait">
-        <img src="assets/portrait.jpg" alt="李欣怡" onerror="this.style.display='none'" />
-        <span class="ph-placeholder">在此放置照片<br><small>assets/portrait.jpg</small></span>
-      </div>
     </div>
     <a href="#about" class="hero__scroll" aria-label="向下滚动">↓</a>
   </header>
@@ -70,12 +66,6 @@
             欢迎来到我的作品集！<br><br>
             我热衷于将创意与技术融合。中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva。
           </p>
-          <div class="about__fields" data-edit="about-fields">
-            <div class="about__field">短视频编导</div>
-            <div class="about__field">内容策划</div>
-            <div class="about__field">社媒运营</div>
-            <div class="about__field">KOC 拓展</div>
-          </div>
         </div>
         <div class="about__visual">
           <div class="img-slot about__img about__img--1" data-edit="frame-about-1">
@@ -277,6 +267,27 @@
       </div>
     </div>
   </div>
+
+  <!-- 经历详情编辑模态框 -->
+  <div class="exp-modal" id="exp-modal" aria-hidden="true">
+    <div class="exp-modal__backdrop" data-exp-close></div>
+    <div class="exp-modal__panel" role="dialog" aria-modal="true">
+      <h3 class="exp-modal__title">编辑经历详情页</h3>
+      <p class="exp-modal__hint">这里的内容会显示在「查看详情 →」页面。支持 HTML，可粘贴 &lt;img src="assets/..."&gt; 插入图片。</p>
+      <label class="exp-modal__full">详情正文
+        <textarea id="exp-detail" rows="10" placeholder="输入详情内容，支持 HTML 标签与换行"></textarea>
+      </label>
+      <label class="exp-modal__full">详情配图
+        <div id="exp-images" class="exp-images"></div>
+        <button type="button" id="exp-add-image" class="wm-add-link">＋ 上传图片</button>
+      </label>
+      <div class="exp-modal__actions">
+        <button type="button" id="exp-save" class="btn btn--primary btn--small">保存</button>
+        <button type="button" id="exp-cancel" class="btn btn--ghost btn--small">取消</button>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="exp-img-input" accept="image/*" hidden />
 
   <!-- 视频管理模态框 -->
   <div class="vm-modal" id="vm-modal" aria-hidden="true">
