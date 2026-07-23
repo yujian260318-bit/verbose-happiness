@@ -471,7 +471,7 @@ function renderCards(list) {
     const card = document.createElement("article");
     card.className = "card";
     card.tabIndex = 0;
-    const metricsHtml = w.metrics.map((m, i) =>
+    const metricsHtml = (w.metrics || []).map((m, i) =>
       `<span class="tag"${editing ? ` data-edit="metric-${w.id}-${i}"` : ""}>${m.value}</span>`
     ).join("");
     const firstPoster = (w.videoUrls && w.videoUrls[0] && w.videoUrls[0].poster) ? w.videoUrls[0].poster : "";
@@ -487,8 +487,8 @@ function renderCards(list) {
       <div class="card__body">
         <span class="card__cat"${editing ? ` data-edit="cat-${w.id}"` : ""}>${w.category}</span>
         <h3 class="card__title"${editing ? ` data-edit="title-${w.id}"` : ""}>${w.title}</h3>
-        <p class="card__role"><span${editing ? ` data-edit="company-${w.id}"` : ""}>${w.company}</span> · <span${editing ? ` data-edit="period-${w.id}"` : ""}>${w.period}</span></p>
-        <p class="card__role card__role2"${editing ? ` data-edit="role-${w.id}"` : ""}>${w.role}</p>
+        <p class="card__role"><span${editing ? ` data-edit="company-${w.id}"` : ""}>${w.company || ""}</span> · <span${editing ? ` data-edit="period-${w.id}"` : ""}>${w.period || ""}</span></p>
+        <p class="card__role card__role2"${editing ? ` data-edit="role-${w.id}"` : ""}>${w.role || ""}</p>
         <div class="card__metrics">${metricsHtml}</div>
         ${editing ? `<div class="card__editrow"><button type="button" class="card__vm" data-vm="${w.id}">🎬 视频（${w.videoUrls.length}）</button><button type="button" class="card__wm" data-wm="${w.id}">✎ 详情</button></div>` : ""}
       </div>`;
@@ -701,12 +701,12 @@ function renderMediaGroups(w) {
 }
 
 function openModal(w) {
-  document.getElementById("modal-cat").textContent = `${w.category} · ${workBadge(w)}`;
+  document.getElementById("modal-cat").textContent = `${w.category || ""} · ${workBadge(w)}`;
   document.getElementById("modal-title").textContent = w.title;
-  document.getElementById("modal-meta").textContent = `${w.company} · ${w.period}`;
-  document.getElementById("modal-role").textContent = w.role;
+  document.getElementById("modal-meta").textContent = `${w.company || ""} · ${w.period || ""}`;
+  document.getElementById("modal-role").textContent = w.role || "";
   document.getElementById("modal-metrics").innerHTML =
-    w.metrics.map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
+    (w.metrics || []).map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
   document.getElementById("modal-desc").textContent = w.description;
 
   // 策划 / 文案类作品：渲染正文
