@@ -232,9 +232,9 @@ p { margin: 0; }
 }
 
 /* 教育 */
-.education__wrap { width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 300px 520px; gap: 180px; align-items: center; }
+.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 280px 520px; gap: 100px; align-items: center; }
 .education__visual { display: flex; flex-direction: column; gap: 18px; align-items: center; width: 100%; }
-.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 100%; max-width: 300px; justify-self: center; transform: translateX(120px); }
+.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 100%; max-width: 280px; justify-self: center; }
 .education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; }
 .education__item { position: relative; padding-left: 24px; }
 .education__item::before {
