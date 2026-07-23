@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Outfit:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=13" />
 </head>
 <body>
   <!-- 导航 -->
@@ -84,18 +84,18 @@
       <div class="section__head section--narrow">
         <h2 class="section__title" data-edit="title-education">教育背景</h2>
       </div>
-      <div class="education__wrap">
-        <div class="education__visual">
-          <div class="img-slot edu__img" data-edit="frame-edu-1">
+      <div class="education__wrap" id="edu-wrap">
+        <div class="education__visual" id="edu-visual">
+          <div class="img-slot edu__img edu__img--1" id="edu-box1" data-edit="frame-edu-1">
             <img src="assets/edu-1.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
             <span class="img-slot__hint">放置照片<br><small>assets/edu-1.jpg</small></span>
           </div>
-          <div class="img-slot edu__img" data-edit="frame-edu-2">
+          <div class="img-slot edu__img edu__img--2" id="edu-box2" data-edit="frame-edu-2">
             <img src="assets/edu-2.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
             <span class="img-slot__hint">放置照片<br><small>assets/edu-2.jpg</small></span>
           </div>
         </div>
-        <div class="education__list">
+        <div class="education__list" id="edu-text">
           <div class="education__item">
             <h3 data-edit="edu-school">中国传媒大学 · 广告学</h3>
             <div class="edu-meta">
@@ -460,6 +460,6 @@
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
 
   <script src="config.js?v=2"></script>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
