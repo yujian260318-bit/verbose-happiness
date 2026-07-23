@@ -434,6 +434,12 @@
     }
   },
   "styles": {},
+  "educationLayout": {
+    "canvas": { "w": 1030, "h": 540 },
+    "box1": { "x": 0, "y": 0, "w": 340, "h": 255 },
+    "box2": { "x": 100, "y": 273, "w": 340, "h": 255 },
+    "text": { "x": 510, "y": 0, "w": 520, "h": "auto" }
+  },
   "sectionOrder": {
     "sections": [
       "about",
