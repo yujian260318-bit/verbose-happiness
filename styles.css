@@ -96,7 +96,7 @@ p { margin: 0; }
 .hero {
   position: relative; min-height: auto;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 110px 24px 100px; overflow: hidden; text-align: center;
+  padding: 56px 24px 50px; overflow: hidden; text-align: center;
 }
 .hero__inner { max-width: 800px; margin: 0 auto; width: 100%; }
 .hero__hello { font-size: clamp(24px, 3vw, 36px); font-weight: 500; color: var(--ink); }
@@ -108,7 +108,7 @@ p { margin: 0; }
 .hero__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
 .hero__cta { display: flex; gap: 14px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
 .hero__scroll {
-  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
   font-size: 24px; color: var(--muted); animation: bob 2s infinite; z-index: 1;
 }
 @keyframes bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
