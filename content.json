@@ -350,6 +350,10 @@
       "category": "视频",
       "desc": "",
       "cover": "",
+      "company": "",
+      "period": "",
+      "role": "",
+      "metrics": [],
       "videoUrls": [
         "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe卫视版.mp4"
       ],
