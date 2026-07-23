@@ -506,54 +506,72 @@ function renderVideo(v) {
 }
 
 function initVideoWraps(root) {
-  (root || document).querySelectorAll(".video-wrap").forEach((wrap) => {
+  const wraps = (root || document).querySelectorAll(".video-wrap");
+  wraps.forEach((wrap) => {
     const video = wrap.querySelector("video");
     const play = wrap.querySelector(".video-play");
     if (!video || !play) return;
     play.addEventListener("click", () => { video.play(); });
-    video.addEventListener("play", () => wrap.classList.add("is-playing"));
+    video.addEventListener("play", () => {
+      wrap.classList.add("is-playing");
+      // 同一弹窗内只保留一个正在播放的视频：开始播放时暂停其它视频
+      wraps.forEach((otherWrap) => {
+        if (otherWrap === wrap) return;
+        const other = otherWrap.querySelector("video");
+        if (other && !other.paused) other.pause();
+      });
+    });
     video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
     video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
   });
-  // 等视频元数据加载后，按横版在前、竖版在后重排，并设置 grid 占位列
+  // 等视频元数据加载后，校准每个视频的横竖版 class
   reorderVideosByOrientation(root);
 }
 
 function reorderVideosByOrientation(root) {
-  const groups = (root || document).querySelectorAll(".modal__group-items--video");
-  groups.forEach((group) => {
-    const vids = Array.from(group.querySelectorAll(":scope > .modal__vid"));
-    if (!vids.length) return;
-    const promises = vids.map((vid) => new Promise((resolve) => {
-      const video = vid.querySelector("video");
-      function finish(isPortrait) {
-        vid.classList.toggle("modal__vid--landscape", !isPortrait);
-        vid.classList.toggle("modal__vid--portrait", isPortrait);
-        resolve({ vid, isPortrait });
-      }
-      if (!video) { finish(false); return; }
-      function onMeta() {
-        if (!video.videoWidth || !video.videoHeight) { finish(false); return; }
-        finish(video.videoWidth / video.videoHeight < 1);
-      }
-      if (video.readyState >= 1) onMeta();
-      else {
-        video.addEventListener("loadedmetadata", onMeta, { once: true });
-        // 兜底：loadeddata 也能拿到尺寸，双保险
-        video.addEventListener("loadeddata", onMeta, { once: true });
-      }
-      // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
-      setTimeout(() => { if (video.readyState < 1) finish(false); }, 8000);
-    }));
-    Promise.all(promises).then((results) => {
-      results.sort((a, b) => a.isPortrait - b.isPortrait);
-      results.forEach((r) => group.appendChild(r.vid));
-    });
+  // 现在已经按系列/文件名把横竖版排好在左右两列，这里只做一件事：
+  // 等视频元数据加载后，校准每个视频的 class（防止文件名判断错误）。
+  (root || document).querySelectorAll(".modal__vid[data-orient]").forEach((vid) => {
+    const video = vid.querySelector("video");
+    if (!video) return;
+    function apply() {
+      if (!video.videoWidth || !video.videoHeight) return;
+      const isPortrait = video.videoWidth / video.videoHeight < 1;
+      vid.classList.toggle("modal__vid--landscape", !isPortrait);
+      vid.classList.toggle("modal__vid--portrait", isPortrait);
+    }
+    if (video.readyState >= 1) apply();
+    else {
+      video.addEventListener("loadedmetadata", apply, { once: true });
+      video.addEventListener("loadeddata", apply, { once: true });
+    }
+    // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
+    setTimeout(() => { if (video.readyState >= 1) apply(); }, 8000);
   });
 }
 
 function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function escAttr(s) { return esc(s).replace(/"/g, "&quot;"); }
+function videoUrlOf(v) { return v && typeof v === "object" ? (v.url || "") : (typeof v === "string" ? v : ""); }
+function seriesKeyOfVideo(v) {
+  const name = basename(videoUrlOf(v));
+  // 把 "_web"、"预告片"、扩展名等公共后缀去掉，得到系列名，用于配对
+  return name
+    .replace(/(_web|预告片|_poster|poster)(?=\.|$)/g, "")
+    .replace(/\.[^.]+$/g, "")
+    .replace(/[《》]/g, "")
+    .trim();
+}
+function isPortraitVideo(v) {
+  // 优先使用上传时记录的朝向
+  if (v && typeof v === "object") {
+    if (v.portrait === true) return true;
+    if (v.portrait === false) return false;
+  }
+  const url = videoUrlOf(v);
+  // 该用户约定：文件名含"预告"的是竖版
+  return /预告/.test(url) || /vertical|portrait|竖版|9.?16/i.test(url);
+}
 function renderMediaGroups(w) {
   const groups = {};
   (w.videoUrls || []).forEach((v) => { (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v }); });
@@ -564,25 +582,46 @@ function renderMediaGroups(w) {
   return kinds.map((kind) => {
     const items = groups[kind];
     const isVideo = kind === "视频";
-    const isGrid = isVideo || kind === "图片";
-    const inner = items.map((it) => {
-      if (it.kind === "视频") {
-        return `<div class="modal__vid modal__vid--landscape" data-orient>${renderVideo(it.v)}</div>`;
-      }
-      if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
-      if (it.kind === "Word" || it.kind === "PDF") {
-        const ext = it.kind === "Word" ? "docx" : "pdf";
-        const label = it.m.label || it.kind + " 文件";
-        return `<a class="modal__doc" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">${it.kind}</span><span class="modal__doc-info"><strong>${esc(label)}</strong><span class="modal__doc-meta">点击下载 / 预览 · .${ext}</span></span></a>`;
-      }
-      if (it.kind === "社媒链接") {
-        const platform = it.m.label || "社媒链接";
-        const caption = it.m.caption ? `<div class="modal__link-cap">${esc(it.m.caption)}</div>` : "";
-        return `<a class="modal__doc modal__doc--link" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">🔗</span><span class="modal__doc-info"><strong>${esc(platform)}</strong><span class="modal__doc-meta">${escAttr(it.m.url)}</span></span></a>${caption}`;
-      }
-      const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
-      return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
-    }).join("");
+    const isGrid = kind === "图片";
+    let inner;
+    if (isVideo) {
+      // 按系列分组，每个系列内：横版放左列，竖版放右列
+      const seriesMap = {};
+      items.forEach((it) => {
+        const key = seriesKeyOfVideo(it.v) || "其他";
+        (seriesMap[key] = seriesMap[key] || []).push(it);
+      });
+      inner = Object.keys(seriesMap).map((key) => {
+        const list = seriesMap[key];
+        const lands = list.filter((it) => !isPortraitVideo(it.v));
+        const ports = list.filter((it) => isPortraitVideo(it.v));
+        return `
+          <div class="modal__series-row">
+            <div class="modal__series-col modal__series-col--landscape">
+              ${lands.map((it) => `<div class="modal__vid modal__vid--landscape" data-orient>${renderVideo(it.v)}</div>`).join("")}
+            </div>
+            <div class="modal__series-col modal__series-col--portrait">
+              ${ports.map((it) => `<div class="modal__vid modal__vid--portrait" data-orient>${renderVideo(it.v)}</div>`).join("")}
+            </div>
+          </div>`;
+      }).join("");
+    } else {
+      inner = items.map((it) => {
+        if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
+        if (it.kind === "Word" || it.kind === "PDF") {
+          const ext = it.kind === "Word" ? "docx" : "pdf";
+          const label = it.m.label || it.kind + " 文件";
+          return `<a class="modal__doc" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">${it.kind}</span><span class="modal__doc-info"><strong>${esc(label)}</strong><span class="modal__doc-meta">点击下载 / 预览 · .${ext}</span></span></a>`;
+        }
+        if (it.kind === "社媒链接") {
+          const platform = it.m.label || "社媒链接";
+          const caption = it.m.caption ? `<div class="modal__link-cap">${esc(it.m.caption)}</div>` : "";
+          return `<a class="modal__doc modal__doc--link" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">🔗</span><span class="modal__doc-info"><strong>${esc(platform)}</strong><span class="modal__doc-meta">${escAttr(it.m.url)}</span></span></a>${caption}`;
+        }
+        const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
+        return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
+      }).join("");
+    }
     let wrapClass = "modal__group-items";
     if (isVideo) wrapClass = "modal__group-items modal__group-items--video";
     else if (isGrid) wrapClass = "modal__group-items modal__group-items--grid";
@@ -1232,7 +1271,8 @@ function base64FromArrayBuffer(buffer) {
 }
 async function commitBinaryFile(path, file) {
   const cfg = SITE_CONFIG.github || {};
-  const token = getToken();
+  const token = await getToken();
+  if (!token) throw new Error("未提供 token");
   const url = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
   const buf = await file.arrayBuffer();
@@ -1249,21 +1289,63 @@ async function commitBinaryFile(path, file) {
   });
   if (!res.ok) throw new Error("上传视频失败（" + res.status + "）");
 }
-function getToken() {
-  // 优先用本会话已输入的 token
+let tokenResolve = null;
+function openTokenModal() {
+  const m = document.getElementById("token-modal");
+  if (!m) return;
+  m.classList.add("is-open");
+  m.setAttribute("aria-hidden", "false");
+  const inp = document.getElementById("token-input");
+  const err = document.getElementById("token-error");
+  if (inp) { inp.value = ""; inp.focus(); }
+  if (err) { err.textContent = ""; err.hidden = true; }
+}
+function closeTokenModal() {
+  const m = document.getElementById("token-modal");
+  if (!m) return;
+  m.classList.remove("is-open");
+  m.setAttribute("aria-hidden", "true");
+}
+function showTokenError(msg) {
+  const el = document.getElementById("token-error");
+  if (el) { el.textContent = msg; el.hidden = false; }
+}
+function submitToken() {
+  const inp = document.getElementById("token-input");
+  if (!inp) return;
+  const t = (inp.value || "").trim();
+  if (!t) { showTokenError("请输入 token"); return; }
+  sessionStorage.setItem("gh_token", t);
+  closeTokenModal();
+  if (tokenResolve) { tokenResolve(t); tokenResolve = null; }
+}
+function cancelToken() {
+  closeTokenModal();
+  if (tokenResolve) { tokenResolve(null); tokenResolve = null; }
+}
+function bindTokenModal() {
+  const m = document.getElementById("token-modal");
+  if (!m) return;
+  m.querySelectorAll("[data-token-close]").forEach((el) => el.addEventListener("click", cancelToken));
+  const ok = document.getElementById("token-ok");
+  if (ok) ok.addEventListener("click", submitToken);
+  const inp = document.getElementById("token-input");
+  if (inp) inp.addEventListener("keydown", (e) => { if (e.key === "Enter") submitToken(); });
+}
+bindTokenModal();
+
+async function getToken() {
   let t = sessionStorage.getItem("gh_token");
   if (t) return t;
-  // 其次用站点配置里的 token（config.js 已写入，编辑模式下自动可用）
-  const cfg = SITE_CONFIG.github || {};
-  if (cfg.token) return cfg.token.trim();
-  // 最后才向用户索取（仅本会话保存在浏览器，不会写入代码）
-  t = prompt("请输入 GitHub Personal Access Token（仅本会话保存在浏览器，不会写入代码）：");
-  if (t) sessionStorage.setItem("gh_token", t.trim());
-  return t;
+  // GitHub secret scanning 不允许把 token 写进部署文件，因此这里弹窗让用户粘贴
+  return new Promise((resolve) => {
+    tokenResolve = resolve;
+    openTokenModal();
+  });
 }
 async function commitToGitHub(str) {
   const cfg = SITE_CONFIG.github || {};
-  const token = getToken();
+  const token = await getToken();
   if (!token) throw new Error("未提供 token");
   const url = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.contentPath}?ref=${cfg.branch}`;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
