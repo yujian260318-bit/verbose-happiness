@@ -46,6 +46,12 @@
     li { font-size: 16px; color: #3a4050; margin-bottom: 8px; }
     .footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 13px; }
     .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+    .detail-body { margin-top: 8px; }
+    .detail-body img { max-width: 100%; border-radius: 14px; margin: 18px 0; display: block; }
+    .detail-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 28px; }
+    .detail-images figure { border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
+    .detail-images img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    @media (max-width: 600px) { .detail-images { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -73,13 +79,20 @@
             ? `<div class="cover"><img src="${exp.cover}" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg, var(--sage), var(--sage-dark))';this.remove();" /></div>`
             : `<div class="cover">经历配图（可在 content.json 的 experience 中补充 cover 字段）</div>`;
           const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${t}</p>`).join("");
+          const detail = (exp.detail || "").trim();
+          const images = Array.isArray(exp.images) && exp.images.length
+            ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${u}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
+            : "";
           box.innerHTML = `
             ${tag}
             <h1>${exp.role || ""}</h1>
             <div class="company">${exp.company || ""}</div>
             <div class="meta">${exp.location ? exp.location + " ｜ " : ""}${exp.period || ""}</div>
             ${coverImg}
-            ${desc || '<p>暂无详细描述，可在编辑模式中补充。</p>'}
+            ${desc}
+            ${detail ? `<div class="detail-body">${detail}</div>` : ""}
+            ${images}
+            ${(!detail && !images && !desc) ? '<p>暂无详细描述，可在编辑模式中补充。</p>' : ""}
           `;
         })
         .catch((err) => {
