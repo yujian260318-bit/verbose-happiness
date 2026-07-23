@@ -34,6 +34,17 @@
   "categories": ["栏目纪实", "活动拍摄", "社媒内容", "广告片"],
   "experience": [
     {
+      "id": "exp-yucai",
+      "year": "2025",
+      "tag": "公益",
+      "role": "慈善助学项目志愿者",
+      "company": "湖北省育才教育基金会",
+      "location": "湖北，中国",
+      "period": "2025 – 至今",
+      "description": "参与湖北省育才教育基金会慈善助学项目，协助困境学生资助对接、公益活动策划与传播，推动教育公益落地。",
+      "link": "charity-detail.html"
+    },
+    {
       "id": "exp-tencent",
       "year": "2026",
       "tag": "实习",
