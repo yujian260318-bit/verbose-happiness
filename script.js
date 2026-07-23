@@ -524,9 +524,9 @@ function renderMediaGroups(w) {
   const groups = {};
   (w.videoUrls || []).forEach((v) => { (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v }); });
   (w.media || []).forEach((m) => { (groups[m.kind] = groups[m.kind] || []).push({ kind: m.kind, m }); });
-  const order = ["视频", "图片", "图文", "文案", "文章", "其他"];
+  const order = ["视频", "图片", "图文", "文案", "Word", "PDF", "社媒链接", "文章", "其他"];
   const kinds = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
-  if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / 图文。</div>`;
+  if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / Word / PDF / 社媒链接 等。</div>`;
   return kinds.map((kind) => {
     const items = groups[kind];
     const isGrid = kind === "视频" || kind === "图片";
@@ -536,6 +536,16 @@ function renderMediaGroups(w) {
         return `<div class="modal__vid${isSingle ? ' modal__vid--full' : ''}">${renderVideo(it.v)}</div>`;
       }
       if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
+      if (it.kind === "Word" || it.kind === "PDF") {
+        const ext = it.kind === "Word" ? "docx" : "pdf";
+        const label = it.m.label || it.kind + " 文件";
+        return `<a class="modal__doc" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">${it.kind}</span><span class="modal__doc-info"><strong>${esc(label)}</strong><span class="modal__doc-meta">点击下载 / 预览 · .${ext}</span></span></a>`;
+      }
+      if (it.kind === "社媒链接") {
+        const platform = it.m.label || "社媒链接";
+        const caption = it.m.caption ? `<div class="modal__link-cap">${esc(it.m.caption)}</div>` : "";
+        return `<a class="modal__doc modal__doc--link" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">🔗</span><span class="modal__doc-info"><strong>${esc(platform)}</strong><span class="modal__doc-meta">${escAttr(it.m.url)}</span></span></a>${caption}`;
+      }
       const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
       return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
     }).join("");
@@ -751,12 +761,13 @@ let wmMedia = [];
 function renderWmMedia() {
   const box = document.getElementById("wm-media-list");
   if (!box) return;
-  if (!wmMedia.length) { box.innerHTML = '<p class="wm-empty">暂无多媒体。用下方按钮添加视频 / 图片 / 图文。</p>'; return; }
+  if (!wmMedia.length) { box.innerHTML = '<p class="wm-empty">暂无多媒体。用下方按钮添加视频 / 图片 / 图文 / Word / PDF / 社媒链接 等。</p>'; return; }
   box.innerHTML = "";
+  const allKinds = ["视频", "图片", "图文", "文案", "Word", "PDF", "社媒链接", "文章", "其他"];
   wmMedia.forEach((m, i) => {
     const row = document.createElement("div");
     row.className = "wm-media-row";
-    const kindSel = `<select class="wm-media-kind" data-i="${i}">${["视频", "图片", "图文", "文案", "文章", "其他"].map((k) => `<option value="${k}"${k === m.kind ? " selected" : ""}>${k}</option>`).join("")}</select>`;
+    const kindSel = `<select class="wm-media-kind" data-i="${i}">${allKinds.map((k) => `<option value="${k}"${k === m.kind ? " selected" : ""}>${k}</option>`).join("")}</select>`;
     let fields = "";
     if (m.kind === "视频") {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="视频链接或 assets/videos/xxx.mp4" value="${escAttr(m.url || "")}" />
@@ -764,6 +775,13 @@ function renderWmMedia() {
     } else if (m.kind === "图片") {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="图片链接或 assets/xxx.jpg" value="${escAttr(m.url || "")}" />
                 <input class="wm-media-cap" data-i="${i}" placeholder="图片说明" value="${escAttr(m.caption || "")}" />`;
+    } else if (m.kind === "Word" || m.kind === "PDF") {
+      fields = `<input class="wm-media-url" data-i="${i}" placeholder="文件链接或 assets/docs/xxx.${m.kind === "Word" ? "docx" : "pdf"}" value="${escAttr(m.url || "")}" />
+                <input class="wm-media-label" data-i="${i}" placeholder="标题 / 文件名" value="${escAttr(m.label || "")}" />`;
+    } else if (m.kind === "社媒链接") {
+      fields = `<input class="wm-media-url" data-i="${i}" placeholder="链接地址，如 https://www.xiaohongshu.com/..." value="${escAttr(m.url || "")}" />
+                <input class="wm-media-label" data-i="${i}" placeholder="平台名称，如：小红书 / 即刻 / 公众号" value="${escAttr(m.label || "")}" />
+                <input class="wm-media-cap" data-i="${i}" placeholder="一句话说明" value="${escAttr(m.caption || "")}" />`;
     } else {
       fields = `<input class="wm-media-title" data-i="${i}" placeholder="标题" value="${escAttr(m.title || "")}" />
                 <textarea class="wm-media-body" data-i="${i}" placeholder="正文内容" rows="2">${esc(m.body || "")}</textarea>`;
@@ -783,9 +801,15 @@ function bindWmMediaAdd() {
   const addV = document.getElementById("wm-add-video");
   const addI = document.getElementById("wm-add-image");
   const addT = document.getElementById("wm-add-text");
+  const addW = document.getElementById("wm-add-word");
+  const addP = document.getElementById("wm-add-pdf");
+  const addS = document.getElementById("wm-add-social");
   if (addV) addV.addEventListener("click", () => { wmMedia.push({ kind: "视频", url: "", label: "" }); renderWmMedia(); });
   if (addI) addI.addEventListener("click", () => { wmMedia.push({ kind: "图片", url: "", caption: "" }); renderWmMedia(); });
   if (addT) addT.addEventListener("click", () => { wmMedia.push({ kind: "图文", title: "", body: "" }); renderWmMedia(); });
+  if (addW) addW.addEventListener("click", () => { wmMedia.push({ kind: "Word", url: "", label: "" }); renderWmMedia(); });
+  if (addP) addP.addEventListener("click", () => { wmMedia.push({ kind: "PDF", url: "", label: "" }); renderWmMedia(); });
+  if (addS) addS.addEventListener("click", () => { wmMedia.push({ kind: "社媒链接", url: "", label: "", caption: "" }); renderWmMedia(); });
 }
 bindWmMediaAdd();
 
@@ -835,7 +859,7 @@ function saveWorkModal() {
     content: document.getElementById("wm-content").value,
     metrics: parseMetrics(document.getElementById("wm-metrics").value),
     links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
-    media: wmMedia.filter((m) => (m.kind === "视频" || m.kind === "图片") ? !!m.url : !!(m.title || m.body)).map((m) => Object.assign({}, m))
+    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接"].includes(m.kind) ? !!m.url : !!(m.title || m.body)).map((m) => Object.assign({}, m))
   };
   if (wmWork) {
     Object.assign(wmWork, data);
