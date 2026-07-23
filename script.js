@@ -861,7 +861,7 @@ document.getElementById("vm-file").addEventListener("change", (e) => {
   if (!file) return;
   if (file.size > 100 * 1024 * 1024) {
     const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
-    alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n建议方案：\n1. 用剪映 / PR / 格式工厂压缩到 100MB 以内后再上传；\n2. 或先上传到 B站、视频号、腾讯视频、优酷、YouTube 等平台，然后点击「＋ 链接」粘贴视频地址。`);
+    alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，点击「＋ 链接」把直链粘进去即可播放。`);
     return;
   }
   const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
@@ -981,7 +981,7 @@ function bindWmMediaAdd() {
       if (!file) return;
       if (file.size > 100 * 1024 * 1024) {
         const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
-        alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n建议方案：\n1. 用剪映 / PR / 格式工厂压缩到 100MB 以内后再上传；\n2. 或先上传到 B站、视频号、腾讯视频、优酷、YouTube 等平台，然后在「视频」框粘贴链接地址。`);
+        alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，在作品详情弹窗点「＋ 视频链接」，把直链粘进去即可播放。`);
         return;
       }
       const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
