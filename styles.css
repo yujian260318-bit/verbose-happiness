@@ -94,9 +94,9 @@ p { margin: 0; }
 
 /* 首屏 Hero */
 .hero {
-  position: relative; min-height: auto;
+  position: relative; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 56px 24px 50px; overflow: hidden; text-align: center;
+  padding: 120px 24px 90px; overflow: hidden; text-align: center;
 }
 .hero__inner { max-width: 800px; margin: 0 auto; width: 100%; }
 .hero__hello { font-size: clamp(24px, 3vw, 36px); font-weight: 500; color: var(--ink); }
@@ -108,7 +108,7 @@ p { margin: 0; }
 .hero__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
 .hero__cta { display: flex; gap: 14px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
 .hero__scroll {
-  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   font-size: 24px; color: var(--muted); animation: bob 2s infinite; z-index: 1;
 }
 @keyframes bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
@@ -369,23 +369,19 @@ p { margin: 0; }
   align-items: start;
 }
 .modal__group-items--video {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.modal__series-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   align-items: start;
 }
-.modal__series-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.modal__vid--landscape { grid-column: 1 / -1; }
+.modal__vid--portrait { grid-column: span 1; }
+@media (max-width: 768px) {
+  .modal__group-items--video { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 640px) {
-  .modal__series-row { grid-template-columns: 1fr; }
+@media (max-width: 480px) {
+  .modal__group-items--video { grid-template-columns: 1fr; }
+  .modal__vid--portrait { grid-column: 1 / -1; }
 }
 .modal__vid, .modal__fig {
   border-radius: 14px; overflow: hidden;
