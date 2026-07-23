@@ -18,6 +18,10 @@ window.SITE_CONFIG = {
     branch: "main",       // ← 默认分支
     contentPath: "content.json",
     apiBase: "https://api.github.com"
+    // 注意：GitHub 仓库开启了 secret scanning，不允许把 Personal Access Token
+    // 写进会被部署的文件里。因此编辑器保存时会弹窗让你粘贴 token（仅保存在
+    // 当前浏览器会话）。如需关闭该弹窗，可在登录后把 token 临时存到
+    // sessionStorage：sessionStorage.setItem("gh_token", "ghp_xxx")
   },
   editQueryKey: "edit",   // 进入编辑模式：在网址后加 ?edit=1
   editPasswordHash: "aa700178de7ba97853387e28364cdc4dcf324e460ae5e707fbe069b4f3f4fef4"
