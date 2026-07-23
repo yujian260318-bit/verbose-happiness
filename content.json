@@ -249,8 +249,7 @@
         {
           "type": "mp4",
           "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe公益切片.mp4",
-          "label": "JoeJoe 公益切片",
-          "poster": "assets/images/yujian-poster.jpg"
+          "label": "JoeJoe 公益切片"
         }
       ],
       "metrics": [
