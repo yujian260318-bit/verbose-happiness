@@ -99,7 +99,7 @@ p { margin: 0; }
 .hero__cta { display: flex; gap: 14px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
 .hero__portrait {
   position: relative; width: 240px; height: 240px; border-radius: 50%; overflow: hidden;
-  margin: 44px auto 0; border: 2px dashed var(--sage); background: var(--surface);
+  margin: 44px auto 0; border: 2px solid var(--line); background: var(--surface);
   display: flex; align-items: center; justify-content: center;
 }
 .hero__portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
@@ -121,17 +121,22 @@ p { margin: 0; }
 .about__field::before {
   content: "▶"; color: var(--sage); font-size: 10px; margin-top: 6px; flex-shrink: 0;
 }
-/* 图片占位槽：无图显示虚线框 + 提示，有图自动覆盖 */
+/* 图片占位槽：Canva frame 风格——可见边框 + 浅色填充，图片上传后 cover 裁剪成框形 */
 .img-slot {
   position: relative; overflow: hidden; border-radius: var(--radius);
-  background: var(--sage-soft); border: 2px dashed var(--sage);
+  background: #F4F6EF; border: 2px solid var(--line);
   display: flex; align-items: center; justify-content: center; min-height: 180px;
+  transition: border-color .2s;
 }
 .img-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 .img-slot.is-empty img { display: none; }
 .img-slot__hint {
-  position: relative; z-index: 0; text-align: center; color: var(--sage-dark);
+  position: relative; z-index: 0; text-align: center; color: var(--muted);
   font-size: 13px; line-height: 1.6; padding: 12px;
+}
+.img-slot__hint::before {
+  content: "+"; display: block; font-size: 32px; line-height: 1; color: var(--sage);
+  margin-bottom: 4px; font-weight: 300;
 }
 .img-slot__hint small { display: block; font-size: 11px; opacity: .7; margin-top: 4px; word-break: break-all; }
 
