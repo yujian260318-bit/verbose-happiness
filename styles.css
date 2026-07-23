@@ -232,7 +232,7 @@ p { margin: 0; }
 }
 
 /* 教育 */
-.education__wrap { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 300px 520px; gap: 120px; justify-content: center; align-items: center; }
+.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 300px 520px; gap: 120px; align-items: center; }
 .education__visual { display: flex; flex-direction: column; gap: 18px; align-items: center; width: 100%; }
 .education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 100%; max-width: 300px; justify-self: center; }
 .education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; }
@@ -563,6 +563,7 @@ p { margin: 0; }
   .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .skill-card { padding: 22px; min-height: 220px; }
   .about__grid, .education__wrap { grid-template-columns: 1fr; gap: 40px; }
+  .education__wrap { width: 100%; max-width: 640px; }
   .about__visual { min-height: 300px; }
   .experience__item { grid-template-columns: 1fr; gap: 14px; }
   .experience__item:nth-child(even) .exp-card,
