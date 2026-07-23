@@ -657,6 +657,23 @@ body.is-editing .skill-card {
   position: relative;
 }
 
+.modal__doc {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface); text-decoration: none; color: var(--ink);
+  transition: all .2s;
+}
+.modal__doc:hover { border-color: var(--sage); background: var(--bg); transform: translateY(-2px); }
+.modal__doc-icon {
+  width: 44px; height: 44px; border-radius: 10px; background: var(--sage-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--sage-dark); flex-shrink: 0;
+}
+.modal__doc-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.modal__doc-info strong { font-size: 15px; font-weight: 600; }
+.modal__doc-meta { font-size: 12px; color: var(--muted); }
+.modal__link-cap { font-size: 13px; color: var(--muted); margin-top: 8px; margin-left: 58px; }
+
 /* 作品编辑：多媒体编辑器 */
 .wm-media-list { display: flex; flex-direction: column; gap: 10px; margin: 8px 0; }
 .wm-media-row { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: #fff; }
