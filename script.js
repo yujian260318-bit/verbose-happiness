@@ -345,32 +345,45 @@ function enableEducationEditor() {
   const text = document.getElementById("edu-text");
   if (!text || text.dataset.eduBound) return;
   text.dataset.eduBound = "1";
-  let active = false, startX = 0, startY = 0, baseX = 0, baseY = 0;
+  let active = false, moved = false, startX = 0, startY = 0, baseX = 0, baseY = 0;
   const getBase = () => (educationLayout && educationLayout.text)
     ? { x: educationLayout.text.x || 0, y: educationLayout.text.y || 0 }
     : { x: 0, y: 0 };
   text.addEventListener("mousedown", (e) => {
     if (!editing || e.button !== 0) return;
-    if (e.target.isContentEditable) return; // 让文本编辑优先，不在文字上触发拖拽
-    active = true;
+    active = true; moved = false;
     const b = getBase();
     baseX = b.x; baseY = b.y;
     startX = e.clientX; startY = e.clientY;
-    e.preventDefault();
+    // 不立即阻止默认行为：短按仍可进入文本编辑
   });
   window.addEventListener("mousemove", (e) => {
     if (!active) return;
     const dx = e.clientX - startX, dy = e.clientY - startY;
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+    if (!moved && (Math.abs(dx) > 2 || Math.abs(dy) > 2)) {
+      moved = true;
       const sel = window.getSelection();
       if (sel) sel.removeAllRanges();
       text.style.userSelect = "none";
+      text.setAttribute("contenteditable", "false"); // 拖拽时禁用文本编辑
+      e.preventDefault();
     }
-    text.style.transform = `translate(${100 + baseX + dx}px, ${baseY + dy}px)`;
+    if (moved) {
+      text.style.transform = `translate(${100 + baseX + dx}px, ${baseY + dy}px)`;
+    }
   });
-  window.addEventListener("mouseup", () => {
-    if (active) text.style.userSelect = "";
+  window.addEventListener("mouseup", (e) => {
+    if (!active) return;
     active = false;
+    text.style.userSelect = "";
+    if (moved) {
+      e.preventDefault();
+      e.stopPropagation(); // 避免拖拽后触发点击编辑
+    } else {
+      // 没有移动：恢复 contenteditable，允许正常点击编辑
+      text.setAttribute("contenteditable", "true");
+    }
+    moved = false;
   });
 }
 
