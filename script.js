@@ -417,7 +417,6 @@ function renderCards(list) {
     card.innerHTML = `
       <div class="card__cover" ${coverStyle}>
         ${coverMedia}
-        <span class="card__type">${workBadge(w)}</span>
         ${playBadge}
       </div>
       <div class="card__body">
@@ -483,7 +482,7 @@ function renderVideo(v) {
   if (!v || !v.url) return "";
   if (v.type === "mp4") {
     const poster = v.poster ? ` poster="${v.poster}"` : "";
-    return `<div class="video-wrap"><video src="${v.url}"${poster} controls preload="none" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
+    return `<div class="video-wrap"><video src="${v.url}"${poster} controls preload="metadata" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
   }
   if (v.type === "iframe") {
     return `<iframe src="${v.url}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
