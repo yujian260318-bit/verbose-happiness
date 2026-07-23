@@ -234,7 +234,7 @@ p { margin: 0; }
 /* 教育 */
 .education__wrap { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: center; }
 .education__visual { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.education__visual .img-slot { min-height: 200px; }
+.education__visual .img-slot { aspect-ratio: 3 / 4; min-height: auto; }
 .education__list { display: flex; flex-direction: column; gap: 28px; }
 .education__item { position: relative; padding-left: 24px; }
 .education__item::before {
