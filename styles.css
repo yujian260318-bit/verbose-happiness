@@ -177,23 +177,23 @@ p { margin: 0; }
 .experience .section__index::before { background: var(--sage); }
 .experience__wrap { max-width: 900px; margin: 0 auto; position: relative; }
 .experience__line {
-  position: absolute; left: 84px; top: 8px; bottom: 8px; width: 2px;
+  position: absolute; left: 108px; top: 8px; bottom: 8px; width: 2px;
   background: rgba(169, 191, 125, .45);
 }
 .experience__items { display: flex; flex-direction: column; gap: 32px; position: relative; z-index: 1; }
 .experience__item {
-  display: grid; grid-template-columns: 68px 1fr; gap: 32px; align-items: start;
+  display: grid; grid-template-columns: 96px 1fr; gap: 28px; align-items: start;
 }
 .exp-year {
-  font-family: var(--display); font-size: 14px; color: var(--sage); font-weight: 700;
-  text-align: right; padding-top: 18px;
+  font-family: var(--display); font-size: 15px; color: var(--sage); font-weight: 700;
+  text-align: right; padding-top: 16px;
 }
 .exp-card {
   background: var(--surface); color: var(--ink); border-radius: var(--radius); padding: 22px 24px;
   box-shadow: var(--shadow); position: relative;
 }
 .exp-card::before {
-  content: ""; position: absolute; left: -40px; top: 20px;
+  content: ""; position: absolute; left: -22px; top: 20px;
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--bg-dark); border: 3px solid var(--sage);
 }
