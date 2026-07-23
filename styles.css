@@ -368,12 +368,26 @@ p { margin: 0; }
   gap: 16px;
   align-items: start;
 }
+.modal__group-items--video {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .modal__group-items--video { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .modal__group-items--video { grid-template-columns: 1fr; }
+  .modal__vid--portrait { grid-column: 1 / -1; }
+}
 .modal__vid, .modal__fig {
   border-radius: 14px; overflow: hidden;
   background: var(--bg);
   box-shadow: 0 4px 14px rgba(42, 54, 84, .08);
 }
-.modal__vid--full { grid-column: 1 / -1; }
+.modal__vid--landscape { grid-column: 1 / -1; }
+.modal__vid--portrait { grid-column: span 1; }
 .modal__img {
   width: 100%; height: 220px; object-fit: cover; display: block;
 }
