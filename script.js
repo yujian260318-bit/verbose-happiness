@@ -61,22 +61,27 @@ const DEFAULT_EXPERIENCES = [
   {
     id: "exp-tencent", year: "2026", tag: "实习", role: "内容运营实习生",
     company: "腾讯 CDG · 青腾", location: "深圳，中国", period: "2026.05 – 至今",
-    description: "负责小红书账号内容创作与 KOC 资源拓展；完成活动拍摄、多平台剪辑与社媒内容支持。", link: ""
+    description: "负责小红书账号内容创作与 KOC 资源拓展；完成活动拍摄、多平台剪辑与社媒内容支持。", link: "experience-detail.html?id=exp-tencent"
   },
   {
     id: "exp-yujian", year: "2026", tag: "4A", role: "导演组实习生",
     company: "蓝色光标 · 《玉见》导演组", location: "北京，中国", period: "2026.03 – 2026.05",
-    description: "参与嘉宾策划、拍摄统筹、多版本剪辑；卫视版登陆海南卫视。", link: ""
+    description: "参与嘉宾策划、拍摄统筹、多版本剪辑；卫视版登陆海南卫视。", link: "experience-detail.html?id=exp-yujian"
   },
   {
     id: "exp-zhupassword", year: "2025", tag: "栏目", role: "编导实习生",
     company: "欣和企业 · 市场运营中心", location: "北京，中国", period: "2025.10 – 2026.01",
-    description: "《主厨密码》栏目全链路编导，独立完成素材筛选与精剪，成片登陆爱奇艺。", link: ""
+    description: "《主厨密码》栏目全链路编导，独立完成素材筛选与精剪，成片登陆爱奇艺。", link: "experience-detail.html?id=exp-zhupassword"
   },
   {
-    id: "exp-adaward", year: "2024", tag: "竞赛", role: "创作核心成员",
-    company: "全国大学生广告艺术大赛", location: "北京，中国", period: "2024 – 2025",
-    description: "主导品牌广告短片从创意到成片，获北京赛区三等奖。", link: ""
+    id: "exp-yucai", year: "2025", tag: "公益", role: "慈善助学项目志愿者",
+    company: "湖北省育才教育基金会", location: "湖北，中国", period: "2025.08 – 至今",
+    description: "参与湖北省育才教育基金会慈善助学项目，协助困境学生资助对接、公益活动策划与传播，推动教育公益落地。", link: "charity-detail.html"
+  },
+  {
+    id: "exp-adaward", year: "2025", tag: "竞赛", role: "创作核心成员",
+    company: "全国大学生广告艺术大赛", location: "北京，中国", period: "2025.05",
+    description: "主导品牌广告短片从创意到成片，获北京赛区三等奖。", link: "experience-detail.html?id=exp-adaward"
   }
 ];
 
@@ -99,6 +104,8 @@ let editing = false;
 let currentFilter = "all";
 let theme = defaultTheme();
 let styles = {};
+let skills = [];
+let sectionOrder = { sections: [] };
 
 /* ---------- 设计主题（颜色 / 字体 / 排版） ---------- */
 function defaultTheme() {
@@ -171,6 +178,8 @@ async function loadContent() {
       if (Array.isArray(data.categories) && data.categories.length) categories = data.categories;
       overlays = Array.isArray(data.overlays) ? data.overlays : [];
       experiences = Array.isArray(data.experience) ? data.experience : [];
+      if (Array.isArray(data.skills) && data.skills.length) skills = data.skills;
+      if (data.sectionOrder && Array.isArray(data.sectionOrder.sections)) sectionOrder.sections = data.sectionOrder.sections;
       if (data.theme) {
         const d = defaultTheme();
         theme = {
@@ -185,8 +194,10 @@ async function loadContent() {
   if (!works.length) works = DEFAULT_WORKS.map((x) => ({ ...x }));
   if (!categories.length) categories = Array.from(new Set(works.map((w) => w.category).filter(Boolean)));
   if (!experiences.length) experiences = DEFAULT_EXPERIENCES.map((x) => ({ ...x }));
+  if (!skills.length) skills = DEFAULT_SKILLS.map((x) => ({ ...x }));
   works.forEach((w) => {
     if (!Array.isArray(w.videoUrls)) w.videoUrls = [];
+    if (!Array.isArray(w.media)) w.media = [];
     if (!w.type) w.type = "视频";
     if (typeof w.content !== "string") w.content = "";
     if (!w.cover) w.cover = pickCover(w.category);
@@ -207,6 +218,50 @@ function applyTexts() {
 function paint() {
   const list = currentFilter === "all" ? works : works.filter((w) => w.category === currentFilter);
   renderCards(list);
+}
+
+const DEFAULT_SKILLS = [
+  { icon: "🎬", title: "短视频编导与剪辑", desc: "独立负责选题、脚本、拍摄到剪辑包装全流程，作品于海南卫视播出，覆盖纪录片与社媒短视频。", tags: ["PR", "剪映", "分镜"] },
+  { icon: "✍️", title: "内容策划与脚本", desc: "搭建嘉宾叙事脉络、撰写拍摄脚本，主导纪录片《主厨密码》选题与广告短片创意。", tags: ["叙事", "脚本", "创意"] },
+  { icon: "📱", title: "社媒内容支持", desc: "提供短视频剪辑与文案产出，支撑活动账号从 0 到 1 内容落地，累计涨粉 800+。", tags: ["小红书", "即刻", "文案"] },
+  { icon: "🤝", title: "KOC 资源拓展", desc: "筛选对接垂类达人，触达 10000+ 人，带动每场约 10 人线上报名。", tags: ["达人筛选", "传播"] },
+  { icon: "🎥", title: "现场拍摄统筹", desc: "统筹勘景、活动拍摄与现场调度，对接嘉宾、摄影与执行团队。", tags: ["勘景", "现场调度"] },
+  { icon: "🧩", title: "跨团队协作", desc: "联动设计、运营、摄影等多团队同步需求，完成素材归档与项目进度管理。", tags: ["协作", "项目管理"] }
+];
+
+function renderSkills() {
+  const grid = document.getElementById("skills-grid");
+  if (!grid) return;
+  grid.innerHTML = skills.map((s, i) => {
+    const tagsHtml = editing
+      ? `<div class="skill-card__tags" contenteditable="true" data-skill="tags" data-i="${i}">${(s.tags || []).join("、")}</div>`
+      : `<div class="skill-card__tags">${(s.tags || []).map((t) => `<span class="tag">${t}</span>`).join("")}</div>`;
+    const titleAttr = editing ? ` contenteditable="true" data-skill="title" data-i="${i}"` : "";
+    const descAttr = editing ? ` contenteditable="true" data-skill="desc" data-i="${i}"` : "";
+    return `
+      <div class="skill-card" data-skill-index="${i}">
+        <div class="skill-card__icon">${s.icon || ""}</div>
+        <div class="skill-card__title"${titleAttr}>${s.title || ""}</div>
+        <div class="skill-card__desc"${descAttr}>${s.desc || ""}</div>
+        ${tagsHtml}
+      </div>`;
+  }).join("");
+  if (editing) bindSkillEdit(grid);
+}
+
+function bindSkillEdit(grid) {
+  grid.querySelectorAll("[data-skill]").forEach((el) => {
+    el.addEventListener("input", () => {
+      const i = Number(el.dataset.i);
+      const field = el.dataset.skill;
+      if (!skills[i]) return;
+      if (field === "tags") {
+        skills[i].tags = el.textContent.split(/[、,，\s]+/).map((t) => t.trim()).filter(Boolean);
+      } else {
+        skills[i][field] = el.textContent.trim();
+      }
+    });
+  });
 }
 
 function renderExperience() {
@@ -263,6 +318,14 @@ function renderFilters() {
 }
 
 /* ---------- 作品卡 ---------- */
+function workBadge(w) {
+  const kinds = [];
+  if ((w.videoUrls || []).length) kinds.push("视频");
+  (w.media || []).forEach((m) => { if (m.kind && !kinds.includes(m.kind)) kinds.push(m.kind); });
+  if (!kinds.length) return w.type || "视频";
+  if (kinds.length === 1) return kinds[0];
+  return "合集";
+}
 function renderCards(list) {
   grid.innerHTML = "";
   list.forEach((w) => {
@@ -280,7 +343,7 @@ function renderCards(list) {
     card.innerHTML = `
       <div class="card__cover" ${coverStyle}>
         ${coverMedia}
-        <span class="card__type">${w.type}</span>
+        <span class="card__type">${workBadge(w)}</span>
         ${playBadge}
       </div>
       <div class="card__body">
@@ -381,8 +444,28 @@ function initVideoWraps(root) {
   });
 }
 
+function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function escAttr(s) { return esc(s).replace(/"/g, "&quot;"); }
+function renderMediaGroups(w) {
+  const groups = {};
+  (w.videoUrls || []).forEach((v) => { (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v }); });
+  (w.media || []).forEach((m) => { (groups[m.kind] = groups[m.kind] || []).push({ kind: m.kind, m }); });
+  const order = ["视频", "图片", "图文", "文案", "文章", "其他"];
+  const kinds = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / 图文。</div>`;
+  return kinds.map((kind) => {
+    const inner = groups[kind].map((it) => {
+      if (it.kind === "视频") return `<div class="modal__vid">${renderVideo(it.v)}</div>`;
+      if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
+      const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
+      return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
+    }).join("");
+    return `<div class="modal__group"><div class="modal__group-title">${kind}</div>${inner}</div>`;
+  }).join("");
+}
+
 function openModal(w) {
-  document.getElementById("modal-cat").textContent = `${w.category} · ${w.type}`;
+  document.getElementById("modal-cat").textContent = `${w.category} · ${workBadge(w)}`;
   document.getElementById("modal-title").textContent = w.title;
   document.getElementById("modal-meta").textContent = `${w.company} · ${w.period}`;
   document.getElementById("modal-role").textContent = w.role;
@@ -412,33 +495,8 @@ function openModal(w) {
     ? w.links.map((l) => `<a class="tag" href="${l.url || "#"}" target="_blank" rel="noopener">${l.platform}${l.url ? " ↗" : "（待补充）"}</a>`).join("")
     : "";
 
-  const vids = w.videoUrls || [];
-  if (!vids.length) {
-    modalMedia.innerHTML = `<div class="media-placeholder">▶ 视频链接待补充 —— 编辑模式下点卡片「🎬 视频」逐条添加</div>`;
-  } else if (vids.length === 1) {
-    modalMedia.innerHTML = renderVideo(vids[0]);
-    initVideoWraps(modalMedia);
-  } else {
-    modalMedia.innerHTML = `<div id="vm-player">${renderVideo(vids[0])}</div>`;
-    const bar = document.createElement("div");
-    bar.className = "modal__vswitch";
-    vids.forEach((v, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "tag" + (i === 0 ? " is-active" : "");
-      b.textContent = videoLabel(v, i);
-      b.addEventListener("click", () => {
-        const vp = document.getElementById("vm-player");
-        vp.innerHTML = renderVideo(v);
-        initVideoWraps(vp);
-        bar.querySelectorAll("button").forEach((x) => x.classList.remove("is-active"));
-        b.classList.add("is-active");
-      });
-      bar.appendChild(b);
-    });
-    modalMedia.appendChild(bar);
-    initVideoWraps(modalMedia);
-  }
+  modalMedia.innerHTML = renderMediaGroups(w);
+  initVideoWraps(modalMedia);
 
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -609,6 +667,48 @@ function parseMetrics(text) {
     return { label: "", value: line };
   });
 }
+let wmMedia = [];
+function renderWmMedia() {
+  const box = document.getElementById("wm-media-list");
+  if (!box) return;
+  if (!wmMedia.length) { box.innerHTML = '<p class="wm-empty">暂无多媒体。用下方按钮添加视频 / 图片 / 图文。</p>'; return; }
+  box.innerHTML = "";
+  wmMedia.forEach((m, i) => {
+    const row = document.createElement("div");
+    row.className = "wm-media-row";
+    const kindSel = `<select class="wm-media-kind" data-i="${i}">${["视频", "图片", "图文", "文案", "文章", "其他"].map((k) => `<option value="${k}"${k === m.kind ? " selected" : ""}>${k}</option>`).join("")}</select>`;
+    let fields = "";
+    if (m.kind === "视频") {
+      fields = `<input class="wm-media-url" data-i="${i}" placeholder="视频链接或 assets/videos/xxx.mp4" value="${escAttr(m.url || "")}" />
+                <input class="wm-media-label" data-i="${i}" placeholder="标签，如：正片 / 预告" value="${escAttr(m.label || "")}" />`;
+    } else if (m.kind === "图片") {
+      fields = `<input class="wm-media-url" data-i="${i}" placeholder="图片链接或 assets/xxx.jpg" value="${escAttr(m.url || "")}" />
+                <input class="wm-media-cap" data-i="${i}" placeholder="图片说明" value="${escAttr(m.caption || "")}" />`;
+    } else {
+      fields = `<input class="wm-media-title" data-i="${i}" placeholder="标题" value="${escAttr(m.title || "")}" />
+                <textarea class="wm-media-body" data-i="${i}" placeholder="正文内容" rows="2">${esc(m.body || "")}</textarea>`;
+    }
+    row.innerHTML = `<div class="wm-media-head">${kindSel}<button type="button" class="wm-media-del" data-i="${i}">删除</button></div>${fields}`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll(".wm-media-kind").forEach((el) => el.addEventListener("change", () => { wmMedia[Number(el.dataset.i)].kind = el.value; renderWmMedia(); }));
+  box.querySelectorAll(".wm-media-del").forEach((el) => el.addEventListener("click", () => { wmMedia.splice(Number(el.dataset.i), 1); renderWmMedia(); }));
+  box.querySelectorAll(".wm-media-url").forEach((el) => el.addEventListener("input", () => { wmMedia[Number(el.dataset.i)].url = el.value; }));
+  box.querySelectorAll(".wm-media-label").forEach((el) => el.addEventListener("input", () => { wmMedia[Number(el.dataset.i)].label = el.value; }));
+  box.querySelectorAll(".wm-media-cap").forEach((el) => el.addEventListener("input", () => { wmMedia[Number(el.dataset.i)].caption = el.value; }));
+  box.querySelectorAll(".wm-media-title").forEach((el) => el.addEventListener("input", () => { wmMedia[Number(el.dataset.i)].title = el.value; }));
+  box.querySelectorAll(".wm-media-body").forEach((el) => el.addEventListener("input", () => { wmMedia[Number(el.dataset.i)].body = el.value; }));
+}
+function bindWmMediaAdd() {
+  const addV = document.getElementById("wm-add-video");
+  const addI = document.getElementById("wm-add-image");
+  const addT = document.getElementById("wm-add-text");
+  if (addV) addV.addEventListener("click", () => { wmMedia.push({ kind: "视频", url: "", label: "" }); renderWmMedia(); });
+  if (addI) addI.addEventListener("click", () => { wmMedia.push({ kind: "图片", url: "", caption: "" }); renderWmMedia(); });
+  if (addT) addT.addEventListener("click", () => { wmMedia.push({ kind: "图文", title: "", body: "" }); renderWmMedia(); });
+}
+bindWmMediaAdd();
+
 function openWorkModal(existing) {
   wmWork = existing || null;
   const catSel = document.getElementById("wm-category");
@@ -627,6 +727,8 @@ function openWorkModal(existing) {
   document.getElementById("wm-metrics").value = (w.metrics || []).map((m) => `${m.label}：${m.value}`).join("\n");
   wmLinks = (w.links || []).map((l) => ({ platform: l.platform || "", url: l.url || "" }));
   renderWmLinks();
+  wmMedia = (w.media || []).map((m) => Object.assign({}, m));
+  renderWmMedia();
   document.getElementById("wm-delete").hidden = !existing;
 
   document.getElementById("wm-modal").classList.add("is-open");
@@ -652,7 +754,8 @@ function saveWorkModal() {
     description: document.getElementById("wm-desc").value.trim(),
     content: document.getElementById("wm-content").value,
     metrics: parseMetrics(document.getElementById("wm-metrics").value),
-    links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url }))
+    links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
+    media: wmMedia.filter((m) => (m.kind === "视频" || m.kind === "图片") ? !!m.url : !!(m.title || m.body)).map((m) => Object.assign({}, m))
   };
   if (wmWork) {
     Object.assign(wmWork, data);
@@ -1024,7 +1127,7 @@ async function saveContent() {
       if (el) o.content = el.textContent;
     }
   });
-  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles }, null, 2);
+  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
@@ -1073,6 +1176,60 @@ function showEditorBar(show) {
     login.style.display = "block";
   }
 }
+/* ---------- 板块顺序拖拽（编辑模式） ---------- */
+function applySectionOrder() {
+  const main = document.querySelector("main");
+  if (!main) return;
+  const ids = (sectionOrder.sections && sectionOrder.sections.length)
+    ? sectionOrder.sections
+    : ["about", "education", "skills", "experience", "portfolio", "contact"];
+  ids.forEach((id) => {
+    const sec = document.getElementById(id);
+    if (sec) main.appendChild(sec);
+  });
+}
+function getDragAfterSection(container, y, dragging) {
+  const els = Array.from(container.querySelectorAll(".section, .cta")).filter((el) => el !== dragging);
+  return els.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) return { offset, element: child };
+    return closest;
+  }, { offset: -Infinity, element: null }).element;
+}
+function enableSectionReorder() {
+  const main = document.querySelector("main");
+  if (!main) return;
+  main.querySelectorAll(".section, .cta").forEach((sec) => {
+    const handle = document.createElement("div");
+    handle.className = "section__handle";
+    handle.title = "拖拽调整板块顺序";
+    handle.textContent = "⋮⋮";
+    handle.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      sec.classList.add("is-dragging");
+      function move(ev) {
+        const after = getDragAfterSection(main, ev.clientY, sec);
+        if (after == null) main.appendChild(sec);
+        else main.insertBefore(sec, after);
+      }
+      function up() {
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", up);
+        sec.classList.remove("is-dragging");
+        sectionOrder.sections = Array.from(main.querySelectorAll(".section, .cta")).map((s) => s.id).filter(Boolean);
+      }
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", up);
+    });
+    sec.insertBefore(handle, sec.firstChild);
+  });
+}
+function disableSectionReorder() {
+  document.querySelectorAll(".section__handle").forEach((h) => h.remove());
+  document.querySelectorAll(".section, .cta").forEach((s) => s.classList.remove("is-dragging"));
+}
+
 function enableEditing() {
   editing = true;
   document.body.classList.add("is-editing");
@@ -1091,7 +1248,9 @@ function enableEditing() {
   });
   paint();        // 重新渲染卡片（带编辑态）
   renderExperience();
+  renderSkills();
   renderOverlays();
+  enableSectionReorder();
   addStyleDots();
   applyUserStyles();
   setStatus("已登录 · 直接点击页面上的文字即可编辑；悬浮右上角 🎨 可改单元素样式；工具栏「🎨 设计」改全局配色/字体/排版");
@@ -1101,10 +1260,12 @@ function exitEdit() {
   document.body.classList.remove("is-editing");
   showEditorBar(false);
   removeStyleDots();
+  disableSectionReorder();
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
   history.replaceState(null, "", location.pathname);
   paint();
   renderExperience();
+  renderSkills();
   renderOverlays();
 }
 
@@ -1425,5 +1586,7 @@ loadContent().then(() => {
   applyTexts();
   paint();
   renderExperience();
+  renderSkills();
+  applySectionOrder();
   applyUserStyles();
 });
