@@ -106,6 +106,9 @@ let theme = defaultTheme();
 let styles = {};
 let skills = [];
 let sectionOrder = { sections: [] };
+let images = {};
+let pendingImageFiles = [];
+let currentImgSlot = null;
 
 /* ---------- 设计主题（颜色 / 字体 / 排版） ---------- */
 function defaultTheme() {
@@ -163,6 +166,12 @@ const overlayLayer = document.getElementById("overlay-layer");
 const editorBar = document.getElementById("editor-bar");
 const imgInput = document.getElementById("img-input");
 const editorStatus = document.getElementById("editor-status");
+const expModal = document.getElementById("exp-modal");
+const expDetail = document.getElementById("exp-detail");
+const expImages = document.getElementById("exp-images");
+const expImgInput = document.getElementById("exp-img-input");
+let expEditIndex = null;
+let expImageList = [];
 
 /* ============================================================
    加载与渲染
@@ -189,12 +198,17 @@ async function loadContent() {
         };
       }
       if (data.styles && typeof data.styles === "object") styles = data.styles;
+      if (data.images && typeof data.images === "object") images = data.images;
     }
   } catch (e) { /* 用兜底数据 */ }
   if (!works.length) works = DEFAULT_WORKS.map((x) => ({ ...x }));
   if (!categories.length) categories = Array.from(new Set(works.map((w) => w.category).filter(Boolean)));
   if (!experiences.length) experiences = DEFAULT_EXPERIENCES.map((x) => ({ ...x }));
   if (!skills.length) skills = DEFAULT_SKILLS.map((x) => ({ ...x }));
+  experiences.forEach((e) => {
+    if (typeof e.detail !== "string") e.detail = "";
+    if (!Array.isArray(e.images)) e.images = [];
+  });
   works.forEach((w) => {
     if (!Array.isArray(w.videoUrls)) w.videoUrls = [];
     if (!Array.isArray(w.media)) w.media = [];
@@ -212,6 +226,17 @@ function applyTexts() {
   Object.keys(texts).forEach((key) => {
     const el = document.querySelector(`[data-edit="${key}"]`);
     if (el && !el.closest("#works-grid")) el.innerHTML = texts[key];
+  });
+}
+function applyImages() {
+  Object.keys(images).forEach((key) => {
+    const el = document.querySelector(`[data-edit="${key}"]`);
+    if (!el) return;
+    const img = el.tagName === "IMG" ? el : el.querySelector("img");
+    if (!img) return;
+    img.src = images[key];
+    img.style.display = "";
+    el.classList.remove("is-empty");
   });
 }
 
@@ -269,9 +294,12 @@ function renderExperience() {
   if (!wrap) return;
   wrap.innerHTML = experiences.map((exp, idx) => {
     const linkHtml = exp.link
-      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情 →</a>`
-      : (editing ? `<span class="exp-card__link is-empty">查看详情（请在 content.json 填写链接）</span>` : "");
+      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener" aria-label="查看详情">→</a>`
+      : (editing ? `<span class="exp-card__link is-empty">（未填写详情链接）</span>` : "");
     const editAttr = editing ? " contenteditable=\"true\"" : "";
+    const editDetailBtn = editing
+      ? `<button type="button" class="exp-card__edit-detail" data-exp-detail="${idx}">✎ 编辑详情页</button>`
+      : "";
     return `
       <div class="experience__item" data-exp-index="${idx}">
         <div class="exp-year"${editAttr} data-exp="year">${exp.year}</div>
@@ -284,7 +312,7 @@ function renderExperience() {
             <span><span class="icon">📍</span><span${editAttr} data-exp="location">${exp.location}</span></span>
           </div>
           <div class="exp-card__desc"${editAttr} data-exp="description">${exp.description}</div>
-          ${linkHtml}
+          <div class="exp-card__actions">${linkHtml}${editDetailBtn}</div>
         </div>
       </div>`;
   }).join("");
@@ -297,6 +325,52 @@ function bindExperienceEdit(wrap) {
     const field = el.dataset.exp;
     el.addEventListener("input", () => { experiences[idx][field] = el.textContent.trim(); });
   });
+  wrap.querySelectorAll("[data-exp-detail]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openExpModal(Number(btn.dataset.expDetail));
+    });
+  });
+}
+
+/* ---------- 经历详情编辑器 ---------- */
+function openExpModal(idx) {
+  expEditIndex = idx;
+  const exp = experiences[idx];
+  expDetail.value = exp.detail || "";
+  expImageList = (exp.images || []).map((url) => ({ url }));
+  renderExpImages();
+  expModal.classList.add("is-open");
+  expModal.setAttribute("aria-hidden", "false");
+}
+function closeExpModal() {
+  expModal.classList.remove("is-open");
+  expModal.setAttribute("aria-hidden", "true");
+  expEditIndex = null;
+  expImageList = [];
+}
+function renderExpImages() {
+  if (!expImages) return;
+  expImages.innerHTML = expImageList.map((it, i) => `
+    <div class="exp-image-row">
+      <img src="${escAttr(it.preview || it.url)}" alt="" loading="lazy" />
+      <input type="text" class="exp-image-url" value="${escAttr(it.url)}" data-i="${i}" placeholder="assets/..." />
+      <button type="button" class="exp-image-del" data-i="${i}">×</button>
+    </div>
+  `).join("");
+  expImages.querySelectorAll(".exp-image-url").forEach((inp) => {
+    inp.addEventListener("input", () => { expImageList[Number(inp.dataset.i)].url = inp.value.trim(); });
+  });
+  expImages.querySelectorAll(".exp-image-del").forEach((btn) => {
+    btn.addEventListener("click", () => { expImageList.splice(Number(btn.dataset.i), 1); renderExpImages(); });
+  });
+}
+function saveExpModal() {
+  if (expEditIndex == null) return;
+  experiences[expEditIndex].detail = expDetail.value;
+  experiences[expEditIndex].images = expImageList.map((it) => it.url).filter(Boolean);
+  closeExpModal();
+  renderExperience();
 }
 
 /* ---------- 栏目筛选（动态渲染，可编辑） ---------- */
@@ -454,13 +528,19 @@ function renderMediaGroups(w) {
   const kinds = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / 图文。</div>`;
   return kinds.map((kind) => {
-    const inner = groups[kind].map((it) => {
-      if (it.kind === "视频") return `<div class="modal__vid">${renderVideo(it.v)}</div>`;
-      if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
+    const items = groups[kind];
+    const isGrid = kind === "视频" || kind === "图片";
+    const inner = items.map((it) => {
+      if (it.kind === "视频") {
+        const isSingle = items.length === 1;
+        return `<div class="modal__vid${isSingle ? ' modal__vid--full' : ''}">${renderVideo(it.v)}</div>`;
+      }
+      if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
       const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
       return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
     }).join("");
-    return `<div class="modal__group"><div class="modal__group-title">${kind}</div>${inner}</div>`;
+    const wrapClass = isGrid ? "modal__group-items modal__group-items--grid" : "modal__group-items";
+    return `<div class="modal__group"><div class="modal__group-title">${kind}</div><div class="${wrapClass}">${inner}</div></div>`;
   }).join("");
 }
 
@@ -785,6 +865,23 @@ document.getElementById("wm-add-link").addEventListener("click", () => { wmLinks
 document.querySelectorAll("[data-wm-close]").forEach((el) => el.addEventListener("click", closeWorkModal));
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeWorkModal(); });
 
+// 经历详情编辑器事件
+document.getElementById("exp-save").addEventListener("click", saveExpModal);
+document.getElementById("exp-cancel").addEventListener("click", closeExpModal);
+document.querySelectorAll("[data-exp-close]").forEach((el) => el.addEventListener("click", closeExpModal));
+document.getElementById("exp-add-image").addEventListener("click", () => { if (expEditIndex != null) expImgInput.click(); });
+expImgInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file || expEditIndex == null) return;
+  const filename = `assets/${Date.now()}_${basename(file.name).replace(/\s+/g, "_")}`;
+  const preview = URL.createObjectURL(file);
+  pendingImageFiles.push({ name: filename, file, url: preview });
+  expImageList.push({ url: filename, preview });
+  renderExpImages();
+  expImgInput.value = "";
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && expModal && expModal.classList.contains("is-open")) closeExpModal(); });
+
 /* ---------- 栏目管理（添加 / 重命名 / 删除） ---------- */
 function openCatModal() {
   renderCatList();
@@ -1017,6 +1114,21 @@ function addOverlay(type) {
 imgInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
+  if (currentImgSlot) {
+    const key = currentImgSlot.dataset.edit;
+    if (key) {
+      const filename = `assets/${Date.now()}_${basename(file.name).replace(/\s+/g, "_")}`;
+      images[key] = filename;
+      const url = URL.createObjectURL(file);
+      const img = currentImgSlot.tagName === "IMG" ? currentImgSlot : currentImgSlot.querySelector("img");
+      if (img) { img.src = url; img.style.display = ""; }
+      currentImgSlot.classList.remove("is-empty");
+      pendingImageFiles.push({ name: filename, file, url });
+    }
+    currentImgSlot = null;
+    imgInput.value = "";
+    return;
+  }
   const reader = new FileReader();
   reader.onload = () => {
     const o = newOverlay("image");
@@ -1127,11 +1239,16 @@ async function saveContent() {
       if (el) o.content = el.textContent;
     }
   });
-  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder }, null, 2);
+  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder, images }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
       setStatus("保存中…");
+      for (const pi of pendingImageFiles) {
+        setStatus("上传图片：" + basename(pi.name) + " …");
+        await commitBinaryFile(pi.name, pi.file);
+      }
+      pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
         setStatus("上传视频：" + basename(pv.name) + " …");
         await commitBinaryFile(pv.name, pv.file);
@@ -1147,9 +1264,11 @@ async function saveContent() {
     }
   } else {
     downloadJson(str);
+    pendingImageFiles.forEach((pi) => downloadFile(pi.file, basename(pi.name)));
+    pendingImageFiles.length = 0;
     pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
     pendingVideoFiles.length = 0;
-    setStatus("已下载 content.json 与视频文件，请将视频放入 assets/videos/ 并重新部署");
+    setStatus("已下载 content.json、图片与视频文件，请放入对应 assets/ 目录并重新部署");
   }
 }
 
@@ -1230,6 +1349,12 @@ function disableSectionReorder() {
   document.querySelectorAll(".section, .cta").forEach((s) => s.classList.remove("is-dragging"));
 }
 
+function onImgSlotClick(e) {
+  if (!editing) return;
+  e.preventDefault();
+  currentImgSlot = e.currentTarget;
+  imgInput.click();
+}
 function enableEditing() {
   editing = true;
   document.body.classList.add("is-editing");
@@ -1253,6 +1378,12 @@ function enableEditing() {
   enableSectionReorder();
   addStyleDots();
   applyUserStyles();
+  // 图片占位槽点击上传
+  document.querySelectorAll(".img-slot").forEach((slot) => {
+    slot.style.cursor = "pointer";
+    slot.title = "点击上传图片";
+    slot.addEventListener("click", onImgSlotClick);
+  });
   setStatus("已登录 · 直接点击页面上的文字即可编辑；悬浮右上角 🎨 可改单元素样式；工具栏「🎨 设计」改全局配色/字体/排版");
 }
 function exitEdit() {
@@ -1262,6 +1393,11 @@ function exitEdit() {
   removeStyleDots();
   disableSectionReorder();
   document.querySelectorAll("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
+  document.querySelectorAll(".img-slot").forEach((slot) => {
+    slot.style.cursor = "";
+    slot.title = "";
+    slot.removeEventListener("click", onImgSlotClick);
+  });
   history.replaceState(null, "", location.pathname);
   paint();
   renderExperience();
@@ -1584,6 +1720,7 @@ document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 loadContent().then(() => {
   applyUserTheme();
   applyTexts();
+  applyImages();
   paint();
   renderExperience();
   renderSkills();
