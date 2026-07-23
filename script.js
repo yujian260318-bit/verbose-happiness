@@ -372,13 +372,18 @@ function enableEducationEditor() {
     startT = parseFloat(activeEl.style.top) || 0;
     startW = activeEl.offsetWidth;
     startH = activeEl.offsetHeight;
-    e.preventDefault();
+    if (target.classList.contains("edu__img")) e.preventDefault();
   });
   window.addEventListener("mousemove", (e) => {
     if (!activeEl) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+      moved = true;
+      activeEl.style.userSelect = "none";
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+    }
     if (mode === "drag") {
       activeEl.style.left = Math.max(0, startL + dx) + "px";
       activeEl.style.top = Math.max(0, startT + dy) + "px";
@@ -394,7 +399,10 @@ function enableEducationEditor() {
     if (right > cw) wrap.style.width = (right + 20) + "px";
     if (bottom > ch) wrap.style.height = (bottom + 20) + "px";
   });
-  window.addEventListener("mouseup", () => { activeEl = null; mode = null; setTimeout(() => { moved = false; }, 50); });
+  window.addEventListener("mouseup", () => {
+    if (activeEl) activeEl.style.userSelect = "";
+    activeEl = null; mode = null; setTimeout(() => { moved = false; }, 50);
+  });
   window.__eduDragMoved = () => moved;
 }
 
