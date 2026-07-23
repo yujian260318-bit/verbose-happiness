@@ -1287,7 +1287,12 @@ async function commitBinaryFile(path, file) {
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify(body)
   });
-  if (!res.ok) throw new Error("上传视频失败（" + res.status + "）");
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    const why = res.status === 404 ? "：token 没有该仓库的写入权限，或仓库路径错误" : res.status === 401 ? "：token 无效或已过期" : "";
+    console.error("[commitBinaryFile]", res.status, detail);
+    throw new Error("上传视频失败（" + res.status + "）" + why);
+  }
 }
 let tokenResolve = null;
 function openTokenModal() {
@@ -1368,7 +1373,15 @@ async function commitToGitHub(str) {
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify(body)
   });
-  if (!res.ok) throw new Error("提交失败（" + res.status + "）");
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    let why = "";
+    if (res.status === 404) why = "：token 没有该仓库的写入权限，或仓库/分支路径错误";
+    else if (res.status === 401) why = "：token 无效或已过期";
+    else if (res.status === 422) why = "：请求参数错误（可打开浏览器控制台查看详情）";
+    console.error("[commitToGitHub]", res.status, detail);
+    throw new Error("提交失败（" + res.status + "）" + why);
+  }
 }
 async function saveContent() {
   // 收集文本覆盖（剔除样式点，避免污染数据）
