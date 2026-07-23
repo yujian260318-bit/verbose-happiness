@@ -232,10 +232,10 @@ p { margin: 0; }
 }
 
 /* 教育 */
-.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 440px 520px; gap: 70px; align-items: center; }
+.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 440px 520px; gap: 70px; align-items: center; transform: translateX(100px); }
 .education__visual { display: flex; flex-direction: column; gap: 24px; width: 100%; align-items: center; }
 .education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 340px; }
-.education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; }
+.education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; transform: translateX(100px); }
 /* 自定义布局模式：由 JS 在编辑/保存后启用，元素绝对定位 */
 .education__wrap--layout { display: block; position: relative; margin: 0 auto; }
 .education__wrap--layout .education__visual { display: contents; }
@@ -581,6 +581,7 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
   .education__wrap--layout .edu__img,
   .education__wrap--layout .education__list { position: static; width: 90% !important; max-width: 340px; height: auto !important; margin: 0 auto; }
   .education__visual { align-items: center; }
+  .education__wrap, .education__list { transform: none; }
   .about__visual { min-height: 300px; }
   .experience__item { grid-template-columns: 1fr; gap: 14px; }
   .experience__item:nth-child(even) .exp-card,
