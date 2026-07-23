@@ -77,8 +77,18 @@ p { margin: 0; }
 .nav .btn { margin-left: 8px; }
 
 /* 通用区块 */
-.section { padding: var(--section-pad) 24px; }
+.section { padding: var(--section-pad) 24px; position: relative; }
 .section--narrow { max-width: var(--maxw); margin: 0 auto; }
+.cta { position: relative; }
+.section__handle {
+  position: absolute; top: 14px; left: 14px; z-index: 40;
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center;
+  cursor: grab; font-size: 15px; letter-spacing: 1px; opacity: .9; user-select: none;
+  box-shadow: 0 4px 12px rgba(42, 54, 84, .25);
+}
+.section__handle:active { cursor: grabbing; }
+.section.is-dragging { opacity: .55; outline: 2px dashed var(--sage); }
 .section__head { text-align: center; margin-bottom: 52px; }
 .section__title { font-family: var(--display); font-size: clamp(34px, 5vw, 48px); color: var(--sage); }
 
@@ -99,7 +109,8 @@ p { margin: 0; }
 .hero__cta { display: flex; gap: 14px; margin-top: 36px; justify-content: center; flex-wrap: wrap; }
 .hero__portrait {
   position: relative; width: 240px; height: 240px; border-radius: 50%; overflow: hidden;
-  margin: 44px auto 0; border: 2px solid var(--line); background: var(--surface);
+  margin: 44px auto 0; border: 4px solid var(--sage); background: var(--surface);
+  box-shadow: 0 10px 28px rgba(42, 54, 84, .18);
   display: flex; align-items: center; justify-content: center;
 }
 .hero__portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
@@ -124,9 +135,10 @@ p { margin: 0; }
 /* 图片占位槽：Canva frame 风格——可见边框 + 浅色填充，图片上传后 cover 裁剪成框形 */
 .img-slot {
   position: relative; overflow: hidden; border-radius: var(--radius);
-  background: #F4F6EF; border: 2px solid var(--line);
+  background: #F4F6EF; border: 3px solid var(--sage);
+  box-shadow: 0 8px 22px rgba(42, 54, 84, .12);
   display: flex; align-items: center; justify-content: center; min-height: 180px;
-  transition: border-color .2s;
+  transition: border-color .2s, box-shadow .2s;
 }
 .img-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 .img-slot.is-empty img { display: none; }
@@ -574,3 +586,31 @@ body.is-editing .experience__item,
 body.is-editing .skill-card {
   position: relative;
 }
+
+/* 作品详情：按类型分组展示多媒体 */
+.modal__group { margin-top: 20px; }
+.modal__group-title {
+  font-size: 13px; font-weight: 700; color: var(--sage-dark);
+  margin-bottom: 10px; letter-spacing: .5px;
+  display: inline-block; background: var(--sage-soft); padding: 3px 12px; border-radius: 999px;
+}
+.modal__vid { margin-bottom: 14px; }
+.modal__fig { margin: 0 0 14px; }
+.modal__img { width: 100%; border-radius: 12px; display: block; }
+.modal__cap { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.modal__text { margin-bottom: 16px; }
+.modal__text h4 { font-size: 16px; margin-bottom: 6px; color: var(--ink); }
+.modal__text-body { white-space: pre-wrap; color: #3a4050; line-height: 1.8; }
+
+/* 作品编辑：多媒体编辑器 */
+.wm-media-list { display: flex; flex-direction: column; gap: 10px; margin: 8px 0; }
+.wm-media-row { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: #fff; }
+.wm-media-head { display: flex; align-items: center; justify-content: space-between; }
+.wm-media-head select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); font-family: inherit; font-size: 13px; background: #fff; color: var(--ink); }
+.wm-media-del { background: none; border: none; color: #c0563f; cursor: pointer; font-size: 13px; }
+.wm-media-url, .wm-media-label, .wm-media-cap, .wm-media-title, .wm-media-body {
+  width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+  font-family: inherit; font-size: 14px; background: #fff; color: var(--ink);
+}
+.wm-media-add { display: flex; gap: 8px; flex-wrap: wrap; }
+.wm-empty { color: var(--muted); font-size: 13px; }
