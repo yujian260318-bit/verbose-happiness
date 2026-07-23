@@ -133,72 +133,7 @@
       <div class="section__head section--narrow">
         <h2 class="section__title" data-edit="title-skills">核心能力</h2>
       </div>
-      <div class="skills-grid" data-edit="skills-grid">
-        <div class="skill-card">
-          <div class="skill-card__icon">🎬</div>
-          <div class="skill-card__title">短视频编导</div>
-          <div class="skill-card__desc">从选题策划、脚本撰写到现场拍摄与后期剪辑，把控内容节奏与视觉调性。</div>
-          <div class="skill-card__tags">
-            <span class="tag">PR</span><span class="tag">剪映</span><span class="tag">分镜</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">🎤</div>
-          <div class="skill-card__title">活动拍摄</div>
-          <div class="skill-card__desc">完成线下活动全流程拍摄，熟悉多机位调度与现场执行，输出多版本视频。</div>
-          <div class="skill-card__tags">
-            <span class="tag">现场统筹</span><span class="tag">多版本剪辑</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">✍️</div>
-          <div class="skill-card__title">内容运营</div>
-          <div class="skill-card__desc">撰写种草文案与社媒内容，支撑账号从 0 到 1 冷启动，实现可持续涨粉。</div>
-          <div class="skill-card__tags">
-            <span class="tag">小红书</span><span class="tag">即刻</span><span class="tag">文案</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">🤝</div>
-          <div class="skill-card__title">KOC 拓展</div>
-          <div class="skill-card__desc">筛选并对接目标 KOC，建立达人资源池，推动活动传播与报名转化。</div>
-          <div class="skill-card__tags">
-            <span class="tag">达人筛选</span><span class="tag">传播</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">🎨</div>
-          <div class="skill-card__title">视觉设计</div>
-          <div class="skill-card__desc">使用 PS / Canva 制作封面、海报与视觉物料，统一品牌视觉风格。</div>
-          <div class="skill-card__tags">
-            <span class="tag">PS</span><span class="tag">Canva</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">📊</div>
-          <div class="skill-card__title">数据分析</div>
-          <div class="skill-card__desc">关注内容数据表现，通过用户反馈与数据迭代选题与投放策略。</div>
-          <div class="skill-card__tags">
-            <span class="tag">数据复盘</span><span class="tag">用户洞察</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">🎥</div>
-          <div class="skill-card__title">访谈栏目</div>
-          <div class="skill-card__desc">参与嘉宾策划、提纲设计与现场拍摄统筹，输出卫视级栏目版本。</div>
-          <div class="skill-card__tags">
-            <span class="tag">嘉宾策划</span><span class="tag">卫视版</span>
-          </div>
-        </div>
-        <div class="skill-card">
-          <div class="skill-card__icon">🏆</div>
-          <div class="skill-card__title">广告竞赛</div>
-          <div class="skill-card__desc">主导品牌广告短片从创意到成片，获全国大学生广告艺术大赛北京赛区三等奖。</div>
-          <div class="skill-card__tags">
-            <span class="tag">大广赛</span><span class="tag">创意</span>
-          </div>
-        </div>
-      </div>
+      <div class="skills-grid" id="skills-grid"><!-- JS 渲染 --></div>
     </section>
 
 <section id="experience" class="section experience reveal">
@@ -325,6 +260,14 @@
         <label class="wm-modal__full">外部平台链接（点击直接跳转，可填爱奇艺 / 腾讯视频 / 公众号 等）
           <div id="wm-links" class="wm-links"></div>
           <button type="button" id="wm-add-link" class="wm-add-link">＋ 添加链接</button>
+        </label>
+        <label class="wm-modal__full">作品内多媒体（可添加视频 / 图片 / 图文，按类型分组展示）
+          <div id="wm-media-list" class="wm-media-list"></div>
+          <div class="wm-media-add">
+            <button type="button" id="wm-add-video" class="wm-add-link">＋ 视频</button>
+            <button type="button" id="wm-add-image" class="wm-add-link">＋ 图片</button>
+            <button type="button" id="wm-add-text" class="wm-add-link">＋ 图文/文案</button>
+          </div>
         </label>
       </div>
       <div class="wm-modal__actions">
