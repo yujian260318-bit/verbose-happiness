@@ -875,14 +875,14 @@ document.getElementById("vm-upload").addEventListener("click", () => document.ge
 document.getElementById("vm-file").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 100 * 1024 * 1024) {
-    const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
-    alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，点击「＋ 链接」把直链粘进去即可播放。`);
-    return;
-  }
   if (file.size > 50 * 1024 * 1024) {
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-    if (!confirm(`该视频 ${sizeMb} MB，已超过 50MB。GitHub API 对大文件容易超时/返回 500，建议压缩到 50MB 以下或使用对象存储直链。\n\n仍要继续尝试上传吗？`)) {
+    alert(`该视频 ${sizeMb} MB，GitHub 在线上传超过 50MB 基本都会失败（422/500）。\n\n请先用剪映 / HandBrake / FFmpeg 压缩到 50MB 以下再传；或者使用对象存储直链：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制公开直链（https 开头）；\n3. 关闭本窗口，点击「＋ 链接」把直链粘进去即可播放。`);
+    return;
+  }
+  if (file.size > 25 * 1024 * 1024) {
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+    if (!confirm(`该视频 ${sizeMb} MB，已超过 25MB。GitHub API 对超过 25MB 的文件容易返回 422/500，最稳的做法是压缩到 25MB 以下。\n\n仍要继续尝试上传吗？`)) {
       return;
     }
   }
@@ -1001,14 +1001,14 @@ function bindWmMediaAdd() {
     upF.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 100 * 1024 * 1024) {
-        const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
-        alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，在作品详情弹窗点「＋ 视频链接」，把直链粘进去即可播放。`);
-        return;
-      }
       if (file.size > 50 * 1024 * 1024) {
         const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-        if (!confirm(`该视频 ${sizeMb} MB，已超过 50MB。GitHub API 对大文件容易超时/返回 500，建议压缩到 50MB 以下或使用对象存储直链。\n\n仍要继续尝试上传吗？`)) {
+        alert(`该视频 ${sizeMb} MB，GitHub 在线上传超过 50MB 基本都会失败（422/500）。\n\n请先用剪映 / HandBrake / FFmpeg 压缩到 50MB 以下再传；或者使用对象存储直链：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制公开直链（https 开头）；\n3. 关闭本窗口，在作品详情弹窗点「＋ 视频链接」，把直链粘进去即可播放。`);
+        return;
+      }
+      if (file.size > 25 * 1024 * 1024) {
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+        if (!confirm(`该视频 ${sizeMb} MB，已超过 25MB。GitHub API 对超过 25MB 的文件容易返回 422/500，最稳的做法是压缩到 25MB 以下。\n\n仍要继续尝试上传吗？`)) {
           return;
         }
       }
@@ -1442,8 +1442,11 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   const baseUrl = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}`;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
 
-  // GitHub Contents API 对大文件（通常 >50MB）容易返回 500，改用 Git Database API
+  // GitHub 实际能稳定在线上传的大小约 25MB；25-50MB 尝试 Git Database API；>50MB 拒绝
   if (fileSize > 50 * 1024 * 1024) {
+    throw new Error("视频超过 50MB，GitHub 在线上传极易失败，请先压缩到 50MB 以下，或使用对象存储直链");
+  }
+  if (fileSize > 25 * 1024 * 1024) {
     return await commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg);
   }
 
@@ -1480,10 +1483,10 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   throw new Error("上传视频失败（" + lastErr.status + "）" + why);
 }
 
-// 通过 Git Database API 上传大文件（50MB–100MB）
+// 通过 Git Database API 上传中等文件（25MB–50MB），超过 50MB 不应进入此函数
 async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg) {
-  if (fileSize > 100 * 1024 * 1024) {
-    throw new Error("文件超过 100MB，已超过 GitHub 单文件上限，请压缩或使用对象存储直链");
+  if (fileSize > 50 * 1024 * 1024) {
+    throw new Error("视频超过 50MB，GitHub 在线上传极易失败，请先压缩到 50MB 以下，或使用对象存储直链");
   }
   // 1. 创建 blob
   const blobRes = await fetch(`${baseUrl}/git/blobs`, {
@@ -1493,7 +1496,10 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
   });
   if (!blobRes.ok) {
     const detail = await blobRes.text().catch(() => "");
-    throw new Error(`创建文件 blob 失败（${blobRes.status}）：${detail.slice(0, 200)}`);
+    const hint = blobRes.status === 422
+      ? "；该视频对 GitHub 来说仍太大，建议压缩到 25MB 以下再传，或使用对象存储直链"
+      : "";
+    throw new Error(`创建文件 blob 失败（${blobRes.status}）${hint}`);
   }
   const { sha: blobSha } = await blobRes.json();
 
