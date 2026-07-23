@@ -22,6 +22,7 @@
       <a href="#hero" class="nav__logo">李欣怡</a>
       <ul class="nav__links">
         <li><a href="#about">关于</a></li>
+        <li><a href="#education">教育</a></li>
         <li><a href="#skills">技能</a></li>
         <li><a href="#experience">经历</a></li>
         <li><a href="#portfolio">作品</a></li>
@@ -77,11 +78,11 @@
           </div>
         </div>
         <div class="about__visual">
-          <div class="img-slot about__img about__img--1">
+          <div class="img-slot about__img about__img--1" data-edit="frame-about-1">
             <img src="assets/about-1.jpg" alt="工作照" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
             <span class="img-slot__hint">放置照片<br><small>assets/about-1.jpg</small></span>
           </div>
-          <div class="img-slot about__img about__img--2">
+          <div class="img-slot about__img about__img--2" data-edit="frame-about-2">
             <img src="assets/about-2.jpg" alt="工作照" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
             <span class="img-slot__hint">放置照片<br><small>assets/about-2.jpg</small></span>
           </div>
@@ -89,8 +90,46 @@
       </div>
     </section>
 
-    <!-- 技能 -->
-    <section id="skills" class="section skills reveal">
+<section id="education" class="section education reveal">
+      <div class="section__head section--narrow">
+        <h2 class="section__title" data-edit="title-education">教育背景</h2>
+      </div>
+      <div class="education__wrap">
+        <div class="education__visual">
+          <div class="img-slot edu__img" data-edit="frame-edu-1">
+            <img src="assets/edu-1.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/edu-1.jpg</small></span>
+          </div>
+          <div class="img-slot edu__img" data-edit="frame-edu-2">
+            <img src="assets/edu-2.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
+            <span class="img-slot__hint">放置照片<br><small>assets/edu-2.jpg</small></span>
+          </div>
+        </div>
+        <div class="education__list">
+          <div class="education__item">
+            <h3 data-edit="edu-school">中国传媒大学 · 广告学</h3>
+            <div class="edu-meta">
+              <span data-edit="edu-time">2023.09 – 2027.06（预计）</span>
+              <span data-edit="edu-gpa">GPA 3.8 / 4</span>
+            </div>
+            <ul data-edit="edu-honor">
+              <li>国家励志奖学金</li>
+              <li>校级三好学生</li>
+              <li>专业前 20%</li>
+            </ul>
+          </div>
+          <div class="education__item">
+            <h3>竞赛与荣誉</h3>
+            <ul>
+              <li>全国大学生广告艺术大赛北京赛区三等奖</li>
+              <li>大广赛品牌广告短片创作核心成员</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section id="skills" class="section skills reveal">
       <div class="section__head section--narrow">
         <h2 class="section__title" data-edit="title-skills">核心能力</h2>
       </div>
@@ -162,8 +201,7 @@
       </div>
     </section>
 
-    <!-- 经历 -->
-    <section id="experience" class="section experience reveal">
+<section id="experience" class="section experience reveal">
       <div class="section__head section--narrow">
         <h2 class="section__title" data-edit="title-resume">工作经验</h2>
       </div>
@@ -173,48 +211,7 @@
       </div>
     </section>
 
-    <!-- 教育 -->
-    <section id="education" class="section education reveal">
-      <div class="section__head section--narrow">
-        <h2 class="section__title" data-edit="title-education">教育背景</h2>
-      </div>
-      <div class="education__wrap">
-        <div class="education__visual">
-          <div class="img-slot edu__img">
-            <img src="assets/edu-1.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
-            <span class="img-slot__hint">放置照片<br><small>assets/edu-1.jpg</small></span>
-          </div>
-          <div class="img-slot edu__img">
-            <img src="assets/edu-2.jpg" alt="校园" onerror="this.closest('.img-slot').classList.add('is-empty')" onload="this.closest('.img-slot').classList.remove('is-empty')" />
-            <span class="img-slot__hint">放置照片<br><small>assets/edu-2.jpg</small></span>
-          </div>
-        </div>
-        <div class="education__list">
-          <div class="education__item">
-            <h3 data-edit="edu-school">中国传媒大学 · 广告学</h3>
-            <div class="edu-meta">
-              <span data-edit="edu-time">2023.09 – 2027.06（预计）</span>
-              <span data-edit="edu-gpa">GPA 3.8 / 4</span>
-            </div>
-            <ul data-edit="edu-honor">
-              <li>国家励志奖学金</li>
-              <li>校级三好学生</li>
-              <li>专业前 20%</li>
-            </ul>
-          </div>
-          <div class="education__item">
-            <h3>竞赛与荣誉</h3>
-            <ul>
-              <li>全国大学生广告艺术大赛北京赛区三等奖</li>
-              <li>大广赛品牌广告短片创作核心成员</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 作品集 -->
-    <section id="portfolio" class="section portfolio reveal">
+<section id="portfolio" class="section portfolio reveal">
       <div class="section__head section--narrow">
         <h2 class="section__title" data-edit="title-portfolio">精选作品</h2>
       </div>
