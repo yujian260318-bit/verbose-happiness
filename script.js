@@ -324,7 +324,11 @@ function applyEducationLayout() {
   // 移动端保持单列居中，不应用横向偏移
   if (window.innerWidth <= 1024) { text.style.transform = "none"; return; }
   const off = educationLayout && educationLayout.text;
-  if (!off) { text.style.transform = ""; return; } // 未保存偏移 → 沿用 CSS 基准 translateX(100px)
+  // 忽略旧绝对定位数据（含 canvas/box1/box2 或 text.w/text.h），避免文字列被推到屏幕外
+  if (!off || educationLayout.canvas || educationLayout.box1 || off.w != null || off.h != null) {
+    text.style.transform = "";
+    return;
+  }
   text.style.transform = `translate(${100 + (off.x || 0)}px, ${off.y || 0}px)`;
 }
 function collectEducationLayout() {
