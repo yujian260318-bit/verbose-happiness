@@ -232,9 +232,9 @@ p { margin: 0; }
 }
 
 /* 教育 */
-.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 280px 520px; gap: 100px; align-items: center; }
+.education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 300px 520px; gap: 90px; align-items: center; }
 .education__visual { display: flex; flex-direction: column; gap: 18px; width: 100%; }
-.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 100%; max-width: 280px; }
+.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 210px; }
 .education__visual .img-slot:first-child { align-self: flex-start; }
 .education__visual .img-slot:last-child { align-self: flex-end; }
 .education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; }
@@ -563,6 +563,7 @@ p { margin: 0; }
   .skill-card { padding: 22px; min-height: 220px; }
   .about__grid, .education__wrap { grid-template-columns: 1fr; gap: 40px; }
   .education__wrap { width: 100%; max-width: 640px; }
+  .education__visual { align-items: center; }
   .about__visual { min-height: 300px; }
   .experience__item { grid-template-columns: 1fr; gap: 14px; }
   .experience__item:nth-child(even) .exp-card,
@@ -572,7 +573,6 @@ p { margin: 0; }
 @media (max-width: 768px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
   .cta__contacts { grid-template-columns: 1fr; }
-  .education__visual { grid-template-columns: 1fr; }
   .modal__group-items--grid { grid-template-columns: 1fr; }
   .modal__panel { max-width: 96vw; }
 }
