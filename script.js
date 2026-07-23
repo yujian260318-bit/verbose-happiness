@@ -514,6 +514,21 @@ function initVideoWraps(root) {
     video.addEventListener("play", () => wrap.classList.add("is-playing"));
     video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
     video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
+    // 根据视频实际比例决定横版（占满整行）或竖版（三列一行）
+    function applyOrientation() {
+      const vid = wrap.closest(".modal__vid");
+      if (!vid || !video.videoWidth || !video.videoHeight) return;
+      const ratio = video.videoWidth / video.videoHeight;
+      if (ratio < 1) {
+        vid.classList.remove("modal__vid--landscape");
+        vid.classList.add("modal__vid--portrait");
+      } else {
+        vid.classList.remove("modal__vid--portrait");
+        vid.classList.add("modal__vid--landscape");
+      }
+    }
+    if (video.readyState >= 1) applyOrientation();
+    else video.addEventListener("loadedmetadata", applyOrientation, { once: true });
   });
 }
 
@@ -528,11 +543,11 @@ function renderMediaGroups(w) {
   if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / Word / PDF / 社媒链接 等。</div>`;
   return kinds.map((kind) => {
     const items = groups[kind];
-    const isGrid = kind === "视频" || kind === "图片";
+    const isVideo = kind === "视频";
+    const isGrid = isVideo || kind === "图片";
     const inner = items.map((it) => {
       if (it.kind === "视频") {
-        const isSingle = items.length === 1;
-        return `<div class="modal__vid${isSingle ? ' modal__vid--full' : ''}">${renderVideo(it.v)}</div>`;
+        return `<div class="modal__vid modal__vid--landscape" data-orient>${renderVideo(it.v)}</div>`;
       }
       if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
       if (it.kind === "Word" || it.kind === "PDF") {
@@ -548,7 +563,9 @@ function renderMediaGroups(w) {
       const t = it.kind === "文案" ? "文案正文" : it.kind === "图文" ? "图文内容" : (it.m.title ? it.m.title : "正文");
       return `<div class="modal__text"><h4>${esc(it.m.title || t)}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
     }).join("");
-    const wrapClass = isGrid ? "modal__group-items modal__group-items--grid" : "modal__group-items";
+    let wrapClass = "modal__group-items";
+    if (isVideo) wrapClass = "modal__group-items modal__group-items--video";
+    else if (isGrid) wrapClass = "modal__group-items modal__group-items--grid";
     return `<div class="modal__group"><div class="modal__group-title">${kind}</div><div class="${wrapClass}">${inner}</div></div>`;
   }).join("");
 }
