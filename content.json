@@ -231,9 +231,9 @@
   "experience": [
     {
       "id": "exp-tencent",
-      "year": "2026",
+      "year": "",
       "tag": "实习",
-      "role": "内容运营实习生",
+      "role": "内容创作实习生",
       "company": "腾讯 CDG · 青腾",
       "location": "深圳，中国",
       "period": "2026.05 – 至今",
@@ -244,7 +244,7 @@
     },
     {
       "id": "exp-yujian",
-      "year": "2026",
+      "year": "",
       "tag": "4A",
       "role": "导演组实习生",
       "company": "蓝色光标 · 《玉见》导演组",
@@ -257,7 +257,7 @@
     },
     {
       "id": "exp-zhupassword",
-      "year": "2025",
+      "year": "",
       "tag": "栏目",
       "role": "编导实习生",
       "company": "欣和企业 · 市场运营中心",
@@ -270,7 +270,7 @@
     },
     {
       "id": "exp-yucai",
-      "year": "2025",
+      "year": "",
       "tag": "公益",
       "role": "慈善助学项目志愿者",
       "company": "湖北省育才教育基金会",
@@ -283,7 +283,7 @@
     },
     {
       "id": "exp-adaward",
-      "year": "2025",
+      "year": "",
       "tag": "竞赛",
       "role": "创作核心成员",
       "company": "全国大学生广告艺术大赛",
