@@ -880,6 +880,12 @@ document.getElementById("vm-file").addEventListener("change", (e) => {
     alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，点击「＋ 链接」把直链粘进去即可播放。`);
     return;
   }
+  if (file.size > 50 * 1024 * 1024) {
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+    if (!confirm(`该视频 ${sizeMb} MB，已超过 50MB。GitHub API 对大文件容易超时/返回 500，建议压缩到 50MB 以下或使用对象存储直链。\n\n仍要继续尝试上传吗？`)) {
+      return;
+    }
+  }
   const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
   const name = "assets/videos/" + Date.now() + "-" + safe;
   const blobUrl = URL.createObjectURL(file);
@@ -999,6 +1005,12 @@ function bindWmMediaAdd() {
         const sizeGb = (file.size / (1024 * 1024 * 1024)).toFixed(2);
         alert(`该视频 ${sizeGb} GB，已超过 GitHub 100MB 单文件上限，无法直接上传。\n\n正确做法（对象存储直链，无压缩、无广告）：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制该视频的公开直链（https 开头）；\n3. 关闭本窗口，在作品详情弹窗点「＋ 视频链接」，把直链粘进去即可播放。`);
         return;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+        if (!confirm(`该视频 ${sizeMb} MB，已超过 50MB。GitHub API 对大文件容易超时/返回 500，建议压缩到 50MB 以下或使用对象存储直链。\n\n仍要继续尝试上传吗？`)) {
+          return;
+        }
       }
       const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
       const name = "assets/videos/" + Date.now() + "-" + safe;
@@ -1410,37 +1422,122 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   const token = await getToken();
   if (!token) throw new Error("未提供 token");
   if (!fileOrDataUrl) throw new Error("文件内容为空");
-  const url = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
-  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
-  let b64;
+
+  let b64, fileSize = 0;
   if (typeof fileOrDataUrl === "string" && fileOrDataUrl.startsWith("data:")) {
     const idx = fileOrDataUrl.indexOf(",");
     b64 = idx === -1 ? "" : fileOrDataUrl.slice(idx + 1);
+    fileSize = Math.floor((b64.length * 3) / 4);
   } else {
     try {
       const buf = await fileOrDataUrl.arrayBuffer();
+      fileSize = buf.byteLength;
       b64 = base64FromArrayBuffer(buf);
     } catch (readErr) {
       console.error("[commitBinaryFile] 读取文件失败", readErr);
       throw new Error("读取本地文件失败（文件可能被系统清理或已被删除），请重新选择：" + path);
     }
   }
+
+  const baseUrl = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+
+  // GitHub Contents API 对大文件（通常 >50MB）容易返回 500，改用 Git Database API
+  if (fileSize > 50 * 1024 * 1024) {
+    return await commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg);
+  }
+
+  const getUrl = `${baseUrl}/contents/${encodeURIComponent(path)}?ref=${cfg.branch}`;
   let sha = null;
-  const head = await fetch(url, { headers });
+  const head = await fetch(getUrl, { headers });
   if (head.ok) sha = (await head.json()).sha;
+
   const body = { message: "Add media: " + path, content: b64, branch: cfg.branch };
   if (sha) body.sha = sha;
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: Object.assign({ "Content-Type": "application/json" }, headers),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    const why = res.status === 404 ? "：token 没有该仓库的写入权限，或仓库路径错误" : res.status === 401 ? "：token 无效或已过期" : "";
-    console.error("[commitBinaryFile]", res.status, detail);
-    throw new Error("上传视频失败（" + res.status + "）" + why);
+
+  const putUrl = `${baseUrl}/contents/${encodeURIComponent(path)}`;
+  let lastErr = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const res = await fetch(putUrl, {
+      method: "PUT",
+      headers: Object.assign({ "Content-Type": "application/json" }, headers),
+      body: JSON.stringify(body)
+    });
+    if (res.ok) return;
+    lastErr = { status: res.status, detail: await res.text().catch(() => "") };
+    if (res.status === 422 || res.status === 404 || res.status === 401) break; // 不重试权限/校验错误
+    await new Promise((r) => setTimeout(r, 1000));
   }
+
+  const why = lastErr.status === 404
+    ? "：token 没有该仓库的写入权限，或仓库路径错误"
+    : lastErr.status === 401
+      ? "：token 无效或已过期"
+      : fileSize > 30 * 1024 * 1024
+        ? "：文件较大，GitHub Contents API 可能拒绝；建议压缩到 50MB 以下或用对象存储直链"
+        : "";
+  console.error("[commitBinaryFile]", lastErr.status, lastErr.detail);
+  throw new Error("上传视频失败（" + lastErr.status + "）" + why);
+}
+
+// 通过 Git Database API 上传大文件（50MB–100MB）
+async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg) {
+  if (fileSize > 100 * 1024 * 1024) {
+    throw new Error("文件超过 100MB，已超过 GitHub 单文件上限，请压缩或使用对象存储直链");
+  }
+  // 1. 创建 blob
+  const blobRes = await fetch(`${baseUrl}/git/blobs`, {
+    method: "POST",
+    headers: Object.assign({ "Content-Type": "application/json" }, headers),
+    body: JSON.stringify({ content: b64, encoding: "base64" })
+  });
+  if (!blobRes.ok) {
+    const detail = await blobRes.text().catch(() => "");
+    throw new Error(`创建文件 blob 失败（${blobRes.status}）：${detail.slice(0, 200)}`);
+  }
+  const { sha: blobSha } = await blobRes.json();
+
+  // 2. 获取当前分支 commit / tree
+  const refRes = await fetch(`${baseUrl}/git/ref/heads/${cfg.branch}`, { headers });
+  if (!refRes.ok) throw new Error(`获取分支 ${cfg.branch} 失败（${refRes.status}）`);
+  const { object: { sha: commitSha } } = await refRes.json();
+
+  const commitRes = await fetch(`${baseUrl}/git/commits/${commitSha}`, { headers });
+  if (!commitRes.ok) throw new Error(`获取当前提交失败（${commitRes.status}）`);
+  const { tree: { sha: treeSha } } = await commitRes.json();
+
+  // 3. 创建新 tree
+  const treeRes = await fetch(`${baseUrl}/git/trees`, {
+    method: "POST",
+    headers: Object.assign({ "Content-Type": "application/json" }, headers),
+    body: JSON.stringify({
+      base_tree: treeSha,
+      tree: [{ path, mode: "100644", type: "blob", sha: blobSha }]
+    })
+  });
+  if (!treeRes.ok) throw new Error(`创建文件树失败（${treeRes.status}）`);
+  const { sha: newTreeSha } = await treeRes.json();
+
+  // 4. 创建 commit
+  const newCommitRes = await fetch(`${baseUrl}/git/commits`, {
+    method: "POST",
+    headers: Object.assign({ "Content-Type": "application/json" }, headers),
+    body: JSON.stringify({
+      message: "Add media: " + path,
+      tree: newTreeSha,
+      parents: [commitSha]
+    })
+  });
+  if (!newCommitRes.ok) throw new Error(`创建提交失败（${newCommitRes.status}）`);
+  const { sha: newCommitSha } = await newCommitRes.json();
+
+  // 5. 更新分支引用
+  const updateRes = await fetch(`${baseUrl}/git/refs/heads/${cfg.branch}`, {
+    method: "PATCH",
+    headers: Object.assign({ "Content-Type": "application/json" }, headers),
+    body: JSON.stringify({ sha: newCommitSha })
+  });
+  if (!updateRes.ok) throw new Error(`更新分支失败（${updateRes.status}）`);
 }
 let tokenResolve = null;
 function openTokenModal() {
