@@ -794,19 +794,14 @@ document.getElementById("vm-upload").addEventListener("click", () => document.ge
 document.getElementById("vm-file").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
+  if (file.size > 100 * 1024 * 1024) { alert("视频超过 100MB，无法上传到 GitHub，请先压缩或上传到外部平台再贴链接。"); return; }
   const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
   const name = "assets/videos/" + Date.now() + "-" + safe;
   const blobUrl = URL.createObjectURL(file);
-  // 立即读成 base64 data URL 缓存，避免原始 File 引用在保存前失效
-  const reader = new FileReader();
-  reader.onload = () => {
-    const dataUrl = reader.result;
-    vmList.push({ type: "mp4", url: blobUrl, name, dataUrl });
-    pendingVideoFiles.push({ name, dataUrl });
-    renderVmList();
-  };
-  reader.onerror = () => { alert("读取本地视频失败，请重新选择文件"); };
-  reader.readAsDataURL(file);
+  // 保持原始 File 对象，保存时再用 file.arrayBuffer() 读取上传，避免大视频读 base64 失败
+  vmList.push({ type: "mp4", url: blobUrl, name, file });
+  pendingVideoFiles.push({ name, file });
+  renderVmList();
   e.target.value = "";
 });
 document.getElementById("vm-save").addEventListener("click", saveVideoManager);
@@ -915,19 +910,14 @@ function bindWmMediaAdd() {
     upF.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
+      if (file.size > 100 * 1024 * 1024) { alert("视频超过 100MB，无法上传到 GitHub，请先压缩或上传到外部平台再贴链接。"); return; }
       const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
       const name = "assets/videos/" + Date.now() + "-" + safe;
       const preview = URL.createObjectURL(file);
-      // 立即把视频读成 base64 data URL 缓存，避免原始 File 引用在保存前失效
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        wmMedia.push({ kind: "视频", url: name, name, label: "", preview, dataUrl });
-        pendingVideoFiles.push({ name, dataUrl });
-        renderWmMedia();
-      };
-      reader.onerror = () => { alert("读取本地视频失败，请重新选择文件"); };
-      reader.readAsDataURL(file);
+      // 保持原始 File 对象，保存时再用 file.arrayBuffer() 读取上传，避免大视频读 base64 失败
+      wmMedia.push({ kind: "视频", url: name, name, label: "", preview, file });
+      pendingVideoFiles.push({ name, file });
+      renderWmMedia();
       e.target.value = "";
     });
   }
@@ -980,9 +970,9 @@ function saveWorkModal() {
     content: document.getElementById("wm-content").value,
     metrics: parseMetrics(document.getElementById("wm-metrics").value),
     links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
-    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接"].includes(m.kind) ? !!m.url : !!(m.url || m.title || m.body || m.label)).map((m) => {
+    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接", "策划"].includes(m.kind) ? !!(m.url || m.file) : !!(m.url || m.title || m.body || m.label)).map((m) => {
       const o = Object.assign({}, m);
-      if (o.file || o.dataUrl) o.url = o.name || o.url; // 用最终仓库路径，确保上传后能播放
+      if (o.file || o.preview || (o.url || "").startsWith("blob:")) o.url = o.name || o.url; // 用最终仓库路径，确保上传后能播放
       delete o.file;
       delete o.preview;
       delete o.dataUrl; // base64 缓存不写入 content.json
@@ -1338,8 +1328,13 @@ async function commitBinaryFile(path, fileOrDataUrl) {
     const idx = fileOrDataUrl.indexOf(",");
     b64 = idx === -1 ? "" : fileOrDataUrl.slice(idx + 1);
   } else {
-    const buf = await fileOrDataUrl.arrayBuffer();
-    b64 = base64FromArrayBuffer(buf);
+    try {
+      const buf = await fileOrDataUrl.arrayBuffer();
+      b64 = base64FromArrayBuffer(buf);
+    } catch (readErr) {
+      console.error("[commitBinaryFile] 读取文件失败", readErr);
+      throw new Error("读取本地文件失败（文件可能被系统清理或已被删除），请重新选择：" + path);
+    }
   }
   let sha = null;
   const head = await fetch(url, { headers });
@@ -1474,7 +1469,7 @@ async function saveContent() {
       pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
         setStatus("上传视频：" + basename(pv.name) + " …");
-        await commitBinaryFile(pv.name, pv.dataUrl);
+        await commitBinaryFile(pv.name, pv.file);
       }
       pendingVideoFiles.length = 0;
       await commitToGitHub(str);
@@ -1482,14 +1477,14 @@ async function saveContent() {
     } catch (err) {
       setStatus("保存失败：" + err.message + "（已下载备份）");
       downloadJson(str);
-      pendingVideoFiles.forEach((pv) => downloadFile(pv.dataUrl, basename(pv.name)));
+      pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
       pendingVideoFiles.length = 0;
     }
   } else {
     downloadJson(str);
     pendingImageFiles.forEach((pi) => downloadFile(pi.file, basename(pi.name)));
     pendingImageFiles.length = 0;
-    pendingVideoFiles.forEach((pv) => downloadFile(pv.dataUrl, basename(pv.name)));
+    pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
     pendingVideoFiles.length = 0;
     setStatus("已下载 content.json、图片与视频文件，请放入对应 assets/ 目录并重新部署");
   }
