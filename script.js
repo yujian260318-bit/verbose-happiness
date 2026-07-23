@@ -142,8 +142,9 @@ function applyUserStyles() {
       el.style.fontSize = s.fontSize ? s.fontSize + "px" : "";
       el.style.fontWeight = s.fontWeight || "";
       el.style.textAlign = s.textAlign || "";
+      el.style.borderRadius = s.radius ? s.radius + "px" : "";
     } else {
-      el.style.color = ""; el.style.fontSize = ""; el.style.fontWeight = ""; el.style.textAlign = "";
+      el.style.color = ""; el.style.fontSize = ""; el.style.fontWeight = ""; el.style.textAlign = ""; el.style.borderRadius = "";
     }
   });
 }
@@ -213,7 +214,7 @@ function renderExperience() {
   if (!wrap) return;
   wrap.innerHTML = experiences.map((exp, idx) => {
     const linkHtml = exp.link
-      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情</a>`
+      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情 →</a>`
       : (editing ? `<span class="exp-card__link is-empty">查看详情（请在 content.json 填写链接）</span>` : "");
     const editAttr = editing ? " contenteditable=\"true\"" : "";
     return `
@@ -1079,6 +1080,7 @@ function enableEditing() {
   // 静态文本可编辑
   document.querySelectorAll("[data-edit]").forEach((el) => {
     if (el.closest("#works-grid")) return;
+    if (el.classList.contains("img-slot")) return; // 图片框只调样式（圆角/形状），不进入文本编辑，避免破坏 img
     el.setAttribute("contenteditable", "true");
     const key = el.dataset.edit;
     el.addEventListener("input", () => {
@@ -1217,6 +1219,7 @@ function openStylePop(el) {
       <label>对齐
         <select id="sp-align"><option value="">默认</option><option value="left">左</option><option value="center">中</option><option value="right">右</option></select>
       </label>
+      <label>圆角(px) <input type="number" id="sp-radius" min="0" max="400" step="1"></label>
       <div class="style-pop__actions">
         <button type="button" id="sp-reset" class="btn btn--ghost btn--small">清除</button>
         <button type="button" id="sp-close" class="btn btn--primary btn--small">完成</button>
@@ -1226,6 +1229,7 @@ function openStylePop(el) {
     pop.querySelector("#sp-size").addEventListener("input", () => setStyle(key, "fontSize", pop.querySelector("#sp-size").value));
     pop.querySelector("#sp-weight").addEventListener("change", () => setStyle(key, "fontWeight", pop.querySelector("#sp-weight").value));
     pop.querySelector("#sp-align").addEventListener("change", () => setStyle(key, "textAlign", pop.querySelector("#sp-align").value));
+    pop.querySelector("#sp-radius").addEventListener("input", () => setStyle(key, "radius", pop.querySelector("#sp-radius").value));
     pop.querySelector("#sp-reset").addEventListener("click", () => { styles[key] = {}; applyUserStyles(); syncStylePop(key); setStatus("已清除该元素样式"); });
     pop.querySelector("#sp-close").addEventListener("click", closeStylePop);
   }
@@ -1248,11 +1252,12 @@ function syncStylePop(key) {
   pop.querySelector("#sp-size").value = s.fontSize || "";
   pop.querySelector("#sp-weight").value = s.fontWeight || "";
   pop.querySelector("#sp-align").value = s.textAlign || "";
+  pop.querySelector("#sp-radius").value = s.radius || "";
 }
 function setStyle(key, prop, val) {
   if (!styles[key]) styles[key] = {};
   if (val === "" || val == null) delete styles[key][prop];
-  else styles[key][prop] = (prop === "fontSize") ? parseInt(val, 10) : val;
+  else styles[key][prop] = (prop === "fontSize" || prop === "radius") ? parseInt(val, 10) : val;
   applyUserStyles();
 }
 function closeStylePop() {
@@ -1337,7 +1342,7 @@ function cleanPasswordInput(raw) {
     .replace(/[\s\u00A0\u2000-\u200D\u2028\u2029\u202F\u205F\u3000\uFEFF]+/g, "")
     .trim();
 }
-/* ---------- 自定义登录弹窗（替代原生 prompt，避免显示假空格 + 不泄露密码） ----------
+/* ---------- 自定义登录弹窗（替代原生 prompt，避免显示假空格 + 不泄露密码） ---------- */
 function openLoginModal() {
   const m = document.getElementById("login-modal");
   if (!m) return;
