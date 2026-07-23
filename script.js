@@ -107,6 +107,7 @@ let styles = {};
 let skills = [];
 let sectionOrder = { sections: [] };
 let images = {};
+let educationLayout = null;
 let pendingImageFiles = [];
 let currentImgSlot = null;
 
@@ -136,7 +137,8 @@ function collectDraft() {
     styles: JSON.parse(JSON.stringify(styles)),
     skills: [...skills],
     sectionOrder: JSON.parse(JSON.stringify(sectionOrder)),
-    images: { ...images }
+    images: { ...images },
+    educationLayout: educationLayout ? JSON.parse(JSON.stringify(educationLayout)) : null
   };
 }
 function saveDraft() {
@@ -168,6 +170,7 @@ function applyDraft(draft) {
   if (draft.skills) skills = draft.skills;
   if (draft.sectionOrder) sectionOrder = draft.sectionOrder;
   if (draft.images) images = draft.images;
+  if (draft.educationLayout) educationLayout = draft.educationLayout;
 }
 function startDraftAutoSave() {
   if (draftAutoSaveTimer) clearInterval(draftAutoSaveTimer);
@@ -264,6 +267,7 @@ async function loadContent() {
       }
       if (data.styles && typeof data.styles === "object") styles = data.styles;
       if (data.images && typeof data.images === "object") images = data.images;
+      if (data.educationLayout && typeof data.educationLayout === "object") educationLayout = data.educationLayout;
     }
   } catch (e) { /* 用兜底数据 */ }
   if (!works.length) works = DEFAULT_WORKS.map((x) => ({ ...x }));
@@ -303,6 +307,95 @@ function applyImages() {
     img.style.display = "";
     el.classList.remove("is-empty");
   });
+}
+
+/* ---------- 教育背景自定义布局（可拖拽/缩放） ---------- */
+function getDefaultEducationLayout() {
+  return {
+    canvas: { w: 1030, h: 540 },
+    box1: { x: 0, y: 0, w: 340, h: 255 },
+    box2: { x: 100, y: 273, w: 340, h: 255 },
+    text: { x: 510, y: 0, w: 520, h: "auto" }
+  };
+}
+function applyEducationLayout() {
+  const wrap = document.getElementById("edu-wrap");
+  const box1 = document.getElementById("edu-box1");
+  const box2 = document.getElementById("edu-box2");
+  const text = document.getElementById("edu-text");
+  if (!wrap || !box1 || !box2 || !text) return;
+  const layout = educationLayout || getDefaultEducationLayout();
+  wrap.classList.add("education__wrap--layout");
+  wrap.style.width = layout.canvas.w + "px";
+  wrap.style.height = layout.canvas.h + "px";
+  [[box1, layout.box1], [box2, layout.box2], [text, layout.text]].forEach(([el, cfg]) => {
+    el.style.left = (cfg.x || 0) + "px";
+    el.style.top = (cfg.y || 0) + "px";
+    el.style.width = typeof cfg.w === "number" ? cfg.w + "px" : (cfg.w || "");
+    el.style.height = typeof cfg.h === "number" ? cfg.h + "px" : (cfg.h || "");
+  });
+}
+function collectEducationLayout() {
+  const wrap = document.getElementById("edu-wrap");
+  const box1 = document.getElementById("edu-box1");
+  const box2 = document.getElementById("edu-box2");
+  const text = document.getElementById("edu-text");
+  if (!wrap || !box1 || !box2 || !text) return null;
+  const toNum = (s) => { const n = parseFloat(s); return isNaN(n) ? 0 : Math.round(n); };
+  return {
+    canvas: { w: toNum(wrap.style.width) || 1030, h: toNum(wrap.style.height) || 540 },
+    box1: { x: toNum(box1.style.left), y: toNum(box1.style.top), w: toNum(box1.style.width) || 340, h: toNum(box1.style.height) || 255 },
+    box2: { x: toNum(box2.style.left), y: toNum(box2.style.top), w: toNum(box2.style.width) || 340, h: toNum(box2.style.height) || 255 },
+    text: { x: toNum(text.style.left), y: toNum(text.style.top), w: toNum(text.style.width) || 520, h: "auto" }
+  };
+}
+function enableEducationEditor() {
+  const wrap = document.getElementById("edu-wrap");
+  if (!wrap || wrap.dataset.eduEditorBound) return;
+  wrap.dataset.eduEditorBound = "1";
+  let activeEl = null, startX, startY, startL, startT, startW, startH, mode = null, moved = false;
+  wrap.addEventListener("mousedown", (e) => {
+    if (!editing) return;
+    if (e.button !== 0) return;
+    if (e.target.closest(".style-dot")) return;
+    const target = e.target.closest(".edu__img, #edu-text");
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    const isResize = target.classList.contains("edu__img") && (rect.width - offsetX < 20 && rect.height - offsetY < 20);
+    activeEl = target;
+    mode = isResize ? "resize" : "drag";
+    moved = false;
+    startX = e.clientX; startY = e.clientY;
+    startL = parseFloat(activeEl.style.left) || 0;
+    startT = parseFloat(activeEl.style.top) || 0;
+    startW = activeEl.offsetWidth;
+    startH = activeEl.offsetHeight;
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!activeEl) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+    if (mode === "drag") {
+      activeEl.style.left = Math.max(0, startL + dx) + "px";
+      activeEl.style.top = Math.max(0, startT + dy) + "px";
+    } else if (mode === "resize") {
+      activeEl.style.width = Math.max(120, startW + dx) + "px";
+      activeEl.style.height = Math.max(90, startH + dy) + "px";
+    }
+    const wrap = document.getElementById("edu-wrap");
+    const right = activeEl.offsetLeft + activeEl.offsetWidth;
+    const bottom = activeEl.offsetTop + activeEl.offsetHeight;
+    const cw = parseFloat(wrap.style.width) || 1030;
+    const ch = parseFloat(wrap.style.height) || 540;
+    if (right > cw) wrap.style.width = (right + 20) + "px";
+    if (bottom > ch) wrap.style.height = (bottom + 20) + "px";
+  });
+  window.addEventListener("mouseup", () => { activeEl = null; mode = null; setTimeout(() => { moved = false; }, 50); });
+  window.__eduDragMoved = () => moved;
 }
 
 function paint() {
@@ -1649,7 +1742,9 @@ async function saveContent() {
       if (el) o.content = el.textContent;
     }
   });
-  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder, images }, null, 2);
+  // 收集教育背景自定义布局
+  educationLayout = collectEducationLayout();
+  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
@@ -1762,6 +1857,7 @@ function disableSectionReorder() {
 
 function onImgSlotClick(e) {
   if (!editing) return;
+  if (window.__eduDragMoved && window.__eduDragMoved()) return;
   e.preventDefault();
   currentImgSlot = e.currentTarget;
   imgInput.click();
@@ -1789,9 +1885,11 @@ function enableEditing() {
   enableSectionReorder();
   addStyleDots();
   applyUserStyles();
+  applyEducationLayout();
+  enableEducationEditor();
   // 图片占位槽点击上传
   document.querySelectorAll(".img-slot").forEach((slot) => {
-    slot.style.cursor = "pointer";
+    slot.style.cursor = slot.classList.contains("edu__img") ? "move" : "pointer";
     slot.title = "点击上传图片";
     slot.addEventListener("click", onImgSlotClick);
   });
@@ -2150,4 +2248,5 @@ loadContent().then(() => {
   renderSkills();
   applySectionOrder();
   applyUserStyles();
+  applyEducationLayout();
 });
