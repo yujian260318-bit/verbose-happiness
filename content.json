@@ -29,11 +29,7 @@
     "edu-time": "2023.09 – 2027.06（预计）",
     "edu-gpa": "GPA 3.8 / 4",
     "edu-honor": "<li>国家励志奖学金</li><li>校级三好学生</li><li>专业前 20%</li>",
-    "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>",
-    "frame-about-1": "\n            <img src=\"assets/about-1.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-1.jpg</small></span>\n          ",
-    "frame-about-2": "\n            <img src=\"assets/about-2.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-2.jpg</small></span>\n          ",
-    "frame-edu-1": "\n            <img src=\"assets/edu-1.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-1.jpg</small></span>\n          ",
-    "frame-edu-2": "\n            <img src=\"assets/edu-2.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-2.jpg</small></span>\n          "
+    "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>"
   },
   "categories": [
     "栏目纪实",
@@ -41,255 +37,63 @@
     "社媒内容",
     "广告片"
   ],
-  "works": [
+  "skills": [
     {
-      "id": "zhupassword",
-      "title": "《主厨密码》短视频纪实栏目",
-      "category": "栏目纪实",
-      "type": "视频",
-      "company": "欣和企业 · 市场运营中心",
-      "period": "2025.10 – 2026.01",
-      "role": "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
-      "cover": "linear-gradient(135deg, #A9BF7D, #8DA361)",
-      "videoUrls": [
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》Talib_web.mp4",
-          "poster": "assets/videos/《主厨密码》Talib_web_poster.jpg",
-          "label": "Talib 正片"
-        },
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》Talib预告片_web.mp4",
-          "poster": "assets/videos/《主厨密码》Talib预告片_web_poster.jpg",
-          "label": "Talib 预告"
-        },
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》冯国正_web.mp4",
-          "poster": "assets/videos/《主厨密码》冯国正_web_poster.jpg",
-          "label": "冯国正 正片"
-        },
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》冯国正预告片_web.mp4",
-          "poster": "assets/videos/《主厨密码》冯国正预告片_web_poster.jpg",
-          "label": "冯国正 预告"
-        },
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》王兴顺_web.mp4",
-          "poster": "assets/videos/《主厨密码》王兴顺_web_poster.jpg",
-          "label": "王兴顺 正片"
-        },
-        {
-          "type": "mp4",
-          "url": "assets/videos/《主厨密码》王兴顺预告片_web.mp4",
-          "poster": "assets/videos/《主厨密码》王兴顺预告片_web_poster.jpg",
-          "label": "王兴顺 预告"
-        }
-      ],
-      "metrics": [
-        {
-          "label": "成片",
-          "value": "3 正片 + 3 预告"
-        },
-        {
-          "label": "分发",
-          "value": "公众号 + 爱奇艺"
-        }
-      ],
-      "description": "参与短视频纪实栏目《主厨密码》从选题策划、脚本构思、现场勘景拍摄到后期剪辑包装的全链路内容制作，把控栏目整体内容调性；成片发布于企业公众号并登陆爱奇艺平台。",
-      "content": "",
-      "links": [
-        {
-          "platform": "爱奇艺",
-          "url": ""
-        }
-      ],
-      "media": []
+      "icon": "🎬",
+      "title": "视频内容编导与制作",
+      "desc": "独立负责选题、脚本、拍摄到剪辑包装全流程，作品于海南卫视播出，覆盖纪录片与社媒短视频。",
+      "tags": [
+        "选题",
+        "拍摄",
+        "剪辑"
+      ]
     },
     {
-      "id": "yujian",
-      "title": "《玉见》访谈栏目",
-      "category": "栏目纪实",
-      "type": "视频",
-      "company": "蓝色光标 · 《玉见》导演组",
-      "period": "2026.03 – 2026.05",
-      "role": "导演组实习生：嘉宾内容策划、现场拍摄统筹、多版本视频剪辑。",
-      "cover": "linear-gradient(135deg, #2A3654, #3E4D70)",
-      "videoUrls": [
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe卫视版.mp4",
-          "label": "JoeJoe 卫视版",
-          "poster": "assets/images/yujian-poster.jpg"
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe公益切片.mp4",
-          "label": "JoeJoe 公益切片"
-        }
-      ],
-      "metrics": [
-        {
-          "label": "播出",
-          "value": "卫视版登陆海南卫视"
-        }
-      ],
-      "description": "梳理嘉宾人物背景与故事脉络，参与访谈逻辑提纲设计，独立撰写拍摄脚本框架；统筹对接嘉宾、摄影及现场执行团队；独立完成多版本视频（含卫视版）粗剪与精剪，其中卫视版在海南卫视播出。",
-      "content": "",
-      "links": [],
-      "media": []
+      "icon": "✍️",
+      "title": "内容策划与脚本",
+      "desc": "搭建嘉宾叙事脉络、撰写拍摄脚本，主导纪录片《主厨密码》选题与广告短片创意。",
+      "tags": [
+        "叙事",
+        "脚本",
+        "创意"
+      ]
     },
     {
-      "id": "ai-next",
-      "title": "AI Next 疯享会（活动拍摄 + 传播）",
-      "category": "活动拍摄",
-      "type": "视频",
-      "company": "腾讯 CDG · 青腾",
-      "period": "2026.05 – 至今",
-      "role": "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
-      "cover": "linear-gradient(135deg, #D4A574, #C47E54)",
-      "videoUrls": [
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182307-logo版.mp4",
-          "label": "logo 版",
-          "portrait": false,
-          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-183300-ai-next-logo版-2s.jpg"
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182309-vlog2横版_logo.mp4",
-          "label": "vlog2 横版+logo",
-          "portrait": false
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182312-6.30上海场预告.mp4",
-          "label": "6.30 上海场预告",
-          "portrait": true
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182313-7.10深圳场预告.mp4",
-          "label": "7.10 深圳场预告",
-          "portrait": true
-        }
-      ],
-      "metrics": [
-        {
-          "label": "触达",
-          "value": "10,000+"
-        },
-        {
-          "label": "每场报名",
-          "value": "约 10 人（线上）"
-        },
-        {
-          "label": "涨粉",
-          "value": "800+"
-        }
-      ],
-      "description": "完成 AI Next 疯享会线下活动全程现场拍摄；线上筛选并对接活动相关 KOC，累计触达 10,000+ 人，额外带动每场约 10 人经线上渠道自主报名；为小红书 / 即刻账号提供剪辑与文案，支撑冷启动涨粉 800+。",
-      "content": "",
-      "links": [
-        {
-          "platform": "小红书",
-          "url": ""
-        },
-        {
-          "platform": "即刻",
-          "url": ""
-        }
-      ],
-      "media": []
+      "icon": "📱",
+      "title": "社媒内容支持",
+      "desc": "提供短视频剪辑与文案产出，支撑活动账号从 0 到 1 内容落地，累计涨粉 800+。",
+      "tags": [
+        "小红书",
+        "即刻",
+        "文案"
+      ]
     },
     {
-      "id": "social",
-      "title": "小红书 / 即刻 社媒内容",
-      "category": "社媒内容",
-      "type": "图文",
-      "company": "腾讯 CDG · 青腾",
-      "period": "2026.05 – 至今",
-      "role": "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
-      "cover": "linear-gradient(135deg, #8DA361, #A9BF7D)",
-      "videoUrls": [
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182251-杨教授新书发布会.mp4",
-          "label": "杨教授新书发布会",
-          "portrait": true,
-          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-182250-social-杨教授新书发布会.jpg"
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182259-1.mp4",
-          "label": "小红书 1",
-          "portrait": true
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182301-2.mp4",
-          "label": "小红书 2",
-          "portrait": true
-        },
-        {
-          "type": "mp4",
-          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182305-3.mp4",
-          "label": "小红书 3",
-          "portrait": true
-        }
-      ],
-      "metrics": [
-        {
-          "label": "涨粉",
-          "value": "800+"
-        },
-        {
-          "label": "关注者",
-          "value": "含大几千至万粉量级用户"
-        }
-      ],
-      "description": "负责小红书、即刻双平台活动账号的短视频剪辑与种草文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引含大几千至万粉量级的行业用户关注。",
-      "content": "",
-      "links": [
-        {
-          "platform": "小红书",
-          "url": ""
-        },
-        {
-          "platform": "即刻",
-          "url": ""
-        }
-      ],
-      "media": []
+      "icon": "🤝",
+      "title": "KOC 资源拓展",
+      "desc": "筛选对接垂类达人，触达 10000+ 人，带动每场约 10 人线上报名。",
+      "tags": [
+        "达人筛选",
+        "传播"
+      ]
     },
     {
-      "id": "ad-award",
-      "title": "大广赛品牌广告短片",
-      "category": "广告片",
-      "type": "视频",
-      "company": "全国大学生广告艺术大赛",
-      "period": "2024 – 2025",
-      "role": "创作核心成员：主导脚本撰写、现场拍摄、后期全片剪辑。",
-      "cover": "linear-gradient(135deg, #5A5A5A, #8A8A8A)",
-      "videoUrls": [],
-      "metrics": [
-        {
-          "label": "奖项",
-          "value": "北京赛区三等奖"
-        },
-        {
-          "label": "时长",
-          "value": "约 60s"
-        }
-      ],
-      "description": "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
-      "content": "",
-      "links": [],
-      "media": []
+      "icon": "🎥",
+      "title": "现场拍摄统筹",
+      "desc": "统筹勘景、活动拍摄与现场调度，对接嘉宾、摄影与执行团队。",
+      "tags": [
+        "勘景",
+        "现场调度"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "title": "跨团队协作",
+      "desc": "联动设计、运营、摄影等多团队同步需求，完成素材归档与项目进度管理。",
+      "tags": [
+        "协作",
+        "项目管理"
+      ]
     }
   ],
   "experience": [
@@ -359,6 +163,252 @@
       "images": []
     }
   ],
+  "works": [
+    {
+      "id": "zhupassword",
+      "title": "《主厨密码》短视频纪实栏目",
+      "category": "栏目纪实",
+      "type": "视频",
+      "company": "欣和企业 · 市场运营中心",
+      "period": "2025.10 – 2026.01",
+      "role": "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
+      "cover": "linear-gradient(135deg, #A9BF7D, #8DA361)",
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》Talib_web.mp4",
+          "poster": "assets/videos/《主厨密码》Talib_web_poster.jpg",
+          "label": "Talib 正片"
+        },
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》Talib预告片_web.mp4",
+          "poster": "assets/videos/《主厨密码》Talib预告片_web_poster.jpg",
+          "label": "Talib 预告"
+        },
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》冯国正_web.mp4",
+          "poster": "assets/videos/《主厨密码》冯国正_web_poster.jpg",
+          "label": "冯国正 正片"
+        },
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》冯国正预告片_web.mp4",
+          "poster": "assets/videos/《主厨密码》冯国正预告片_web_poster.jpg",
+          "label": "冯国正 预告"
+        },
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》王兴顺_web.mp4",
+          "poster": "assets/videos/《主厨密码》王兴顺_web_poster.jpg",
+          "label": "王兴顺 正片"
+        },
+        {
+          "type": "mp4",
+          "url": "assets/videos/《主厨密码》王兴顺预告片_web.mp4",
+          "poster": "assets/videos/《主厨密码》王兴顺预告片_web_poster.jpg",
+          "label": "王兴顺 预告"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "成片",
+          "value": "3 正片 + 3 预告"
+        },
+        {
+          "label": "分发",
+          "value": "公众号 + 爱奇艺"
+        }
+      ],
+      "description": "参与短视频纪实栏目《主厨密码》从选题策划、脚本构思、现场勘景拍摄到后期剪辑包装的全链路内容制作，把控栏目整体内容调性；成片发布于企业公众号并登陆爱奇艺平台。",
+      "content": "",
+      "links": [
+        {
+          "platform": "爱奇艺",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "id": "yujian",
+      "title": "《玉见》访谈栏目",
+      "category": "栏目纪实",
+      "type": "视频",
+      "company": "蓝色光标 · 《玉见》导演组",
+      "period": "2026.03 – 2026.05",
+      "role": "导演组实习生：嘉宾内容策划、现场拍摄统筹、多版本视频剪辑。",
+      "cover": "linear-gradient(135deg, #2A3654, #3E4D70)",
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe卫视版.mp4",
+          "label": "JoeJoe 卫视版",
+          "poster": "assets/images/yujian-poster.jpg"
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-JoeJoe公益切片.mp4",
+          "label": "JoeJoe 公益切片"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "播出",
+          "value": "卫视版登陆海南卫视"
+        }
+      ],
+      "description": "梳理嘉宾人物背景与故事脉络，参与访谈逻辑提纲设计，独立撰写拍摄脚本框架；统筹对接嘉宾、摄影及现场执行团队；独立完成多版本视频（含卫视版）粗剪与精剪，其中卫视版在海南卫视播出。",
+      "content": "",
+      "links": []
+    },
+    {
+      "id": "ai-next",
+      "title": "AI Next 疯享会（活动拍摄 + 传播）",
+      "category": "活动拍摄",
+      "type": "视频",
+      "company": "腾讯 CDG · 青腾",
+      "period": "2026.05 – 至今",
+      "role": "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
+      "cover": "linear-gradient(135deg, #D4A574, #C47E54)",
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182307-logo版.mp4",
+          "label": "logo 版",
+          "portrait": false,
+          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-183300-ai-next-logo版-2s.jpg"
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182309-vlog2横版_logo.mp4",
+          "label": "vlog2 横版+logo",
+          "portrait": false
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182312-6.30上海场预告.mp4",
+          "label": "6.30 上海场预告",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182313-7.10深圳场预告.mp4",
+          "label": "7.10 深圳场预告",
+          "portrait": true
+        }
+      ],
+      "metrics": [
+        {
+          "label": "触达",
+          "value": "10,000+"
+        },
+        {
+          "label": "每场报名",
+          "value": "约 10 人（线上）"
+        },
+        {
+          "label": "涨粉",
+          "value": "800+"
+        }
+      ],
+      "description": "完成 AI Next 疯享会线下活动全程现场拍摄；线上筛选并对接活动相关 KOC，累计触达 10,000+ 人，额外带动每场约 10 人经线上渠道自主报名；为小红书 / 即刻账号提供剪辑与文案，支撑冷启动涨粉 800+。",
+      "content": "",
+      "links": [
+        {
+          "platform": "小红书",
+          "url": ""
+        },
+        {
+          "platform": "即刻",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "title": "小红书 / 即刻 社媒内容",
+      "category": "社媒内容",
+      "type": "图文",
+      "company": "腾讯 CDG · 青腾",
+      "period": "2026.05 – 至今",
+      "role": "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
+      "cover": "linear-gradient(135deg, #8DA361, #A9BF7D)",
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182251-杨教授新书发布会.mp4",
+          "label": "杨教授新书发布会",
+          "portrait": true,
+          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-182250-social-杨教授新书发布会.jpg"
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182259-1.mp4",
+          "label": "小红书 1",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182301-2.mp4",
+          "label": "小红书 2",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182305-3.mp4",
+          "label": "小红书 3",
+          "portrait": true
+        }
+      ],
+      "metrics": [
+        {
+          "label": "涨粉",
+          "value": "800+"
+        },
+        {
+          "label": "关注者",
+          "value": "含大几千至万粉量级用户"
+        }
+      ],
+      "description": "负责小红书、即刻双平台活动账号的短视频剪辑与种草文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引含大几千至万粉量级的行业用户关注。",
+      "content": "",
+      "links": [
+        {
+          "platform": "小红书",
+          "url": ""
+        },
+        {
+          "platform": "即刻",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "id": "ad-award",
+      "title": "大广赛品牌广告短片",
+      "category": "广告片",
+      "type": "视频",
+      "company": "全国大学生广告艺术大赛",
+      "period": "2024 – 2025",
+      "role": "创作核心成员：主导脚本撰写、现场拍摄、后期全片剪辑。",
+      "cover": "linear-gradient(135deg, #5A5A5A, #8A8A8A)",
+      "videoUrls": [],
+      "metrics": [
+        {
+          "label": "奖项",
+          "value": "北京赛区三等奖"
+        },
+        {
+          "label": "时长",
+          "value": "约 60s"
+        }
+      ],
+      "description": "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
+      "content": "",
+      "links": []
+    }
+  ],
   "overlays": [],
   "theme": {
     "colors": {
@@ -384,65 +434,6 @@
     }
   },
   "styles": {},
-  "skills": [
-    {
-      "icon": "🎬",
-      "title": "视频内容编导与制作",
-      "desc": "独立负责选题、脚本、拍摄到剪辑包装全流程，作品于海南卫视播出，覆盖纪录片与社媒短视频。",
-      "tags": [
-        "选题",
-        "拍摄",
-        "剪辑"
-      ]
-    },
-    {
-      "icon": "✍️",
-      "title": "内容策划与脚本",
-      "desc": "搭建嘉宾叙事脉络、撰写拍摄脚本，主导纪录片《主厨密码》选题与广告短片创意。",
-      "tags": [
-        "叙事",
-        "脚本",
-        "创意"
-      ]
-    },
-    {
-      "icon": "📱",
-      "title": "社媒内容支持",
-      "desc": "提供短视频剪辑与文案产出，支撑活动账号从 0 到 1 内容落地，累计涨粉 800+。",
-      "tags": [
-        "小红书",
-        "即刻",
-        "文案"
-      ]
-    },
-    {
-      "icon": "🤝",
-      "title": "KOC 资源拓展",
-      "desc": "筛选对接垂类达人，触达 10000+ 人，带动每场约 10 人线上报名。",
-      "tags": [
-        "达人筛选",
-        "传播"
-      ]
-    },
-    {
-      "icon": "🎥",
-      "title": "现场拍摄统筹",
-      "desc": "统筹勘景、活动拍摄与现场调度，对接嘉宾、摄影与执行团队。",
-      "tags": [
-        "勘景",
-        "现场调度"
-      ]
-    },
-    {
-      "icon": "🧩",
-      "title": "跨团队协作",
-      "desc": "联动设计、运营、摄影等多团队同步需求，完成素材归档与项目进度管理。",
-      "tags": [
-        "协作",
-        "项目管理"
-      ]
-    }
-  ],
   "sectionOrder": {
     "sections": [
       "about",
@@ -453,11 +444,5 @@
       "contact"
     ]
   },
-  "images": {},
-  "educationLayout": {
-    "text": {
-      "x": -93,
-      "y": 2
-    }
-  }
+  "images": {}
 }
