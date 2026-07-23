@@ -529,24 +529,35 @@ function initVideoWraps(root) {
 }
 
 function reorderVideosByOrientation(root) {
-  // 现在已经按系列/文件名把横竖版排好在左右两列，这里只做一件事：
-  // 等视频元数据加载后，校准每个视频的 class（防止文件名判断错误）。
-  (root || document).querySelectorAll(".modal__vid[data-orient]").forEach((vid) => {
-    const video = vid.querySelector("video");
-    if (!video) return;
-    function apply() {
-      if (!video.videoWidth || !video.videoHeight) return;
-      const isPortrait = video.videoWidth / video.videoHeight < 1;
-      vid.classList.toggle("modal__vid--landscape", !isPortrait);
-      vid.classList.toggle("modal__vid--portrait", isPortrait);
-    }
-    if (video.readyState >= 1) apply();
-    else {
-      video.addEventListener("loadedmetadata", apply, { once: true });
-      video.addEventListener("loadeddata", apply, { once: true });
-    }
-    // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
-    setTimeout(() => { if (video.readyState >= 1) apply(); }, 8000);
+  // 等视频元数据加载后，按真实宽高比重新排序：横版在前，竖版三个一排放在最后
+  const groups = (root || document).querySelectorAll(".modal__group-items--video");
+  groups.forEach((group) => {
+    const vids = Array.from(group.querySelectorAll(":scope > .modal__vid"));
+    if (!vids.length) return;
+    const promises = vids.map((vid) => new Promise((resolve) => {
+      const video = vid.querySelector("video");
+      function finish(isPortrait) {
+        vid.classList.toggle("modal__vid--landscape", !isPortrait);
+        vid.classList.toggle("modal__vid--portrait", isPortrait);
+        resolve({ vid, isPortrait });
+      }
+      if (!video) { finish(false); return; }
+      function apply() {
+        if (!video.videoWidth || !video.videoHeight) { finish(false); return; }
+        finish(video.videoWidth / video.videoHeight < 1);
+      }
+      if (video.readyState >= 1) apply();
+      else {
+        video.addEventListener("loadedmetadata", apply, { once: true });
+        video.addEventListener("loadeddata", apply, { once: true });
+      }
+      // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
+      setTimeout(() => { if (video.readyState >= 1) apply(); }, 8000);
+    }));
+    Promise.all(promises).then((results) => {
+      results.sort((a, b) => a.isPortrait - b.isPortrait); // 横版 0 在前，竖版 1 在后
+      results.forEach((r) => group.appendChild(r.vid));
+    });
   });
 }
 
@@ -576,7 +587,7 @@ function renderMediaGroups(w) {
   const groups = {};
   (w.videoUrls || []).forEach((v) => { (groups["视频"] = groups["视频"] || []).push({ kind: "视频", v }); });
   (w.media || []).forEach((m) => { (groups[m.kind] = groups[m.kind] || []).push({ kind: m.kind, m }); });
-  const order = ["视频", "图片", "图文", "文案", "Word", "PDF", "社媒链接", "文章", "其他"];
+  const order = ["视频", "图片", "图文", "文案", "策划", "Word", "PDF", "社媒链接", "文章", "其他"];
   const kinds = Object.keys(groups).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   if (!kinds.length) return `<div class="media-placeholder">作品内容待补充 —— 编辑模式下点卡片「✎ 详情」添加视频 / 图片 / Word / PDF / 社媒链接 等。</div>`;
   return kinds.map((kind) => {
@@ -585,29 +596,24 @@ function renderMediaGroups(w) {
     const isGrid = kind === "图片";
     let inner;
     if (isVideo) {
-      // 按系列分组，每个系列内：横版放左列，竖版放右列
-      const seriesMap = {};
-      items.forEach((it) => {
-        const key = seriesKeyOfVideo(it.v) || "其他";
-        (seriesMap[key] = seriesMap[key] || []).push(it);
-      });
-      inner = Object.keys(seriesMap).map((key) => {
-        const list = seriesMap[key];
-        const lands = list.filter((it) => !isPortraitVideo(it.v));
-        const ports = list.filter((it) => isPortraitVideo(it.v));
-        return `
-          <div class="modal__series-row">
-            <div class="modal__series-col modal__series-col--landscape">
-              ${lands.map((it) => `<div class="modal__vid modal__vid--landscape" data-orient>${renderVideo(it.v)}</div>`).join("")}
-            </div>
-            <div class="modal__series-col modal__series-col--portrait">
-              ${ports.map((it) => `<div class="modal__vid modal__vid--portrait" data-orient>${renderVideo(it.v)}</div>`).join("")}
-            </div>
-          </div>`;
-      }).join("");
+      // 先放所有横版（每个占满一行），最后把竖版三个一排放在底部
+      const lands = items.filter((it) => !isPortraitVideo(it.v));
+      const ports = items.filter((it) => isPortraitVideo(it.v));
+      inner = lands.map((it) => `<div class="modal__vid modal__vid--landscape" data-orient>${renderVideo(it.v)}</div>`).join("")
+            + ports.map((it) => `<div class="modal__vid modal__vid--portrait" data-orient>${renderVideo(it.v)}</div>`).join("");
     } else {
       inner = items.map((it) => {
         if (it.kind === "图片") return `<figure class="modal__fig"><img class="modal__img" src="${escAttr(it.m.url)}" alt="${escAttr(it.m.caption || "")}" loading="lazy" />${it.m.caption ? `<figcaption class="modal__cap">${esc(it.m.caption)}</figcaption>` : ""}</figure>`;
+        if (it.kind === "策划") {
+          let html = "";
+          if (it.m.url) {
+            html += `<a class="modal__doc" href="${escAttr(it.m.url)}" target="_blank" rel="noopener"><span class="modal__doc-icon">📋</span><span class="modal__doc-info"><strong>${esc(it.m.label || "策划案")}</strong><span class="modal__doc-meta">点击下载 / 预览</span></span></a>`;
+          }
+          if (it.m.body || it.m.title) {
+            html += `<div class="modal__text"><h4>${esc(it.m.title || it.m.label || "策划说明")}</h4><div class="modal__text-body">${esc(it.m.body || "")}</div></div>`;
+          }
+          return html || `<div class="modal__text"><div class="modal__text-body">（策划内容待补充）</div></div>`;
+        }
         if (it.kind === "Word" || it.kind === "PDF") {
           const ext = it.kind === "Word" ? "docx" : "pdf";
           const label = it.m.label || it.kind + " 文件";
@@ -791,9 +797,16 @@ document.getElementById("vm-file").addEventListener("change", (e) => {
   const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
   const name = "assets/videos/" + Date.now() + "-" + safe;
   const blobUrl = URL.createObjectURL(file);
-  vmList.push({ type: "mp4", url: blobUrl, name, file });
-  pendingVideoFiles.push({ name, file });
-  renderVmList();
+  // 立即读成 base64 data URL 缓存，避免原始 File 引用在保存前失效
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    vmList.push({ type: "mp4", url: blobUrl, name, dataUrl });
+    pendingVideoFiles.push({ name, dataUrl });
+    renderVmList();
+  };
+  reader.onerror = () => { alert("读取本地视频失败，请重新选择文件"); };
+  reader.readAsDataURL(file);
   e.target.value = "";
 });
 document.getElementById("vm-save").addEventListener("click", saveVideoManager);
@@ -838,15 +851,18 @@ function renderWmMedia() {
   if (!box) return;
   if (!wmMedia.length) { box.innerHTML = '<p class="wm-empty">暂无多媒体。用下方按钮添加视频 / 图片 / 图文 / Word / PDF / 社媒链接 等。</p>'; return; }
   box.innerHTML = "";
-  const allKinds = ["视频", "图片", "图文", "文案", "Word", "PDF", "社媒链接", "文章", "其他"];
+  const allKinds = ["视频", "图片", "图文", "文案", "策划", "Word", "PDF", "社媒链接", "文章", "其他"];
   wmMedia.forEach((m, i) => {
     const row = document.createElement("div");
     row.className = "wm-media-row";
     const kindSel = `<select class="wm-media-kind" data-i="${i}">${allKinds.map((k) => `<option value="${k}"${k === m.kind ? " selected" : ""}>${k}</option>`).join("")}</select>`;
     let fields = "";
     if (m.kind === "视频") {
+      const vname = m.name ? basename(m.name) : (m.url ? basename(m.url) : "");
+      const vprev = m.preview ? `<a class="wm-media-prev" href="${escAttr(m.preview)}" target="_blank" rel="noopener">预览</a>` : "";
+      const badge = (m.file || (m.url || "").startsWith("assets/videos/")) ? `<span class="wm-media-fname">📹 ${esc(vname)}</span>${vprev}` : "";
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="视频链接或 assets/videos/xxx.mp4" value="${escAttr(m.url || "")}" />
-                <input class="wm-media-label" data-i="${i}" placeholder="标签，如：正片 / 预告" value="${escAttr(m.label || "")}" />`;
+                <input class="wm-media-label" data-i="${i}" placeholder="标签，如：正片 / 预告" value="${escAttr(m.label || "")}" />${badge}`;
     } else if (m.kind === "图片") {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="图片链接或 assets/xxx.jpg" value="${escAttr(m.url || "")}" />
                 <input class="wm-media-cap" data-i="${i}" placeholder="图片说明" value="${escAttr(m.caption || "")}" />`;
@@ -857,6 +873,10 @@ function renderWmMedia() {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="链接地址，如 https://www.xiaohongshu.com/..." value="${escAttr(m.url || "")}" />
                 <input class="wm-media-label" data-i="${i}" placeholder="平台名称，如：小红书 / 即刻 / 公众号" value="${escAttr(m.label || "")}" />
                 <input class="wm-media-cap" data-i="${i}" placeholder="一句话说明" value="${escAttr(m.caption || "")}" />`;
+    } else if (m.kind === "策划") {
+      fields = `<input class="wm-media-url" data-i="${i}" placeholder="策划案文件链接或 assets/docs/xxx" value="${escAttr(m.url || "")}" />
+                <input class="wm-media-label" data-i="${i}" placeholder="策划案标题" value="${escAttr(m.label || "")}" />
+                <textarea class="wm-media-body" data-i="${i}" placeholder="策划说明 / 正文" rows="2">${esc(m.body || "")}</textarea>`;
     } else {
       fields = `<input class="wm-media-title" data-i="${i}" placeholder="标题" value="${escAttr(m.title || "")}" />
                 <textarea class="wm-media-body" data-i="${i}" placeholder="正文内容" rows="2">${esc(m.body || "")}</textarea>`;
@@ -885,6 +905,32 @@ function bindWmMediaAdd() {
   if (addW) addW.addEventListener("click", () => { wmMedia.push({ kind: "Word", url: "", label: "" }); renderWmMedia(); });
   if (addP) addP.addEventListener("click", () => { wmMedia.push({ kind: "PDF", url: "", label: "" }); renderWmMedia(); });
   if (addS) addS.addEventListener("click", () => { wmMedia.push({ kind: "社媒链接", url: "", label: "", caption: "" }); renderWmMedia(); });
+  const addPlan = document.getElementById("wm-add-plan");
+  if (addPlan) addPlan.addEventListener("click", () => { wmMedia.push({ kind: "策划", url: "", label: "", body: "" }); renderWmMedia(); });
+  // 作品详情弹窗：直接上传本地视频文件（与卡片视频管理弹窗一致）
+  const upV = document.getElementById("wm-upload-video");
+  const upF = document.getElementById("wm-video-file");
+  if (upV && upF) {
+    upV.addEventListener("click", () => upF.click());
+    upF.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const safe = (file.name || "video.mp4").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
+      const name = "assets/videos/" + Date.now() + "-" + safe;
+      const preview = URL.createObjectURL(file);
+      // 立即把视频读成 base64 data URL 缓存，避免原始 File 引用在保存前失效
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        wmMedia.push({ kind: "视频", url: name, name, label: "", preview, dataUrl });
+        pendingVideoFiles.push({ name, dataUrl });
+        renderWmMedia();
+      };
+      reader.onerror = () => { alert("读取本地视频失败，请重新选择文件"); };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    });
+  }
 }
 bindWmMediaAdd();
 
@@ -934,7 +980,14 @@ function saveWorkModal() {
     content: document.getElementById("wm-content").value,
     metrics: parseMetrics(document.getElementById("wm-metrics").value),
     links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
-    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接"].includes(m.kind) ? !!m.url : !!(m.title || m.body)).map((m) => Object.assign({}, m))
+    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接"].includes(m.kind) ? !!m.url : !!(m.url || m.title || m.body || m.label)).map((m) => {
+      const o = Object.assign({}, m);
+      if (o.file || o.dataUrl) o.url = o.name || o.url; // 用最终仓库路径，确保上传后能播放
+      delete o.file;
+      delete o.preview;
+      delete o.dataUrl; // base64 缓存不写入 content.json
+      return o;
+    })
   };
   if (wmWork) {
     Object.assign(wmWork, data);
@@ -1252,12 +1305,16 @@ function downloadJson(str) {
   a.click();
   URL.revokeObjectURL(a.href);
 }
-function downloadFile(file, filename) {
+function downloadFile(fileOrDataUrl, filename) {
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(file);
+  if (typeof fileOrDataUrl === "string" && fileOrDataUrl.startsWith("data:")) {
+    a.href = fileOrDataUrl;
+  } else {
+    a.href = URL.createObjectURL(fileOrDataUrl);
+  }
   a.download = filename;
   a.click();
-  URL.revokeObjectURL(a.href);
+  if (!a.href.startsWith("data:")) URL.revokeObjectURL(a.href);
 }
 // 将二进制文件转为 base64（分块，避免 btoa 超出参数长度限制）
 function base64FromArrayBuffer(buffer) {
@@ -1269,14 +1326,21 @@ function base64FromArrayBuffer(buffer) {
   }
   return btoa(binary);
 }
-async function commitBinaryFile(path, file) {
+async function commitBinaryFile(path, fileOrDataUrl) {
   const cfg = SITE_CONFIG.github || {};
   const token = await getToken();
   if (!token) throw new Error("未提供 token");
+  if (!fileOrDataUrl) throw new Error("文件内容为空");
   const url = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
-  const buf = await file.arrayBuffer();
-  const b64 = base64FromArrayBuffer(buf);
+  let b64;
+  if (typeof fileOrDataUrl === "string" && fileOrDataUrl.startsWith("data:")) {
+    const idx = fileOrDataUrl.indexOf(",");
+    b64 = idx === -1 ? "" : fileOrDataUrl.slice(idx + 1);
+  } else {
+    const buf = await fileOrDataUrl.arrayBuffer();
+    b64 = base64FromArrayBuffer(buf);
+  }
   let sha = null;
   const head = await fetch(url, { headers });
   if (head.ok) sha = (await head.json()).sha;
@@ -1410,7 +1474,7 @@ async function saveContent() {
       pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
         setStatus("上传视频：" + basename(pv.name) + " …");
-        await commitBinaryFile(pv.name, pv.file);
+        await commitBinaryFile(pv.name, pv.dataUrl);
       }
       pendingVideoFiles.length = 0;
       await commitToGitHub(str);
@@ -1418,14 +1482,14 @@ async function saveContent() {
     } catch (err) {
       setStatus("保存失败：" + err.message + "（已下载备份）");
       downloadJson(str);
-      pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
+      pendingVideoFiles.forEach((pv) => downloadFile(pv.dataUrl, basename(pv.name)));
       pendingVideoFiles.length = 0;
     }
   } else {
     downloadJson(str);
     pendingImageFiles.forEach((pi) => downloadFile(pi.file, basename(pi.name)));
     pendingImageFiles.length = 0;
-    pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
+    pendingVideoFiles.forEach((pv) => downloadFile(pv.dataUrl, basename(pv.name)));
     pendingVideoFiles.length = 0;
     setStatus("已下载 content.json、图片与视频文件，请放入对应 assets/ 目录并重新部署");
   }
