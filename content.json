@@ -271,7 +271,33 @@
       "period": "2026.05 – 至今",
       "role": "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
       "cover": "linear-gradient(135deg, #D4A574, #C47E54)",
-      "videoUrls": [],
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182307-logo版.mp4",
+          "label": "logo 版",
+          "portrait": false,
+          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-182251-ai-next-logo版.jpg"
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182309-vlog2横版_logo.mp4",
+          "label": "vlog2 横版+logo",
+          "portrait": false
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182312-6.30上海场预告.mp4",
+          "label": "6.30 上海场预告",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182313-7.10深圳场预告.mp4",
+          "label": "7.10 深圳场预告",
+          "portrait": true
+        }
+      ],
       "metrics": [
         {
           "label": "触达",
@@ -308,7 +334,33 @@
       "period": "2026.05 – 至今",
       "role": "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
       "cover": "linear-gradient(135deg, #8DA361, #A9BF7D)",
-      "videoUrls": [],
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182251-杨教授新书发布会.mp4",
+          "label": "杨教授新书发布会",
+          "portrait": true,
+          "poster": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/posters/20260723-182250-social-杨教授新书发布会.jpg"
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182259-1.mp4",
+          "label": "小红书 1",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182301-2.mp4",
+          "label": "小红书 2",
+          "portrait": true
+        },
+        {
+          "type": "mp4",
+          "url": "https://xinyi-video-1457418615.cos.ap-beijing.myqcloud.com/videos/20260723-182305-3.mp4",
+          "label": "小红书 3",
+          "portrait": true
+        }
+      ],
       "metrics": [
         {
           "label": "涨粉",
