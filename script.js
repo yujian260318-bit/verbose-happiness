@@ -319,91 +319,16 @@ function getDefaultEducationLayout() {
   };
 }
 function applyEducationLayout() {
-  const wrap = document.getElementById("edu-wrap");
-  const box1 = document.getElementById("edu-box1");
-  const box2 = document.getElementById("edu-box2");
-  const text = document.getElementById("edu-text");
-  if (!wrap || !box1 || !box2 || !text) return;
-  const layout = educationLayout || getDefaultEducationLayout();
-  wrap.classList.add("education__wrap--layout");
-  wrap.style.width = layout.canvas.w + "px";
-  wrap.style.height = layout.canvas.h + "px";
-  [[box1, layout.box1], [box2, layout.box2], [text, layout.text]].forEach(([el, cfg]) => {
-    el.style.left = (cfg.x || 0) + "px";
-    el.style.top = (cfg.y || 0) + "px";
-    el.style.width = typeof cfg.w === "number" ? cfg.w + "px" : (cfg.w || "");
-    el.style.height = typeof cfg.h === "number" ? cfg.h + "px" : (cfg.h || "");
-  });
+  // 已禁用：恢复标准 grid 两栏布局（左图右文），不再应用绝对定位自定义布局
+  return;
 }
 function collectEducationLayout() {
-  const wrap = document.getElementById("edu-wrap");
-  const box1 = document.getElementById("edu-box1");
-  const box2 = document.getElementById("edu-box2");
-  const text = document.getElementById("edu-text");
-  if (!wrap || !box1 || !box2 || !text) return null;
-  const toNum = (s) => { const n = parseFloat(s); return isNaN(n) ? 0 : Math.round(n); };
-  return {
-    canvas: { w: toNum(wrap.style.width) || 1030, h: toNum(wrap.style.height) || 540 },
-    box1: { x: toNum(box1.style.left), y: toNum(box1.style.top), w: toNum(box1.style.width) || 340, h: toNum(box1.style.height) || 255 },
-    box2: { x: toNum(box2.style.left), y: toNum(box2.style.top), w: toNum(box2.style.width) || 340, h: toNum(box2.style.height) || 255 },
-    text: { x: toNum(text.style.left), y: toNum(text.style.top), w: toNum(text.style.width) || 520, h: "auto" }
-  };
+  // 已禁用：不再收集/保存教育背景自定义布局
+  return null;
 }
 function enableEducationEditor() {
-  const wrap = document.getElementById("edu-wrap");
-  if (!wrap || wrap.dataset.eduEditorBound) return;
-  wrap.dataset.eduEditorBound = "1";
-  let activeEl = null, startX, startY, startL, startT, startW, startH, mode = null, moved = false;
-  wrap.addEventListener("mousedown", (e) => {
-    if (!editing) return;
-    if (e.button !== 0) return;
-    if (e.target.closest(".style-dot")) return;
-    const target = e.target.closest(".edu__img, #edu-text");
-    if (!target) return;
-    const rect = target.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    const isResize = target.classList.contains("edu__img") && (rect.width - offsetX < 20 && rect.height - offsetY < 20);
-    activeEl = target;
-    mode = isResize ? "resize" : "drag";
-    moved = false;
-    startX = e.clientX; startY = e.clientY;
-    startL = parseFloat(activeEl.style.left) || 0;
-    startT = parseFloat(activeEl.style.top) || 0;
-    startW = activeEl.offsetWidth;
-    startH = activeEl.offsetHeight;
-    if (target.classList.contains("edu__img")) e.preventDefault();
-  });
-  window.addEventListener("mousemove", (e) => {
-    if (!activeEl) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-      moved = true;
-      activeEl.style.userSelect = "none";
-      const sel = window.getSelection();
-      if (sel) sel.removeAllRanges();
-    }
-    if (mode === "drag") {
-      activeEl.style.left = Math.max(0, startL + dx) + "px";
-      activeEl.style.top = Math.max(0, startT + dy) + "px";
-    } else if (mode === "resize") {
-      activeEl.style.width = Math.max(120, startW + dx) + "px";
-      activeEl.style.height = Math.max(90, startH + dy) + "px";
-    }
-    const wrap = document.getElementById("edu-wrap");
-    const right = activeEl.offsetLeft + activeEl.offsetWidth;
-    const bottom = activeEl.offsetTop + activeEl.offsetHeight;
-    const cw = parseFloat(wrap.style.width) || 1030;
-    const ch = parseFloat(wrap.style.height) || 540;
-    if (right > cw) wrap.style.width = (right + 20) + "px";
-    if (bottom > ch) wrap.style.height = (bottom + 20) + "px";
-  });
-  window.addEventListener("mouseup", () => {
-    if (activeEl) activeEl.style.userSelect = "";
-    activeEl = null; mode = null; setTimeout(() => { moved = false; }, 50);
-  });
-  window.__eduDragMoved = () => moved;
+  // 已禁用：不再启用拖拽/缩放编辑器，避免布局混乱
+  return;
 }
 
 function paint() {
