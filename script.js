@@ -537,8 +537,13 @@ function reorderVideosByOrientation(root) {
         finish(video.videoWidth / video.videoHeight < 1);
       }
       if (video.readyState >= 1) onMeta();
-      else video.addEventListener("loadedmetadata", onMeta, { once: true });
-      setTimeout(() => { if (video.readyState < 1) finish(false); }, 3000);
+      else {
+        video.addEventListener("loadedmetadata", onMeta, { once: true });
+        // 兜底：loadeddata 也能拿到尺寸，双保险
+        video.addEventListener("loadeddata", onMeta, { once: true });
+      }
+      // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
+      setTimeout(() => { if (video.readyState < 1) finish(false); }, 8000);
     }));
     Promise.all(promises).then((results) => {
       results.sort((a, b) => a.isPortrait - b.isPortrait);
@@ -1245,11 +1250,15 @@ async function commitBinaryFile(path, file) {
   if (!res.ok) throw new Error("上传视频失败（" + res.status + "）");
 }
 function getToken() {
+  // 优先用本会话已输入的 token
   let t = sessionStorage.getItem("gh_token");
-  if (!t) {
-    t = prompt("请输入 GitHub Personal Access Token（仅本会话保存在浏览器，不会写入代码）：");
-    if (t) sessionStorage.setItem("gh_token", t.trim());
-  }
+  if (t) return t;
+  // 其次用站点配置里的 token（config.js 已写入，编辑模式下自动可用）
+  const cfg = SITE_CONFIG.github || {};
+  if (cfg.token) return cfg.token.trim();
+  // 最后才向用户索取（仅本会话保存在浏览器，不会写入代码）
+  t = prompt("请输入 GitHub Personal Access Token（仅本会话保存在浏览器，不会写入代码）：");
+  if (t) sessionStorage.setItem("gh_token", t.trim());
   return t;
 }
 async function commitToGitHub(str) {
