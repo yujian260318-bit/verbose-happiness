@@ -29,7 +29,7 @@
     "edu-time": "2023.09 – 2027.06（预计）",
     "edu-gpa": "GPA 3.8 / 4",
     "edu-honor": "<li>国家励志奖学金</li><li>校级三好学生</li><li>专业前 20%</li>",
-    "edu-awards": "<li>全国大学生广告艺术大赛北京赛区三等奖</li><li>大广赛品牌广告短片创作核心成员</li>",
+    "edu-awards": "<li>大广赛品牌广告短片创作核心成员</li><li>全国大学生广告艺术大赛北京赛区三等奖</li>",
     "frame-about-1": "\n            <img src=\"assets/about-1.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-1.jpg</small></span>\n          ",
     "frame-about-2": "\n            <img src=\"assets/about-2.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-2.jpg</small></span>\n          ",
     "frame-edu-1": "\n            <img src=\"blob:https://yujian260318-bit.github.io/7ed54eab-8739-4085-ab73-1c192f23beeb\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-1.jpg</small></span>\n          ",
