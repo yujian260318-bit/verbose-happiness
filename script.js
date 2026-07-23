@@ -514,21 +514,36 @@ function initVideoWraps(root) {
     video.addEventListener("play", () => wrap.classList.add("is-playing"));
     video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
     video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
-    // 根据视频实际比例决定横版（占满整行）或竖版（三列一行）
-    function applyOrientation() {
-      const vid = wrap.closest(".modal__vid");
-      if (!vid || !video.videoWidth || !video.videoHeight) return;
-      const ratio = video.videoWidth / video.videoHeight;
-      if (ratio < 1) {
-        vid.classList.remove("modal__vid--landscape");
-        vid.classList.add("modal__vid--portrait");
-      } else {
-        vid.classList.remove("modal__vid--portrait");
-        vid.classList.add("modal__vid--landscape");
+  });
+  // 等视频元数据加载后，按横版在前、竖版在后重排，并设置 grid 占位列
+  reorderVideosByOrientation(root);
+}
+
+function reorderVideosByOrientation(root) {
+  const groups = (root || document).querySelectorAll(".modal__group-items--video");
+  groups.forEach((group) => {
+    const vids = Array.from(group.querySelectorAll(":scope > .modal__vid"));
+    if (!vids.length) return;
+    const promises = vids.map((vid) => new Promise((resolve) => {
+      const video = vid.querySelector("video");
+      function finish(isPortrait) {
+        vid.classList.toggle("modal__vid--landscape", !isPortrait);
+        vid.classList.toggle("modal__vid--portrait", isPortrait);
+        resolve({ vid, isPortrait });
       }
-    }
-    if (video.readyState >= 1) applyOrientation();
-    else video.addEventListener("loadedmetadata", applyOrientation, { once: true });
+      if (!video) { finish(false); return; }
+      function onMeta() {
+        if (!video.videoWidth || !video.videoHeight) { finish(false); return; }
+        finish(video.videoWidth / video.videoHeight < 1);
+      }
+      if (video.readyState >= 1) onMeta();
+      else video.addEventListener("loadedmetadata", onMeta, { once: true });
+      setTimeout(() => { if (video.readyState < 1) finish(false); }, 3000);
+    }));
+    Promise.all(promises).then((results) => {
+      results.sort((a, b) => a.isPortrait - b.isPortrait);
+      results.forEach((r) => group.appendChild(r.vid));
+    });
   });
 }
 
