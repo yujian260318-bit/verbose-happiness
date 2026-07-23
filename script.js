@@ -294,7 +294,7 @@ function renderExperience() {
   if (!wrap) return;
   wrap.innerHTML = experiences.map((exp, idx) => {
     const linkHtml = exp.link
-      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener" aria-label="查看详情">→</a>`
+      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情 →</a>`
       : (editing ? `<span class="exp-card__link is-empty">（未填写详情链接）</span>` : "");
     const editAttr = editing ? " contenteditable=\"true\"" : "";
     const editDetailBtn = editing
