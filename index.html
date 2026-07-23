@@ -428,6 +428,27 @@
     </div>
   </div>
 
+  <!-- GitHub Token 输入（保存到仓库用） -->
+  <div class="login-modal token-modal" id="token-modal" aria-hidden="true">
+    <div class="login-modal__backdrop" data-token-close></div>
+    <div class="login-modal__panel" role="dialog" aria-modal="true" aria-label="GitHub Token">
+      <button type="button" class="login-modal__close" data-token-close aria-label="关闭">×</button>
+      <h3 class="login-modal__title">保存到 GitHub</h3>
+      <p class="login-modal__hint">
+        编辑器需要你的 GitHub Personal Access Token 才能把改动写回仓库。<br>
+        <small>生成方式：GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → 勾选 <b>repo</b> 后生成。</small>
+      </p>
+      <label class="login-modal__field">GitHub Token
+        <input type="password" id="token-input" autocomplete="off" spellcheck="false" placeholder="ghp_xxxx" />
+      </label>
+      <p class="login-modal__error" id="token-error" hidden></p>
+      <div class="login-modal__actions">
+        <button type="button" class="btn btn--ghost btn--small" data-token-close>取消</button>
+        <button type="button" class="btn btn--primary btn--small" id="token-ok">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 站长登录入口 -->
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
 
