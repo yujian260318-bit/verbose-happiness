@@ -319,16 +319,55 @@ function getDefaultEducationLayout() {
   };
 }
 function applyEducationLayout() {
-  // 已禁用：恢复标准 grid 两栏布局（左图右文），不再应用绝对定位自定义布局
-  return;
+  const text = document.getElementById("edu-text");
+  if (!text) return;
+  // 移动端保持单列居中，不应用横向偏移
+  if (window.innerWidth <= 1024) { text.style.transform = "none"; return; }
+  const off = educationLayout && educationLayout.text;
+  if (!off) { text.style.transform = ""; return; } // 未保存偏移 → 沿用 CSS 基准 translateX(100px)
+  text.style.transform = `translate(${100 + (off.x || 0)}px, ${off.y || 0}px)`;
 }
 function collectEducationLayout() {
-  // 已禁用：不再收集/保存教育背景自定义布局
-  return null;
+  const text = document.getElementById("edu-text");
+  if (!text) return null;
+  const m = /translate\(\s*([-\d.]+)px\s*,\s*([-\d.]+)px\s*\)/.exec(text.style.transform || "");
+  if (!m) return null;
+  const x = Math.round(parseFloat(m[1]) - 100);
+  const y = Math.round(parseFloat(m[2]));
+  if (x === 0 && y === 0) return null;
+  return { text: { x, y } };
 }
 function enableEducationEditor() {
-  // 已禁用：不再启用拖拽/缩放编辑器，避免布局混乱
-  return;
+  const text = document.getElementById("edu-text");
+  if (!text || text.dataset.eduBound) return;
+  text.dataset.eduBound = "1";
+  let active = false, startX = 0, startY = 0, baseX = 0, baseY = 0;
+  const getBase = () => (educationLayout && educationLayout.text)
+    ? { x: educationLayout.text.x || 0, y: educationLayout.text.y || 0 }
+    : { x: 0, y: 0 };
+  text.addEventListener("mousedown", (e) => {
+    if (!editing || e.button !== 0) return;
+    if (e.target.isContentEditable) return; // 让文本编辑优先，不在文字上触发拖拽
+    active = true;
+    const b = getBase();
+    baseX = b.x; baseY = b.y;
+    startX = e.clientX; startY = e.clientY;
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!active) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+      text.style.userSelect = "none";
+    }
+    text.style.transform = `translate(${100 + baseX + dx}px, ${baseY + dy}px)`;
+  });
+  window.addEventListener("mouseup", () => {
+    if (active) text.style.userSelect = "";
+    active = false;
+  });
 }
 
 function paint() {
