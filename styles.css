@@ -238,6 +238,21 @@ p { margin: 0; }
 .education__visual .img-slot:first-child { align-self: flex-start; }
 .education__visual .img-slot:last-child { align-self: flex-end; }
 .education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; }
+/* 自定义布局模式：由 JS 在编辑/保存后启用，元素绝对定位 */
+.education__wrap--layout { display: block; position: relative; margin: 0 auto; }
+.education__wrap--layout .education__visual { display: contents; }
+.education__wrap--layout .edu__img,
+.education__wrap--layout .education__list { position: absolute; margin: 0; }
+.education__wrap--layout .edu__img { aspect-ratio: 4 / 3; }
+/* 编辑模式下的拖拽/缩放提示 */
+body.is-editing .edu__img,
+body.is-editing #edu-text { cursor: move; outline: 2px dashed var(--sage); outline-offset: 4px; }
+body.is-editing .edu__img { position: relative; }
+body.is-editing .edu__img::after {
+  content: ""; position: absolute; right: -4px; bottom: -4px; width: 16px; height: 16px;
+  background: var(--sage); border-radius: 50%; cursor: nwse-resize; pointer-events: none;
+}
+body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 .education__item { position: relative; padding-left: 24px; }
 .education__item::before {
   content: "▶"; position: absolute; left: 0; top: 4px; color: var(--sage); font-size: 12px;
@@ -563,6 +578,10 @@ p { margin: 0; }
   .skill-card { padding: 22px; min-height: 220px; }
   .about__grid, .education__wrap { grid-template-columns: 1fr; gap: 40px; }
   .education__wrap { width: 100%; max-width: 640px; }
+  .education__wrap--layout { display: flex; flex-direction: column; align-items: center; width: 100% !important; height: auto !important; }
+  .education__wrap--layout .education__visual { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+  .education__wrap--layout .edu__img,
+  .education__wrap--layout .education__list { position: static; width: 90% !important; max-width: 340px; height: auto !important; margin: 0 auto; }
   .education__visual { align-items: center; }
   .about__visual { min-height: 300px; }
   .experience__item { grid-template-columns: 1fr; gap: 14px; }
