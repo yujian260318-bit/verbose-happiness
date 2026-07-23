@@ -217,14 +217,19 @@
           <label>所属栏目
             <select id="wm-category"></select>
           </label>
-          <label>作品类型
-            <select id="wm-type">
-              <option value="视频">视频</option>
-              <option value="策划">策划</option>
-              <option value="文案">文案</option>
-              <option value="图文">图文</option>
-              <option value="其他">其他</option>
-            </select>
+          <label>作品类型（可直接输入自定义）
+            <input type="text" id="wm-type" list="wm-type-list" placeholder="视频 / 策划 / 文案 / 平面设计…" />
+            <datalist id="wm-type-list">
+              <option value="视频"></option>
+              <option value="策划"></option>
+              <option value="文案"></option>
+              <option value="图文"></option>
+              <option value="平面设计"></option>
+              <option value="社媒链接"></option>
+              <option value="Word"></option>
+              <option value="PDF"></option>
+              <option value="其他"></option>
+            </datalist>
           </label>
         </div>
         <label>公司 / 机构
@@ -251,12 +256,15 @@
           <div id="wm-links" class="wm-links"></div>
           <button type="button" id="wm-add-link" class="wm-add-link">＋ 添加链接</button>
         </label>
-        <label class="wm-modal__full">作品内多媒体（可添加视频 / 图片 / 图文，按类型分组展示）
+        <label class="wm-modal__full">作品内多媒体（可添加视频 / 图片 / 图文 / Word / PDF / 社媒链接 等，按类型分组展示）
           <div id="wm-media-list" class="wm-media-list"></div>
           <div class="wm-media-add">
             <button type="button" id="wm-add-video" class="wm-add-link">＋ 视频</button>
             <button type="button" id="wm-add-image" class="wm-add-link">＋ 图片</button>
             <button type="button" id="wm-add-text" class="wm-add-link">＋ 图文/文案</button>
+            <button type="button" id="wm-add-word" class="wm-add-link">＋ Word</button>
+            <button type="button" id="wm-add-pdf" class="wm-add-link">＋ PDF</button>
+            <button type="button" id="wm-add-social" class="wm-add-link">＋ 社媒链接</button>
           </div>
         </label>
       </div>
