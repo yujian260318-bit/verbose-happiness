@@ -394,7 +394,7 @@
     "layout": {
       "radius": 20,
       "maxw": 1160,
-      "fontScale": 1,
+      "fontScale": 1.2,
       "sectionPad": 100
     }
   },
