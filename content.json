@@ -4,10 +4,10 @@
     "hero-visual-placeholder": "精选栏目 · 主厨密码",
     "hero-hello": "您好，我是",
     "hero-name": "李欣怡",
-    "hero-role": "内容策划 / 短视频编导 / 新媒体运营",
-    "hero-tags": "<span class=\"tag\">短视频编导</span><span class=\"tag\">4A 导演组</span><span class=\"tag\">内容运营</span><span class=\"tag\">KOC 拓展</span>",
+    "hero-role": "短视频编导 / 内容创作/ 内容运营",
+    "hero-tags": "<span class=\"tag\">短视频编导</span><span class=\"tag\">4A 广告公司导演组</span><span class=\"tag\">内容创作</span><span class=\"tag\">KOC 拓展</span>",
     "title-about": "关于我",
-    "about-summary": "欢迎来到我的作品集！<br><br>我热衷于将创意与技术融合。中国传媒大学广告学应届生（2027 届），拥有<strong>短视频编导 + 4A 导演组 + 互联网内容运营</strong>三重实战背景。擅长从选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作，熟练使用 PR / 剪映 / PS / Canva。",
+    "about-summary": "欢迎来到我的作品集！<br><br>从校园片场到真实项目，我一直在做同一件事：打磨优质内容。<div>中国传媒大学广告学2027 届本科毕业生，拥有<strong>短视频编导 、 4A 广告公司导演组与互联网大厂社媒内容创作</strong>三重实战背景。能够独立完成选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作。</div><div></div>",
     "title-skills": "核心能力",
     "title-resume": "工作经验",
     "title-education": "教育背景",
@@ -15,7 +15,7 @@
     "contact-summary": "我正在积极寻找机会，运用我的技能和见解，为创新项目做出有意义的贡献。我热爱与志同道合的团队一起创作，如果你对我的作品感兴趣，欢迎随时联系。",
     "contact-email": "19571618312@139.com",
     "contact-phone": "195-7161-8312",
-    "contact-wechat": "Li_Xinyi",
+    "contact-wechat": "lxy19571618312",
     "footer-text": "© 2026 李欣怡 · 内容策划 / 短视频编导作品集",
     "tl-0-title": "腾讯 CDG · 青腾",
     "tl-0-desc": "内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持",
@@ -29,151 +29,25 @@
     "edu-time": "2023.09 – 2027.06（预计）",
     "edu-gpa": "GPA 3.8 / 4",
     "edu-honor": "<li>国家励志奖学金</li><li>校级三好学生</li><li>专业前 20%</li>",
-    "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>"
+    "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>",
+    "frame-about-1": "\n            <img src=\"assets/1784882461130_微信图片_20260723144954_383_29.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-1.jpg</small></span>\n          ",
+    "frame-about-2": "\n            <img src=\"assets/1784882465701_5e57d9f4ee1761b4b127031fab85691d.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-2.jpg</small></span>\n          ",
+    "frame-edu-1": "\n            <img src=\"assets/1784882479007_R.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-1.jpg</small></span>\n          ",
+    "frame-edu-2": "\n            <img src=\"assets/1784882483337_80b4fa3b-a8ff-4cdb-8b26-99e53035ff1e.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-2.jpg</small></span>\n          "
   },
   "categories": [
-    "纪实栏目",
+    "栏目纪实",
+    "活动拍摄",
     "社媒内容",
-    "视频号",
     "广告片"
-  ],
-  "skills": [
-    {
-      "icon": "🎬",
-      "title": "视频内容编导与制作",
-      "desc": "独立负责选题、脚本、拍摄到剪辑包装全流程，作品于海南卫视播出，覆盖纪录片与社媒短视频。",
-      "tags": [
-        "选题",
-        "拍摄",
-        "剪辑"
-      ]
-    },
-    {
-      "icon": "✍️",
-      "title": "内容策划与脚本",
-      "desc": "搭建嘉宾叙事脉络、撰写拍摄脚本，主导纪录片《主厨密码》选题与广告短片创意。",
-      "tags": [
-        "叙事",
-        "脚本",
-        "创意"
-      ]
-    },
-    {
-      "icon": "📱",
-      "title": "社媒内容支持",
-      "desc": "提供短视频剪辑与文案产出，支撑活动账号从 0 到 1 内容落地，累计涨粉 800+。",
-      "tags": [
-        "小红书",
-        "即刻",
-        "文案"
-      ]
-    },
-    {
-      "icon": "🤝",
-      "title": "KOC 资源拓展",
-      "desc": "筛选对接垂类达人，触达 10000+ 人，带动每场约 10 人线上报名。",
-      "tags": [
-        "达人筛选",
-        "传播"
-      ]
-    },
-    {
-      "icon": "🎥",
-      "title": "现场拍摄统筹",
-      "desc": "统筹勘景、活动拍摄与现场调度，对接嘉宾、摄影与执行团队。",
-      "tags": [
-        "勘景",
-        "现场调度"
-      ]
-    },
-    {
-      "icon": "🧩",
-      "title": "跨团队协作",
-      "desc": "联动设计、运营、摄影等多团队同步需求，完成素材归档与项目进度管理。",
-      "tags": [
-        "协作",
-        "项目管理"
-      ]
-    }
-  ],
-  "experience": [
-    {
-      "id": "exp-tencent",
-      "year": "2026",
-      "tag": "实习",
-      "role": "内容运营实习生",
-      "company": "腾讯 CDG · 青腾",
-      "location": "深圳，中国",
-      "period": "2026.05 – 至今",
-      "description": "负责小红书账号内容创作与 KOC 资源拓展；完成活动拍摄、多平台剪辑与社媒内容支持。",
-      "link": "experience-detail.html?v=10&id=exp-tencent",
-      "projectLink": "ai-next",
-      "detail": "",
-      "images": []
-    },
-    {
-      "id": "exp-yujian",
-      "year": "2026",
-      "tag": "4A",
-      "role": "导演组实习生",
-      "company": "蓝色光标 · 《玉见》导演组",
-      "location": "北京，中国",
-      "period": "2026.03 – 2026.05",
-      "description": "参与嘉宾策划、拍摄统筹、多版本剪辑；卫视版登陆海南卫视。",
-      "link": "experience-detail.html?v=10&id=exp-yujian",
-      "projectLink": "yujian",
-      "detail": "",
-      "images": []
-    },
-    {
-      "id": "exp-zhupassword",
-      "year": "2025",
-      "tag": "栏目",
-      "role": "编导实习生",
-      "company": "欣和企业 · 市场运营中心",
-      "location": "北京，中国",
-      "period": "2025.10 – 2026.01",
-      "description": "《主厨密码》栏目全链路编导，独立完成素材筛选与精剪，成片登陆爱奇艺。",
-      "link": "experience-detail.html?v=10&id=exp-zhupassword",
-      "projectLink": "zhupassword",
-      "detail": "",
-      "images": []
-    },
-    {
-      "id": "exp-yucai",
-      "year": "2025",
-      "tag": "公益",
-      "role": "慈善助学项目志愿者",
-      "company": "湖北省育才教育基金会",
-      "location": "湖北，中国",
-      "period": "2025.08 – 至今",
-      "description": "参与湖北省育才教育基金会慈善助学项目，协助困境学生资助对接、公益活动策划与传播，推动教育公益落地。",
-      "link": "charity-detail.html?v=10",
-      "detail": "",
-      "images": []
-    },
-    {
-      "id": "exp-adaward",
-      "year": "2025",
-      "tag": "竞赛",
-      "role": "创作核心成员",
-      "company": "全国大学生广告艺术大赛",
-      "location": "北京，中国",
-      "period": "2025.05",
-      "description": "主导品牌广告短片从创意到成片，获北京赛区三等奖。",
-      "link": "experience-detail.html?v=10&id=exp-adaward",
-      "projectLink": "ad-award",
-      "detail": "",
-      "images": []
-    }
   ],
   "works": [
     {
       "id": "zhupassword",
       "title": "《主厨密码》短视频纪实栏目",
-      "category": "纪实栏目",
+      "category": "栏目纪实",
       "type": "视频",
-      "company": "欣和企业 · 市场运营中心",
+      "company": "市场运营中心· 编导实习生",
       "period": "2025.10 – 2026.01",
       "role": "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
       "cover": "linear-gradient(135deg, #A9BF7D, #8DA361)",
@@ -232,12 +106,13 @@
           "platform": "爱奇艺",
           "url": ""
         }
-      ]
+      ],
+      "media": []
     },
     {
       "id": "yujian",
       "title": "《玉见》访谈栏目",
-      "category": "纪实栏目",
+      "category": "栏目纪实",
       "type": "视频",
       "company": "蓝色光标 · 《玉见》导演组",
       "period": "2026.03 – 2026.05",
@@ -264,12 +139,13 @@
       ],
       "description": "梳理嘉宾人物背景与故事脉络，参与访谈逻辑提纲设计，独立撰写拍摄脚本框架；统筹对接嘉宾、摄影及现场执行团队；独立完成多版本视频（含卫视版）粗剪与精剪，其中卫视版在海南卫视播出。",
       "content": "",
-      "links": []
+      "links": [],
+      "media": []
     },
     {
       "id": "ai-next",
       "title": "AI Next 疯享会（活动拍摄 + 传播）",
-      "category": "社媒内容",
+      "category": "活动拍摄",
       "type": "视频",
       "company": "腾讯 CDG · 青腾",
       "period": "2026.05 – 至今",
@@ -313,7 +189,7 @@
         },
         {
           "label": "涨粉",
-          "value": "800+"
+          "value": "涨粉800+"
         }
       ],
       "description": "完成 AI Next 疯享会线下活动全程现场拍摄；线上筛选并对接活动相关 KOC，累计触达 10,000+ 人，额外带动每场约 10 人经线上渠道自主报名；为小红书 / 即刻账号提供剪辑与文案，支撑冷启动涨粉 800+。",
@@ -327,12 +203,13 @@
           "platform": "即刻",
           "url": ""
         }
-      ]
+      ],
+      "media": []
     },
     {
       "id": "social",
       "title": "小红书 / 即刻 社媒内容",
-      "category": "视频号",
+      "category": "社媒内容",
       "type": "图文",
       "company": "腾讯 CDG · 青腾",
       "period": "2026.05 – 至今",
@@ -368,7 +245,7 @@
       "metrics": [
         {
           "label": "涨粉",
-          "value": "800+"
+          "value": "涨粉800+"
         },
         {
           "label": "关注者",
@@ -386,7 +263,8 @@
           "platform": "即刻",
           "url": ""
         }
-      ]
+      ],
+      "media": []
     },
     {
       "id": "ad-award",
@@ -400,10 +278,7 @@
       "videoUrls": [
         {
           "type": "mp4",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/ad-award-chaoneng.mp4",
-          "label": "《超能》广告片",
-          "poster": "assets/images/ad-award-cover.jpg",
-          "portrait": false
+          "url": "assets/videos/1784885598837-_超能_广告片.mp4"
         }
       ],
       "metrics": [
@@ -413,12 +288,87 @@
         },
         {
           "label": "时长",
-          "value": "约 60s"
+          "value": ""
         }
       ],
       "description": "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
       "content": "",
-      "links": []
+      "links": [],
+      "media": []
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp-tencent",
+      "year": "2026",
+      "tag": "实习",
+      "role": "内容创作实习生",
+      "company": "深圳市腾讯计算机系统有限公司",
+      "location": "深圳",
+      "period": "2026.05 – 至今",
+      "description": "负责小红书、即刻账号内容创作与、KOC 资源拓展与线下活动拍摄，助力账号冷启动。",
+      "link": "experience-detail.html?v=10&id=exp-tencent",
+      "projectLink": "ai-next",
+      "detail": "活动社媒内容创作：负责小红书、即刻双平台活动账号的短视频剪辑与文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引数千至万粉量级的行业用户关注。\n\nKOC拓展与声量扩散：挖掘对接垂类KOC资源，通过该渠道累计触达 10000+ 人；在活动以定向邀约为主、原本未设定线上引流目标的情况下，额外带动每场约 10 人经线上渠道自主报名。\n\n活动摄制执行：完成 AI Next 疯享会线下活动的现场拍摄，保障成片素材质量。 ",
+      "images": [
+        "assets/1784887607376_微信图片_20260724174446_408_29.jpg",
+        "assets/1784887612679_微信图片_20260724174448_409_29.jpg"
+      ]
+    },
+    {
+      "id": "exp-yujian",
+      "year": "2026",
+      "tag": "4A",
+      "role": "导演组实习生",
+      "company": "北京蓝色光标数据科技集团股份有限公司",
+      "location": "北京",
+      "period": "2026.03 – 2026.05",
+      "description": "参与卫视访谈栏目制作，完成脚本创作、现场统筹与剪辑包装。",
+      "link": "experience-detail.html?v=10&id=exp-yujian",
+      "projectLink": "yujian",
+      "detail": "",
+      "images": []
+    },
+    {
+      "id": "exp-zhupassword",
+      "year": "2025",
+      "tag": "栏目",
+      "role": "编导实习生",
+      "company": "北京早耕田国际广告有限公司",
+      "location": "北京",
+      "period": "2025.10 – 2026.01",
+      "description": "参与美食人文纪录片全链路制作，独立剪辑多条成片，完成项目归档与上线落地。",
+      "link": "experience-detail.html?v=10&id=exp-zhupassword",
+      "projectLink": "zhupassword",
+      "detail": "",
+      "images": []
+    },
+    {
+      "id": "exp-yucai",
+      "year": "2025",
+      "tag": "公益",
+      "role": "慈善助学项目志愿者",
+      "company": "湖北省育才教育基金会",
+      "location": "湖北十堰",
+      "period": "2025.08 – 至今",
+      "description": "规划实地走访路线，参与受助学生访谈，实时更新走访进度。",
+      "link": "charity-detail.html?v=10",
+      "detail": "",
+      "images": []
+    },
+    {
+      "id": "exp-adaward",
+      "year": "2025",
+      "tag": "竞赛",
+      "role": "创作核心成员",
+      "company": "全国大学生广告艺术大赛",
+      "location": "北京",
+      "period": "2025.05",
+      "description": "主创品牌广告短片，统筹拍摄、独立完成剪辑包装，获得北京赛区三等奖。",
+      "link": "experience-detail.html?v=10&id=exp-adaward",
+      "projectLink": "ad-award",
+      "detail": "",
+      "images": []
     }
   ],
   "overlays": [],
@@ -445,13 +395,68 @@
       "sectionPad": 100
     }
   },
-  "styles": {},
-  "educationLayout": {
-    "text": {
-      "x": 0,
-      "y": -70
-    }
+  "styles": {
+    "about-summary": {}
   },
+  "skills": [
+    {
+      "icon": "🎬",
+      "title": "视频编导与制作",
+      "desc": "独立负责选题、脚本、拍摄到剪辑包装全流程，作品覆盖纪录片与社媒短视频。",
+      "tags": [
+        "选题",
+        "拍摄",
+        "剪辑"
+      ]
+    },
+    {
+      "icon": "✍️",
+      "title": "内容策划与脚本",
+      "desc": "搭建嘉宾故事叙事脉络、撰写拍摄脚本，主导广告短片创意构思。",
+      "tags": [
+        "叙事",
+        "脚本",
+        "创意"
+      ]
+    },
+    {
+      "icon": "📱",
+      "title": "社媒内容创作",
+      "desc": "负责短视频创作与文案产出，支撑活动账号内容落地，累计涨粉 800+。",
+      "tags": [
+        "小红书",
+        "即刻",
+        "冷启动"
+      ]
+    },
+    {
+      "icon": "🤝",
+      "title": "KOC 资源拓展",
+      "desc": "筛选对接垂类达人，累计触达 10000+ 人，带动每场约 10 人线上报名。",
+      "tags": [
+        "达人筛选",
+        "传播"
+      ]
+    },
+    {
+      "icon": "🎥",
+      "title": "现场拍摄统筹",
+      "desc": "统筹勘景、活动拍摄与现场调度，对接嘉宾、摄影与执行团队。",
+      "tags": [
+        "勘景",
+        "现场调度"
+      ]
+    },
+    {
+      "icon": "🧩",
+      "title": "跨团队协作",
+      "desc": "联动设计、运营、摄影等多团队同步需求，完成素材归档与项目进度管理。",
+      "tags": [
+        "协作",
+        "项目管理"
+      ]
+    }
+  ],
   "sectionOrder": {
     "sections": [
       "about",
@@ -462,5 +467,16 @@
       "contact"
     ]
   },
-  "images": {}
+  "images": {
+    "frame-about-1": "assets/1784882461130_微信图片_20260723144954_383_29.jpg",
+    "frame-about-2": "assets/1784882465701_5e57d9f4ee1761b4b127031fab85691d.jpg",
+    "frame-edu-1": "assets/1784882479007_R.jpg",
+    "frame-edu-2": "assets/1784882483337_80b4fa3b-a8ff-4cdb-8b26-99e53035ff1e.jpg"
+  },
+  "educationLayout": {
+    "text": {
+      "x": -141,
+      "y": 2
+    }
+  }
 }
