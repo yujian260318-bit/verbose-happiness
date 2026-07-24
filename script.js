@@ -210,7 +210,7 @@ function applyUserTheme() {
   let st = document.getElementById("user-theme");
   if (!st) { st = document.createElement("style"); st.id = "user-theme"; document.head.appendChild(st); }
   st.textContent = css;
-  document.body.style.fontSize = (16 * l.fontScale) + "px";
+  document.documentElement.style.fontSize = (16 * l.fontScale) + "px";
 }
 
 function applyUserStyles() {
