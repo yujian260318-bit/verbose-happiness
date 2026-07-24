@@ -110,6 +110,7 @@ let images = {};
 let educationLayout = null;
 let pendingImageFiles = [];
 let currentImgSlot = null;
+let modalReturnUrl = null;
 
 /* ---------- 本地草稿缓存（防止换 token / 刷新丢失未保存编辑） ---------- */
 const DRAFT_KEY = "portfolio_draft_v1";
@@ -835,6 +836,9 @@ function openModal(w) {
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
+
+  /* 记录详情页返回地址（从“查看作品”跳转过来时会带 ?return=...） */
+  modalReturnUrl = new URLSearchParams(location.search).get("return");
 }
 
 function closeModal() {
@@ -842,6 +846,13 @@ function closeModal() {
   modal.setAttribute("aria-hidden", "true");
   modalMedia.innerHTML = "";
   document.body.style.overflow = "";
+
+  /* 如果是从“查看作品”跳转回来，关闭弹窗后回到原详情页 */
+  if (modalReturnUrl) {
+    const url = modalReturnUrl;
+    modalReturnUrl = null;
+    window.location.href = url;
+  }
 }
 
 modal.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
