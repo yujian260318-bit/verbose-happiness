@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=21" />
+  <link rel="stylesheet" href="styles.css?v=22" />
   <style>
     :root {
       --sage: #A9BF7D;
@@ -62,6 +62,33 @@
     }
     .view-work:hover { background: var(--sage-dark); transform: translateX(4px); }
     @media (max-width: 600px) { .detail-images { grid-template-columns: 1fr; } }
+
+    /* ===== 灵活编辑块 blocks ===== */
+    .block { margin: 28px 0; }
+    .block--heading {
+      font-family: 'Outfit', 'Montserrat', 'Noto Sans SC', sans-serif;
+      font-size: 21px; color: var(--ink); margin: 38px 0 14px; font-weight: 700;
+    }
+    .block--text { font-size: 17px; color: #3a4050; line-height: 1.9; }
+    .block--text p { margin-bottom: 16px; }
+    .block--text img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; }
+    .block--image { margin: 28px 0; }
+    .block--image img { width: 100%; border-radius: 14px; display: block; background: var(--sage-soft); }
+    .block--image figcaption,
+    .block--gallery figcaption { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .block--gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 28px 0; }
+    .block--gallery figure { margin: 0; border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
+    .block--gallery img { width: 100%; height: 240px; object-fit: cover; display: block; }
+    .block--video video { width: 100%; border-radius: 14px; display: block; background: #000; }
+    .block--links { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0; }
+    .block--links a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px; background: var(--sage-soft); color: var(--sage-dark);
+      border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px;
+      transition: background .18s ease, color .18s ease;
+    }
+    .block--links a:hover { background: var(--sage-dark); color: #fff; }
+    @media (max-width: 600px) { .block--gallery { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -77,6 +104,57 @@
       const id = params.get("id");
       const box = document.getElementById("content");
 
+      // 转义，防止内容破坏页面结构
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
+        }[c]));
+      }
+
+      // 灵活块渲染：text / image / gallery / links / video / heading
+      // 在 content.json 的 experience[].blocks 里自由增删即可
+      function renderBlocks(blocks) {
+        if (!Array.isArray(blocks) || !blocks.length) return "";
+        return blocks.map((b) => {
+          if (!b || !b.type) return "";
+          if (b.type === "heading") {
+            return `<h2 class="block block--heading">${esc(b.text || "")}</h2>`;
+          }
+          if (b.type === "text") {
+            // 允许直接写 HTML（与你 about-summary 用法一致），否则转义纯文本
+            const html = b.html != null ? b.html : esc(b.text || "");
+            return `<div class="block block--text">${html}</div>`;
+          }
+          if (b.type === "image") {
+            const cap = b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : "";
+            return `<figure class="block block--image">
+              <img src="${esc(b.src || "")}" alt="${esc(b.caption || "")}" loading="lazy" onerror="this.parentElement.style.display='none'">
+              ${cap}
+            </figure>`;
+          }
+          if (b.type === "gallery") {
+            const items = (b.images || []).map((im) =>
+              `<figure><img src="${esc(im.src || "")}" alt="${esc(im.caption || "")}" loading="lazy" onerror="this.style.display='none'">
+                ${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`
+            ).join("");
+            return `<div class="block block--gallery">${items}</div>`;
+          }
+          if (b.type === "links") {
+            const items = (b.items || []).map((l) =>
+              `<a href="${esc(l.url || "#")}" target="_blank" rel="noopener">${esc(l.platform || "链接")}${l.url ? " ↗" : ""}</a>`
+            ).join("");
+            return `<div class="block block--links">${items}</div>`;
+          }
+          if (b.type === "video") {
+            const poster = b.poster ? `poster="${esc(b.poster)}"` : "";
+            return `<div class="block block--video">
+              <video src="${esc(b.src || "")}" ${poster} controls playsinline></video>
+            </div>`;
+          }
+          return "";
+        }).join("");
+      }
+
       fetch("content.json", { cache: "no-store" })
         .then((r) => r.json())
         .then((data) => {
@@ -85,29 +163,31 @@
           const exp = list.find((e) => e.id === id) || (list[0] || null);
           if (!exp) { box.innerHTML = '<div class="empty">未找到对应经历。</div>'; return; }
           document.title = (exp.role || "经历") + " · 李欣怡作品集";
-          const tag = exp.tag ? `<span class="tag">${exp.tag}</span>` : "";
+          const tag = exp.tag ? `<span class="tag">${esc(exp.tag)}</span>` : "";
           const coverImg = exp.cover
-            ? `<div class="cover"><img src="${exp.cover}" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg, var(--sage), var(--sage-dark))';this.remove();" /></div>`
+            ? `<div class="cover"><img src="${esc(exp.cover)}" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg, var(--sage), var(--sage-dark))';this.remove();" /></div>`
             : `<div class="cover">经历配图（可在 content.json 的 experience 中补充 cover 字段）</div>`;
-          const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${t}</p>`).join("");
+          const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join("");
           const detail = (exp.detail || "").trim();
           const projectLink = exp.projectLink
-            ? `<button type="button" class="view-work" data-work-id="${exp.projectLink.replace(/"/g, '&quot;')}">查看作品 →</button>`
+            ? `<button type="button" class="view-work" data-work-id="${esc(exp.projectLink)}">查看作品 →</button>`
             : "";
           const images = Array.isArray(exp.images) && exp.images.length
-            ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${u}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
+            ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
             : "";
+          const blocksHtml = renderBlocks(exp.blocks);
           box.innerHTML = `
             ${tag}
-            <h1>${exp.role || ""}</h1>
-            <div class="company">${exp.company || ""}</div>
-            <div class="meta">${exp.location ? exp.location + " ｜ " : ""}${exp.period || ""}</div>
+            <h1>${esc(exp.role || "")}</h1>
+            <div class="company">${esc(exp.company || "")}</div>
+            <div class="meta">${exp.location ? esc(exp.location) + " ｜ " : ""}${esc(exp.period || "")}</div>
             ${coverImg}
             ${desc}
             ${projectLink}
             ${detail ? `<div class="detail-body">${detail}</div>` : ""}
             ${images}
-            ${(!detail && !images && !desc) ? '<p>暂无详细描述，可在编辑模式中补充。</p>' : ""}
+            ${blocksHtml}
+            ${(!detail && !images && !desc && !blocksHtml) ? '<p>暂无详细描述，可在编辑模式中补充。</p>' : ""}
           `;
           const btn = box.querySelector(".view-work[data-work-id]");
           if (btn && typeof window.openWorkModal === "function") {
