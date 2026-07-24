@@ -234,7 +234,7 @@ p { margin: 0; }
 /* 教育 */
 .education__wrap { width: fit-content; margin: 0 auto; display: grid; grid-template-columns: 440px 520px; gap: 70px; align-items: center; transform: translateX(100px); }
 .education__visual { display: flex; flex-direction: column; gap: 24px; width: 100%; align-items: center; }
-.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 272px; }
+.education__visual .img-slot { aspect-ratio: 4 / 3; min-height: auto; width: 340px; }
 .education__list { display: flex; flex-direction: column; gap: 28px; justify-content: center; width: 100%; padding-left: 0; transform: translateX(100px); }
 /* 自定义布局模式：由 JS 在编辑/保存后启用，元素绝对定位 */
 .education__wrap--layout { display: block; position: relative; margin: 0 auto; }
