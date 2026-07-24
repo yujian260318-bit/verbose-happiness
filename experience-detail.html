@@ -89,7 +89,7 @@
           const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${t}</p>`).join("");
           const detail = (exp.detail || "").trim();
           const projectLink = exp.projectLink
-            ? `<a class="view-work" href="index.html?work=${encodeURIComponent(exp.projectLink)}#portfolio">查看作品 →</a>`
+            ? `<a class="view-work" href="index.html?work=${encodeURIComponent(exp.projectLink)}&return=${encodeURIComponent(location.href)}#portfolio">查看作品 →</a>`
             : "";
           const images = Array.isArray(exp.images) && exp.images.length
             ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${u}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
