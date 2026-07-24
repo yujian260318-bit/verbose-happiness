@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
+  <link rel="stylesheet" href="styles.css?v=21" />
   <style>
     :root {
       --sage: #A9BF7D;
@@ -55,7 +56,8 @@
       display: inline-flex; align-items: center; gap: 8px;
       margin-top: 12px; padding: 12px 24px;
       background: var(--ink); color: #fff; text-decoration: none;
-      border-radius: 999px; font-weight: 600; font-size: 15px;
+      border: none; border-radius: 999px; font-weight: 600; font-size: 15px;
+      cursor: pointer;
       transition: transform .18s ease, background .18s ease;
     }
     .view-work:hover { background: var(--sage-dark); transform: translateX(4px); }
@@ -78,6 +80,7 @@
       fetch("content.json", { cache: "no-store" })
         .then((r) => r.json())
         .then((data) => {
+          window.__works = Array.isArray(data.works) ? data.works : [];
           const list = Array.isArray(data.experience) ? data.experience : [];
           const exp = list.find((e) => e.id === id) || (list[0] || null);
           if (!exp) { box.innerHTML = '<div class="empty">未找到对应经历。</div>'; return; }
@@ -89,7 +92,7 @@
           const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${t}</p>`).join("");
           const detail = (exp.detail || "").trim();
           const projectLink = exp.projectLink
-            ? `<a class="view-work" href="index.html?work=${encodeURIComponent(exp.projectLink)}&return=${encodeURIComponent(location.href)}#portfolio">查看作品 →</a>`
+            ? `<button type="button" class="view-work" data-work-id="${exp.projectLink.replace(/"/g, '&quot;')}">查看作品 →</button>`
             : "";
           const images = Array.isArray(exp.images) && exp.images.length
             ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${u}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
@@ -106,11 +109,20 @@
             ${images}
             ${(!detail && !images && !desc) ? '<p>暂无详细描述，可在编辑模式中补充。</p>' : ""}
           `;
+          const btn = box.querySelector(".view-work[data-work-id]");
+          if (btn && typeof window.openWorkModal === "function") {
+            btn.addEventListener("click", () => {
+              const workId = btn.dataset.workId;
+              const work = (window.__works || []).find((w) => w.id === workId);
+              if (work) window.openWorkModal(work);
+            });
+          }
         })
         .catch((err) => {
           box.innerHTML = '<div class="empty">内容加载失败，请确认 content.json 与本站同目录部署。<br>' + (err && err.message ? err.message : "") + '</div>';
         });
     })();
   </script>
+  <script src="experience-modal.js?v=1"></script>
 </body>
 </html>
