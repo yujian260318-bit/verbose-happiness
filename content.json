@@ -180,37 +180,37 @@
       "videoUrls": [
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》Talib_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-talib.mp4",
           "poster": "assets/videos/《主厨密码》Talib_web_poster.jpg",
           "label": "Talib 正片"
         },
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》Talib预告片_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-talib-trailer.mp4",
           "poster": "assets/videos/《主厨密码》Talib预告片_web_poster.jpg",
           "label": "Talib 预告"
         },
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》冯国正_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-fengguozheng.mp4",
           "poster": "assets/videos/《主厨密码》冯国正_web_poster.jpg",
           "label": "冯国正 正片"
         },
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》冯国正预告片_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-fengguozheng-trailer.mp4",
           "poster": "assets/videos/《主厨密码》冯国正预告片_web_poster.jpg",
           "label": "冯国正 预告"
         },
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》王兴顺_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-wangxingshun.mp4",
           "poster": "assets/videos/《主厨密码》王兴顺_web_poster.jpg",
           "label": "王兴顺 正片"
         },
         {
           "type": "mp4",
-          "url": "assets/videos/《主厨密码》王兴顺预告片_web.mp4",
+          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/zhupassword-wangxingshun-trailer.mp4",
           "poster": "assets/videos/《主厨密码》王兴顺预告片_web_poster.jpg",
           "label": "王兴顺 预告"
         }
@@ -439,7 +439,10 @@
   },
   "styles": {},
   "educationLayout": {
-    "text": { "x": 0, "y": -70 }
+    "text": {
+      "x": 0,
+      "y": -70
+    }
   },
   "sectionOrder": {
     "sections": [
