@@ -2238,4 +2238,17 @@ loadContent().then(() => {
   applySectionOrder();
   applyUserStyles();
   applyEducationLayout();
+
+  /* 从经历详情页“查看作品”跳转回来时自动打开作品弹窗 */
+  const workParam = new URLSearchParams(location.search).get("work");
+  if (workParam) {
+    const targetWork = (works || []).find((w) => w.id === workParam);
+    if (targetWork) {
+      setTimeout(() => {
+        openModal(targetWork);
+        const portfolio = document.getElementById("portfolio");
+        if (portfolio) portfolio.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 250);
+    }
+  }
 });
