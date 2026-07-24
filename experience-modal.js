@@ -219,7 +219,8 @@
     return "合集";
   }
 
-  function openWorkModal(w) {
+    function openWorkModal(w) {
+    const editMode = new URLSearchParams(location.search).get("edit") === "1";
     document.getElementById("modal-cat").textContent = `${w.category || ""} · ${workBadge(w)}`;
     document.getElementById("modal-title").textContent = w.title;
     document.getElementById("modal-meta").textContent = `${w.company || ""} · ${w.period || ""}`;
@@ -251,6 +252,33 @@
 
     modalMedia.innerHTML = renderMediaGroups(w);
     initVideoWraps(modalMedia);
+
+    // 作品区可视化编辑：编辑模式下可拖拽/缩放视频框，并任意位置插入文字/图片/视频
+    let editBtn = document.getElementById("modal-edit-btn");
+    if (editMode && window.PortfolioEditor) {
+      if (!editBtn) {
+        editBtn = document.createElement("button");
+        editBtn.id = "modal-edit-btn";
+        editBtn.className = "modal__edit-btn";
+        editBtn.textContent = "✎ 编辑此作品";
+        document.querySelector(".modal__panel").insertBefore(editBtn, document.getElementById("modal-media"));
+      }
+      editBtn.style.display = "";
+      editBtn.onclick = () => {
+        modalMedia.innerHTML = "";
+        window.PortfolioEditor.render(modalMedia, w, { editable: true, source: "work", skipHead: true });
+      };
+    } else if (editBtn) {
+      editBtn.style.display = "none";
+    }
+
+    // 普通视图下渲染已保存的 blocks（编辑模式下添加的内容）
+    if (w.blocks && w.blocks.length && !editMode && window.PortfolioEditor) {
+      const extra = document.createElement("div");
+      extra.className = "modal__blocks";
+      window.PortfolioEditor.render(extra, w, { editable: false, source: "work", skipHead: true });
+      document.getElementById("modal-links").after(extra);
+    }
 
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
