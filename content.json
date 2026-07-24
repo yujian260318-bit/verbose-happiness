@@ -107,6 +107,7 @@
       "period": "2026.05 – 至今",
       "description": "负责小红书账号内容创作与 KOC 资源拓展；完成活动拍摄、多平台剪辑与社媒内容支持。",
       "link": "experience-detail.html?id=exp-tencent",
+      "projectLink": "ai-next",
       "detail": "",
       "images": []
     },
@@ -120,6 +121,7 @@
       "period": "2026.03 – 2026.05",
       "description": "参与嘉宾策划、拍摄统筹、多版本剪辑；卫视版登陆海南卫视。",
       "link": "experience-detail.html?id=exp-yujian",
+      "projectLink": "yujian",
       "detail": "",
       "images": []
     },
@@ -133,6 +135,7 @@
       "period": "2025.10 – 2026.01",
       "description": "《主厨密码》栏目全链路编导，独立完成素材筛选与精剪，成片登陆爱奇艺。",
       "link": "experience-detail.html?id=exp-zhupassword",
+      "projectLink": "zhupassword",
       "detail": "",
       "images": []
     },
@@ -159,6 +162,7 @@
       "period": "2025.05",
       "description": "主导品牌广告短片从创意到成片，获北京赛区三等奖。",
       "link": "experience-detail.html?id=exp-adaward",
+      "projectLink": "ad-award",
       "detail": "",
       "images": []
     }
