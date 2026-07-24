@@ -9,7 +9,7 @@
 /* ---------- 兜底默认作品（content.json 加载失败时使用） ---------- */
 const DEFAULT_WORKS = [
   {
-    id: "zhupassword", title: "《主厨密码》短视频纪实栏目", category: "栏目纪实", type: "视频",
+    id: "zhupassword", title: "《主厨密码》短视频纪实栏目", category: "纪实栏目", type: "视频",
     company: "欣和企业 · 市场运营中心", period: "2025.10 – 2026.01",
     role: "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
     cover: "linear-gradient(135deg, #A9BF7D, #8DA361)", videoUrls: [],
@@ -18,7 +18,7 @@ const DEFAULT_WORKS = [
     content: "", links: [{ platform: "爱奇艺", url: "" }]
   },
   {
-    id: "yujian", title: "《玉见》访谈栏目", category: "栏目纪实", type: "视频",
+    id: "yujian", title: "《玉见》访谈栏目", category: "纪实栏目", type: "视频",
     company: "蓝色光标 · 《玉见》导演组", period: "2026.03 – 2026.05",
     role: "导演组实习生：嘉宾内容策划、现场拍摄统筹、多版本视频剪辑。",
     cover: "linear-gradient(135deg, #2A3654, #3E4D70)", videoUrls: [],
@@ -27,7 +27,7 @@ const DEFAULT_WORKS = [
     content: "", links: []
   },
   {
-    id: "ai-next", title: "AI Next 疯享会（活动拍摄 + 传播）", category: "活动拍摄", type: "视频",
+    id: "ai-next", title: "AI Next 疯享会（活动拍摄 + 传播）", category: "社媒内容", type: "视频",
     company: "腾讯 CDG · 青腾", period: "2026.05 – 至今",
     role: "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
     cover: "linear-gradient(135deg, #D4A574, #C47E54)", videoUrls: [],
@@ -36,7 +36,7 @@ const DEFAULT_WORKS = [
     content: "", links: [{ platform: "小红书", url: "" }, { platform: "即刻", url: "" }]
   },
   {
-    id: "social", title: "小红书 / 即刻 社媒内容", category: "社媒内容", type: "视频",
+    id: "social", title: "小红书 / 即刻 社媒内容", category: "视频号", type: "视频",
     company: "腾讯 CDG · 青腾", period: "2026.05 – 至今",
     role: "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
     cover: "linear-gradient(135deg, #8DA361, #A9BF7D)", videoUrls: [],
@@ -86,9 +86,9 @@ const DEFAULT_EXPERIENCES = [
 ];
 
 const COVER_PALETTE = {
-  "栏目纪实": "linear-gradient(135deg, #A9BF7D, #8DA361)",
-  "活动拍摄": "linear-gradient(135deg, #D4A574, #C47E54)",
-  "社媒内容": "linear-gradient(135deg, #8DA361, #A9BF7D)",
+  "纪实栏目": "linear-gradient(135deg, #A9BF7D, #8DA361)",
+  "社媒内容": "linear-gradient(135deg, #D4A574, #C47E54)",
+  "视频号": "linear-gradient(135deg, #8DA361, #A9BF7D)",
   "广告片": "linear-gradient(135deg, #5A5A5A, #8A8A8A)"
 };
 function pickCover(category) { return COVER_PALETTE[category] || "linear-gradient(135deg, #ff6b5b, #ff9a76)"; }
