@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=22" />
+  <link rel="stylesheet" href="styles.css?v=23" />
   <style>
     :root {
       --sage: #A9BF7D;
@@ -36,11 +36,11 @@
     .company { font-size: 18px; color: var(--ink); font-weight: 600; margin-bottom: 6px; }
     .meta { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
     .cover {
-      width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden;
+      width: 100%; border-radius: var(--radius); overflow: hidden;
       background: linear-gradient(135deg, var(--sage), var(--sage-dark)); margin-bottom: 36px;
-      display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
     }
-    .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .cover img { width: 100%; height: auto; display: block; }
     p { font-size: 17px; color: #3a4050; margin-bottom: 20px; }
     h2 { font-size: 20px; margin: 36px 0 14px; color: var(--ink); }
     ul { padding-left: 22px; margin-bottom: 20px; }
@@ -48,10 +48,14 @@
     .footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 13px; }
     .empty { text-align: center; color: var(--muted); padding: 60px 0; }
     .detail-body { margin-top: 8px; }
-    .detail-body img { max-width: 100%; border-radius: 14px; margin: 18px 0; display: block; }
+    .detail-body img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; height: auto; }
+
+    /* 经历图片：原比例显示，不再压成横版 */
     .detail-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 28px; }
-    .detail-images figure { border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
-    .detail-images img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .detail-images figure { margin: 0; border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
+    .detail-images img { width: 100%; height: auto; object-fit: contain; display: block; }
+    @media (max-width: 600px) { .detail-images { grid-template-columns: 1fr; } }
+
     .view-work {
       display: inline-flex; align-items: center; gap: 8px;
       margin-top: 12px; padding: 12px 24px;
@@ -61,7 +65,6 @@
       transition: transform .18s ease, background .18s ease;
     }
     .view-work:hover { background: var(--sage-dark); transform: translateX(4px); }
-    @media (max-width: 600px) { .detail-images { grid-template-columns: 1fr; } }
 
     /* ===== 灵活编辑块 blocks ===== */
     .block { margin: 28px 0; }
@@ -71,14 +74,28 @@
     }
     .block--text { font-size: 17px; color: #3a4050; line-height: 1.9; }
     .block--text p { margin-bottom: 16px; }
-    .block--text img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; }
+    .block--text img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; height: auto; }
+
+    /* 单图：默认原比例，支持通过 JSON 控制宽度/位置 */
     .block--image { margin: 28px 0; }
-    .block--image img { width: 100%; border-radius: 14px; display: block; background: var(--sage-soft); }
+    .block--image img { width: 100%; height: auto; border-radius: 14px; display: block; background: var(--sage-soft); }
+    .block--image.is-narrow { max-width: 420px; }
+    .block--image.is-wide   { max-width: 100%; }
+    .block--image.is-half   { max-width: 50%; }
+    .block--image.is-left   { margin-left: 0; margin-right: auto; }
+    .block--image.is-center { margin-left: auto; margin-right: auto; }
+    .block--image.is-right  { margin-left: auto; margin-right: 0; }
     .block--image figcaption,
     .block--gallery figcaption { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+    /* 画廊：原比例，不被压扁 */
     .block--gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 28px 0; }
     .block--gallery figure { margin: 0; border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
-    .block--gallery img { width: 100%; height: 240px; object-fit: cover; display: block; }
+    .block--gallery img { width: 100%; height: auto; object-fit: contain; display: block; }
+    .block--gallery.is-1col { grid-template-columns: 1fr; }
+    .block--gallery.is-3col { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 600px) { .block--gallery { grid-template-columns: 1fr; } }
+
     .block--video video { width: 100%; border-radius: 14px; display: block; background: #000; }
     .block--links { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0; }
     .block--links a {
@@ -88,7 +105,6 @@
       transition: background .18s ease, color .18s ease;
     }
     .block--links a:hover { background: var(--sage-dark); color: #fff; }
-    @media (max-width: 600px) { .block--gallery { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -104,7 +120,6 @@
       const id = params.get("id");
       const box = document.getElementById("content");
 
-      // 转义，防止内容破坏页面结构
       function esc(s) {
         return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({
           "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
@@ -112,32 +127,33 @@
       }
 
       // 灵活块渲染：text / image / gallery / links / video / heading
-      // 在 content.json 的 experience[].blocks 里自由增删即可
       function renderBlocks(blocks) {
         if (!Array.isArray(blocks) || !blocks.length) return "";
         return blocks.map((b) => {
           if (!b || !b.type) return "";
+          const width = b.width ? ` is-${esc(b.width)}` : "";
+          const align = b.align ? ` is-${esc(b.align)}` : "";
           if (b.type === "heading") {
             return `<h2 class="block block--heading">${esc(b.text || "")}</h2>`;
           }
           if (b.type === "text") {
-            // 允许直接写 HTML（与你 about-summary 用法一致），否则转义纯文本
             const html = b.html != null ? b.html : esc(b.text || "");
             return `<div class="block block--text">${html}</div>`;
           }
           if (b.type === "image") {
             const cap = b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : "";
-            return `<figure class="block block--image">
+            return `<figure class="block block--image${width}${align}">
               <img src="${esc(b.src || "")}" alt="${esc(b.caption || "")}" loading="lazy" onerror="this.parentElement.style.display='none'">
               ${cap}
             </figure>`;
           }
           if (b.type === "gallery") {
+            const cols = b.columns ? ` is-${esc(String(b.columns))}col` : "";
             const items = (b.images || []).map((im) =>
               `<figure><img src="${esc(im.src || "")}" alt="${esc(im.caption || "")}" loading="lazy" onerror="this.style.display='none'">
                 ${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`
             ).join("");
-            return `<div class="block block--gallery">${items}</div>`;
+            return `<div class="block block--gallery${cols}">${items}</div>`;
           }
           if (b.type === "links") {
             const items = (b.items || []).map((l) =>
@@ -165,8 +181,8 @@
           document.title = (exp.role || "经历") + " · 李欣怡作品集";
           const tag = exp.tag ? `<span class="tag">${esc(exp.tag)}</span>` : "";
           const coverImg = exp.cover
-            ? `<div class="cover"><img src="${esc(exp.cover)}" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg, var(--sage), var(--sage-dark))';this.remove();" /></div>`
-            : `<div class="cover">经历配图（可在 content.json 的 experience 中补充 cover 字段）</div>`;
+            ? `<div class="cover"><img src="${esc(exp.cover)}" alt="" onerror="this.parentElement.style.display='none'" /></div>`
+            : "";
           const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join("");
           const detail = (exp.detail || "").trim();
           const projectLink = exp.projectLink
