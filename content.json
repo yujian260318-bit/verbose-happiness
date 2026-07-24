@@ -275,7 +275,12 @@
       "period": "2024 – 2025",
       "role": "创作核心成员：主导脚本撰写、现场拍摄、后期全片剪辑。",
       "cover": "linear-gradient(135deg, #5A5A5A, #8A8A8A)",
-      "videoUrls": [],
+      "videoUrls": [
+        {
+          "type": "mp4",
+          "url": "assets/videos/1784860920694-_超能_广告片.mp4"
+        }
+      ],
       "metrics": [
         {
           "label": "奖项",
