@@ -4,107 +4,44 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="styles.css?v=24" />
   <style>
     :root {
-      --sage: #A9BF7D;
-      --sage-dark: #8DA361;
-      --sage-soft: #E3EBD1;
-      --ink: #2A3654;
-      --bg: #E6E7DE;
-      --surface: #FFFFFF;
-      --muted: #6B7280;
-      --radius: 20px;
-      --maxw: 820px;
+      --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
+      --ink: #2A3654; --bg: #E6E7DE; --surface: #FFFFFF; --muted: #6B7280;
+      --radius: 20px; --maxw: 820px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      background: var(--bg); color: var(--ink); line-height: 1.9; padding: 48px 20px 80px;
-    }
+    body { font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.9; padding: 48px 20px 80px; }
     .wrap { max-width: var(--maxw); margin: 0 auto; }
-    .back {
-      display: inline-flex; align-items: center; gap: 6px; color: var(--sage-dark);
-      text-decoration: none; font-weight: 600; margin-bottom: 28px; font-size: 15px;
-    }
+    .back { display: inline-flex; align-items: center; gap: 6px; color: var(--sage-dark); text-decoration: none; font-weight: 600; margin-bottom: 28px; font-size: 15px; }
     .back:hover { color: var(--ink); }
-    .tag {
-      display: inline-block; background: var(--sage-soft); color: var(--sage-dark);
-      padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 16px;
-    }
-    h1 { font-family: 'Outfit', 'Montserrat', 'Noto Sans SC', sans-serif; font-size: 32px; line-height: 1.4; margin-bottom: 8px; }
-    .company { font-size: 18px; color: var(--ink); font-weight: 600; margin-bottom: 6px; }
+    .tag { display: inline-block; background: var(--sage-soft); color: var(--sage-dark); padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 16px; }
+    h1 { font-family: 'Outfit','Montserrat','Noto Sans SC',sans-serif; font-size: 32px; line-height: 1.4; }
+    .company { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
     .meta { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
-    .cover {
-      width: 100%; border-radius: var(--radius); overflow: hidden;
-      background: linear-gradient(135deg, var(--sage), var(--sage-dark)); margin-bottom: 36px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .cover img { width: 100%; height: auto; display: block; }
-    p { font-size: 17px; color: #3a4050; margin-bottom: 20px; }
-    h2 { font-size: 20px; margin: 36px 0 14px; color: var(--ink); }
-    ul { padding-left: 22px; margin-bottom: 20px; }
-    li { font-size: 16px; color: #3a4050; margin-bottom: 8px; }
     .footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 13px; }
     .empty { text-align: center; color: var(--muted); padding: 60px 0; }
-    .detail-body { margin-top: 8px; }
-    .detail-body img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; height: auto; }
-
-    /* 经历图片：原比例显示，不再压成横版 */
-    .detail-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 28px; }
-    .detail-images figure { margin: 0; border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
-    .detail-images img { width: 100%; height: auto; object-fit: contain; display: block; }
-    @media (max-width: 600px) { .detail-images { grid-template-columns: 1fr; } }
-
-    .view-work {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 12px; padding: 12px 24px;
-      background: var(--ink); color: #fff; text-decoration: none;
-      border: none; border-radius: 999px; font-weight: 600; font-size: 15px;
-      cursor: pointer;
-      transition: transform .18s ease, background .18s ease;
-    }
-    .view-work:hover { background: var(--sage-dark); transform: translateX(4px); }
-
-    /* ===== 灵活编辑块 blocks ===== */
-    .block { margin: 28px 0; }
-    .block--heading {
-      font-family: 'Outfit', 'Montserrat', 'Noto Sans SC', sans-serif;
-      font-size: 21px; color: var(--ink); margin: 38px 0 14px; font-weight: 700;
-    }
-    .block--text { font-size: 17px; color: #3a4050; line-height: 1.9; }
-    .block--text p { margin-bottom: 16px; }
-    .block--text img { max-width: 100%; border-radius: 14px; margin: 16px 0; display: block; height: auto; }
-
-    /* 单图：默认原比例，支持通过 JSON 控制宽度/位置 */
-    .block--image { margin: 28px 0; }
-    .block--image img { width: 100%; height: auto; border-radius: 14px; display: block; background: var(--sage-soft); }
-    .block--image.is-narrow { max-width: 420px; }
-    .block--image.is-wide   { max-width: 100%; }
-    .block--image.is-half   { max-width: 50%; }
-    .block--image.is-left   { margin-left: 0; margin-right: auto; }
-    .block--image.is-center { margin-left: auto; margin-right: auto; }
-    .block--image.is-right  { margin-left: auto; margin-right: 0; }
-    .block--image figcaption,
-    .block--gallery figcaption { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
-
-    /* 画廊：原比例，不被压扁 */
-    .block--gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 28px 0; }
-    .block--gallery figure { margin: 0; border-radius: 14px; overflow: hidden; background: var(--sage-soft); }
-    .block--gallery img { width: 100%; height: auto; object-fit: contain; display: block; }
-    .block--gallery.is-1col { grid-template-columns: 1fr; }
-    .block--gallery.is-3col { grid-template-columns: repeat(3, 1fr); }
-    @media (max-width: 600px) { .block--gallery { grid-template-columns: 1fr; } }
-
-    .block--video video { width: 100%; border-radius: 14px; display: block; background: #000; }
-    .block--links { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0; }
-    .block--links a {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 20px; background: var(--sage-soft); color: var(--sage-dark);
-      border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px;
-      transition: background .18s ease, color .18s ease;
-    }
-    .block--links a:hover { background: var(--sage-dark); color: #fff; }
+    .ed-head { margin-bottom: 8px; }
+    .ed-canvas { position: relative; margin-top: 24px; min-height: 200px; }
+    .ed-block { position: absolute; }
+    .ed-canvas--edit { min-height: 420px; border: 2px dashed var(--sage); border-radius: 16px; padding: 8px; background: rgba(227,235,209,0.25); }
+    .ed-canvas--edit .ed-block { background: #fff; border: 1px solid #D1D5C7; border-radius: 12px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .ed-block--text .ed-text { outline: none; font-size: 17px; color: #3a4050; line-height: 1.9; }
+    .ed-block--image .ed-img, .ed-block--video { width: 100%; display: block; border-radius: 10px; }
+    .ed-block--heading .ed-heading { font-size: 21px; margin: 0; color: var(--ink); outline: none; }
+    .ed-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .ed-links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--sage-soft); color: var(--sage-dark); border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .ed-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: grab; }
+    .ed-grip { font-size: 12px; color: var(--muted); user-select: none; }
+    .ed-del { margin-left: auto; border: none; background: #e57373; color: #fff; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
+    .ed-resize { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; background: var(--sage-dark); border-radius: 3px; cursor: nwse-resize; }
+    .ed-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .ed-toolbar button { padding: 8px 14px; border: none; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; }
+    .ed-toolbar .ed-save { background: var(--sage-dark); }
+    .ed-head .tag { margin-bottom: 16px; }
+    .ed-head h1 { margin-bottom: 8px; }
+    .ed-hint { background: #FFF7E6; border: 1px solid #FFE08A; color: #8a6d00; padding: 10px 14px; border-radius: 10px; margin: 16px 0; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -118,58 +55,8 @@
     (function () {
       const params = new URLSearchParams(location.search);
       const id = params.get("id");
+      const editMode = params.get("edit") === "1";
       const box = document.getElementById("content");
-
-      function esc(s) {
-        return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({
-          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
-        }[c]));
-      }
-
-      // 灵活块渲染：text / image / gallery / links / video / heading
-      function renderBlocks(blocks) {
-        if (!Array.isArray(blocks) || !blocks.length) return "";
-        return blocks.map((b) => {
-          if (!b || !b.type) return "";
-          const width = b.width ? ` is-${esc(b.width)}` : "";
-          const align = b.align ? ` is-${esc(b.align)}` : "";
-          if (b.type === "heading") {
-            return `<h2 class="block block--heading">${esc(b.text || "")}</h2>`;
-          }
-          if (b.type === "text") {
-            const html = b.html != null ? b.html : esc(b.text || "");
-            return `<div class="block block--text">${html}</div>`;
-          }
-          if (b.type === "image") {
-            const cap = b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : "";
-            return `<figure class="block block--image${width}${align}">
-              <img src="${esc(b.src || "")}" alt="${esc(b.caption || "")}" loading="lazy" onerror="this.parentElement.style.display='none'">
-              ${cap}
-            </figure>`;
-          }
-          if (b.type === "gallery") {
-            const cols = b.columns ? ` is-${esc(String(b.columns))}col` : "";
-            const items = (b.images || []).map((im) =>
-              `<figure><img src="${esc(im.src || "")}" alt="${esc(im.caption || "")}" loading="lazy" onerror="this.style.display='none'">
-                ${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`
-            ).join("");
-            return `<div class="block block--gallery${cols}">${items}</div>`;
-          }
-          if (b.type === "links") {
-            const items = (b.items || []).map((l) =>
-              `<a href="${esc(l.url || "#")}" target="_blank" rel="noopener">${esc(l.platform || "链接")}${l.url ? " ↗" : ""}</a>`
-            ).join("");
-            return `<div class="block block--links">${items}</div>`;
-          }
-          if (b.type === "video") {
-            const poster = b.poster ? `poster="${esc(b.poster)}"` : "";
-            return `<div class="block block--video">
-              <video src="${esc(b.src || "")}" ${poster} controls playsinline></video>
-            </div>`;
-          }
-          return "";
-        }).join("");
-      }
 
       fetch("content.json", { cache: "no-store" })
         .then((r) => r.json())
@@ -178,47 +65,20 @@
           const list = Array.isArray(data.experience) ? data.experience : [];
           const exp = list.find((e) => e.id === id) || (list[0] || null);
           if (!exp) { box.innerHTML = '<div class="empty">未找到对应经历。</div>'; return; }
-          document.title = (exp.role || "经历") + " · 李欣怡作品集";
-          const tag = exp.tag ? `<span class="tag">${esc(exp.tag)}</span>` : "";
-          const coverImg = exp.cover
-            ? `<div class="cover"><img src="${esc(exp.cover)}" alt="" onerror="this.parentElement.style.display='none'" /></div>`
-            : "";
-          const desc = (exp.description || "").split(/\n+/).filter(Boolean).map((t) => `<p>${esc(t)}</p>`).join("");
-          const detail = (exp.detail || "").trim();
-          const projectLink = exp.projectLink
-            ? `<button type="button" class="view-work" data-work-id="${esc(exp.projectLink)}">查看作品 →</button>`
-            : "";
-          const images = Array.isArray(exp.images) && exp.images.length
-            ? `<div class="detail-images">${exp.images.map((u) => `<figure><img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'" /></figure>`).join("")}</div>`
-            : "";
-          const blocksHtml = renderBlocks(exp.blocks);
-          box.innerHTML = `
-            ${tag}
-            <h1>${esc(exp.role || "")}</h1>
-            <div class="company">${esc(exp.company || "")}</div>
-            <div class="meta">${exp.location ? esc(exp.location) + " ｜ " : ""}${esc(exp.period || "")}</div>
-            ${coverImg}
-            ${desc}
-            ${projectLink}
-            ${detail ? `<div class="detail-body">${detail}</div>` : ""}
-            ${images}
-            ${blocksHtml}
-            ${(!detail && !images && !desc && !blocksHtml) ? '<p>暂无详细描述，可在编辑模式中补充。</p>' : ""}
-          `;
-          const btn = box.querySelector(".view-work[data-work-id]");
-          if (btn && typeof window.openWorkModal === "function") {
-            btn.addEventListener("click", () => {
-              const workId = btn.dataset.workId;
-              const work = (window.__works || []).find((w) => w.id === workId);
-              if (work) window.openWorkModal(work);
-            });
+          if (editMode) {
+            const hint = document.createElement("div");
+            hint.className = "ed-hint";
+            hint.innerHTML = "🛠 <b>编辑模式</b>：拖动块的「✥ 拖动」条移动位置，拖右下角改大小；工具栏可插入文字/图片/视频框；改完点「💾 保存」。保存需输入 GitHub Token（仅本次使用）。";
+            box.appendChild(hint);
           }
+          PortfolioEditor.render(box, exp, { editable: editMode, source: "exp" });
         })
         .catch((err) => {
-          box.innerHTML = '<div class="empty">内容加载失败，请确认 content.json 与本站同目录部署。<br>' + (err && err.message ? err.message : "") + '</div>';
+          box.innerHTML = '<div class="empty">内容加载失败：' + (err && err.message ? err.message : "") + '</div>';
         });
     })();
   </script>
+  <script src="editor.js?v=1"></script>
   <script src="experience-modal.js?v=1"></script>
 </body>
 </html>
