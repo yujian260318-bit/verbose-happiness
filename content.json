@@ -15,7 +15,7 @@
     "contact-summary": "我正在积极寻找机会，运用我的技能和见解，为创新项目做出有意义的贡献。我热爱与志同道合的团队一起创作，如果你对我的作品感兴趣，欢迎随时联系。",
     "contact-email": "19571618312@139.com",
     "contact-phone": "195-7161-8312",
-    "contact-wechat": "Li_Xinyi",
+    "contact-wechat": "lxy19571618312",
     "footer-text": "© 2026 李欣怡 · 内容策划 / 短视频编导作品集",
     "tl-0-title": "腾讯 CDG · 青腾",
     "tl-0-desc": "内容运营实习生｜活动拍摄、多平台剪辑、KOC 拓展、社媒内容支持",
@@ -30,10 +30,10 @@
     "edu-gpa": "GPA 3.8 / 4",
     "edu-honor": "<li>国家励志奖学金</li><li>校级三好学生</li><li>专业前 20%</li>",
     "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>",
-    "frame-about-1": "\n            <img src=\"blob:https://yujian260318-bit.github.io/73306ba4-dc2a-4b97-a4e8-f9b2427a0f59\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-1.jpg</small></span>\n          ",
-    "frame-about-2": "\n            <img src=\"blob:https://yujian260318-bit.github.io/733ada48-6ce2-4faa-85ca-b4863050a667\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-2.jpg</small></span>\n          ",
-    "frame-edu-1": "\n            <img src=\"blob:https://yujian260318-bit.github.io/99bdd4d5-eca1-42d8-9650-a3ed165ccb6a\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-1.jpg</small></span>\n          ",
-    "frame-edu-2": "\n            <img src=\"blob:https://yujian260318-bit.github.io/79b066f9-34f8-496a-82cd-291e833b7538\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-2.jpg</small></span>\n          "
+    "frame-about-1": "\n            <img src=\"assets/1784882461130_微信图片_20260723144954_383_29.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-1.jpg</small></span>\n          ",
+    "frame-about-2": "\n            <img src=\"assets/1784882465701_5e57d9f4ee1761b4b127031fab85691d.jpg\" alt=\"工作照\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/about-2.jpg</small></span>\n          ",
+    "frame-edu-1": "\n            <img src=\"assets/1784882479007_R.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-1.jpg</small></span>\n          ",
+    "frame-edu-2": "\n            <img src=\"assets/1784882483337_80b4fa3b-a8ff-4cdb-8b26-99e53035ff1e.jpg\" alt=\"校园\" onerror=\"this.closest('.img-slot').classList.add('is-empty')\" onload=\"this.closest('.img-slot').classList.remove('is-empty')\">\n            <span class=\"img-slot__hint\">放置照片<br><small>assets/edu-2.jpg</small></span>\n          "
   },
   "categories": [
     "栏目纪实",
