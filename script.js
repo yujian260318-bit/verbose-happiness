@@ -236,11 +236,12 @@ const editorBar = document.getElementById("editor-bar");
 const imgInput = document.getElementById("img-input");
 const editorStatus = document.getElementById("editor-status");
 const expModal = document.getElementById("exp-modal");
-const expDetail = document.getElementById("exp-detail");
-const expImages = document.getElementById("exp-images");
-const expImgInput = document.getElementById("exp-img-input");
+const expEditor = document.getElementById("exp-editor");
 let expEditIndex = null;
-let expImageList = [];
+let expEditorApi = null;
+let expPendingImages = [];
+const expPreview = document.getElementById("exp-preview");
+const expPreviewBody = document.getElementById("exp-preview-body");
 
 /* ============================================================
    加载与渲染
@@ -441,9 +442,9 @@ function renderExperience() {
   const wrap = document.getElementById("experience-list");
   if (!wrap) return;
   wrap.innerHTML = experiences.map((exp, idx) => {
-    const linkHtml = exp.link
-      ? `<a class="exp-card__link" href="${exp.link}" target="_blank" rel="noopener">查看详情 →</a>`
-      : (editing ? `<span class="exp-card__link is-empty">（未填写详情链接）</span>` : "");
+    const previewBtn = `<button type="button" class="exp-card__link" data-exp-preview="${idx}">查看详情 →</button>`;
+    const extLink = exp.link ? `<a class="exp-card__link-ext" href="${exp.link}" target="_blank" rel="noopener" title="打开已发布独立页">↗</a>` : "";
+    const linkHtml = previewBtn + extLink;
     const editAttr = editing ? " contenteditable=\"true\"" : "";
     const editDetailBtn = editing
       ? `<button type="button" class="exp-card__edit-detail" data-exp-detail="${idx}">✎ 编辑详情页</button>`
@@ -479,15 +480,43 @@ function bindExperienceEdit(wrap) {
       openExpModal(Number(btn.dataset.expDetail));
     });
   });
+  wrap.querySelectorAll("[data-exp-preview]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openExpPreview(Number(btn.dataset.expPreview));
+    });
+  });
+}
+
+function convertExpToBlocks(exp) {
+  if (Array.isArray(exp.blocks) && exp.blocks.length) return JSON.parse(JSON.stringify(exp.blocks));
+  const blocks = [];
+  let y = 20;
+  if (exp.detail && exp.detail.trim()) {
+    blocks.push({ type: "text", html: exp.detail.replace(/\n/g, "<br>"), x: 20, y, w: 760 });
+    y += 200;
+  }
+  (exp.images || []).forEach((src, i) => {
+    blocks.push({ type: "image", src, x: 20 + (i % 2) * 320, y, w: 300 });
+    if (i % 2 === 1) y += 220;
+  });
+  return blocks;
 }
 
 /* ---------- 经历详情编辑器 ---------- */
 function openExpModal(idx) {
   expEditIndex = idx;
+  expPendingImages = [];
   const exp = experiences[idx];
-  expDetail.value = exp.detail || "";
-  expImageList = (exp.images || []).map((url) => ({ url }));
-  renderExpImages();
+  const blocks = convertExpToBlocks(exp);
+  expEditor.innerHTML = "";
+  expEditorApi = window.PortfolioEditor.render(expEditor, exp, {
+    editable: true,
+    source: "exp",
+    skipHead: true,
+    showSave: false,
+    pendingImageFiles: expPendingImages
+  });
   expModal.classList.add("is-open");
   expModal.setAttribute("aria-hidden", "false");
 }
@@ -495,30 +524,49 @@ function closeExpModal() {
   expModal.classList.remove("is-open");
   expModal.setAttribute("aria-hidden", "true");
   expEditIndex = null;
-  expImageList = [];
-}
-function renderExpImages() {
-  if (!expImages) return;
-  expImages.innerHTML = expImageList.map((it, i) => `
-    <div class="exp-image-row">
-      <img src="${escAttr(it.preview || it.url)}" alt="" loading="lazy" />
-      <input type="text" class="exp-image-url" value="${escAttr(it.url)}" data-i="${i}" placeholder="assets/..." />
-      <button type="button" class="exp-image-del" data-i="${i}">×</button>
-    </div>
-  `).join("");
-  expImages.querySelectorAll(".exp-image-url").forEach((inp) => {
-    inp.addEventListener("input", () => { expImageList[Number(inp.dataset.i)].url = inp.value.trim(); });
-  });
-  expImages.querySelectorAll(".exp-image-del").forEach((btn) => {
-    btn.addEventListener("click", () => { expImageList.splice(Number(btn.dataset.i), 1); renderExpImages(); });
-  });
+  expEditorApi = null;
+  expPendingImages = [];
+  expEditor.innerHTML = "";
 }
 function saveExpModal() {
-  if (expEditIndex == null) return;
-  experiences[expEditIndex].detail = expDetail.value;
-  experiences[expEditIndex].images = expImageList.map((it) => it.url).filter(Boolean);
+  if (expEditIndex == null || !expEditorApi) return;
+  const idx = expEditIndex;
+  const blocks = expEditorApi.getBlocks();
+  blocks.forEach((b) => { delete b._file; delete b._preview; });
+  experiences[idx].blocks = blocks;
+  if (expPendingImages.length) {
+    pendingImageFiles.push(...expPendingImages);
+    expPendingImages = [];
+  }
   closeExpModal();
   renderExperience();
+  setStatus("详情已更新，下面就是预览效果 ↓");
+  openExpPreview(idx);
+}
+
+/* ---------- 经历详情预览（原页内只读，无需 GitHub 即可看效果） ---------- */
+function openExpPreview(idx) {
+  const exp = experiences[idx];
+  if (!exp) return;
+  const copy = Object.assign({}, exp);
+  if (!Array.isArray(copy.blocks) || !copy.blocks.length) copy.blocks = convertExpToBlocks(exp);
+  expPreviewBody.innerHTML = "";
+  window.PortfolioEditor.render(expPreviewBody, copy, { editable: false, skipHead: false });
+  const canvas = expPreviewBody.querySelector(".ed-canvas");
+  if (canvas) {
+    let maxY = 200;
+    copy.blocks.forEach((b) => { maxY = Math.max(maxY, (b.y || 0) + (b.h || 120)); });
+    canvas.style.minHeight = (maxY + 40) + "px";
+  }
+  const openLink = document.getElementById("exp-preview-open");
+  if (openLink) openLink.href = exp.link || ("experience-detail.html?id=" + encodeURIComponent(exp.id));
+  expPreview.classList.add("is-open");
+  expPreview.setAttribute("aria-hidden", "false");
+}
+function closeExpPreview() {
+  expPreview.classList.remove("is-open");
+  expPreview.setAttribute("aria-hidden", "true");
+  expPreviewBody.innerHTML = "";
 }
 
 /* ---------- 栏目筛选（动态渲染，可编辑） ---------- */
@@ -1205,18 +1253,9 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeWorkM
 document.getElementById("exp-save").addEventListener("click", saveExpModal);
 document.getElementById("exp-cancel").addEventListener("click", closeExpModal);
 document.querySelectorAll("[data-exp-close]").forEach((el) => el.addEventListener("click", closeExpModal));
-document.getElementById("exp-add-image").addEventListener("click", () => { if (expEditIndex != null) expImgInput.click(); });
-expImgInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file || expEditIndex == null) return;
-  const filename = `assets/${Date.now()}_${basename(file.name).replace(/\s+/g, "_")}`;
-  const preview = URL.createObjectURL(file);
-  pendingImageFiles.push({ name: filename, file, url: preview });
-  expImageList.push({ url: filename, preview });
-  renderExpImages();
-  expImgInput.value = "";
-});
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && expModal && expModal.classList.contains("is-open")) closeExpModal(); });
+document.querySelectorAll("[data-preview-close]").forEach((el) => el.addEventListener("click", closeExpPreview));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && expPreview && expPreview.classList.contains("is-open")) closeExpPreview(); });
 
 /* ---------- 栏目管理（添加 / 重命名 / 删除） ---------- */
 function openCatModal() {
@@ -1727,6 +1766,23 @@ async function commitToGitHub(str) {
     throw new Error("提交失败（" + res.status + "）" + why);
   }
 }
+
+// 推送前清洗 blocks：把本地预览用的 dataURL / 文件名标记换成可发布的路径
+function commitSanitizeBlocks(arr) {
+  if (!Array.isArray(arr)) return arr;
+  return arr.map((r) => {
+    if (!Array.isArray(r.blocks) || !r.blocks.length) return r;
+    const copy = Object.assign({}, r);
+    copy.blocks = r.blocks.map((b) => {
+      const nb = Object.assign({}, b);
+      if (nb._name) nb.src = nb._name;
+      delete nb._name; delete nb._file; delete nb._preview;
+      return nb;
+    });
+    return copy;
+  });
+}
+
 async function saveContent() {
   // 收集文本覆盖（剔除样式点，避免污染数据）
   document.querySelectorAll("[data-edit]").forEach((el) => {
@@ -1744,7 +1800,7 @@ async function saveContent() {
   });
   // 收集教育背景自定义布局
   educationLayout = collectEducationLayout();
-  const str = JSON.stringify({ texts, categories, works, experience: experiences, overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
+  const str = JSON.stringify({ texts, categories, works: commitSanitizeBlocks(works), experience: commitSanitizeBlocks(experiences), overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
