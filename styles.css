@@ -518,6 +518,25 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 .exp-image-del { border: none; background: var(--sage-soft); color: var(--sage-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; }
 .exp-modal__actions { display: flex; gap: 10px; margin-top: 6px; }
 
+.exp-modal__panel--visual { max-width: 900px; display: flex; flex-direction: column; }
+.exp-editor { flex: 1; min-height: 420px; max-height: 70vh; overflow: auto; position: relative; background: var(--bg); border-radius: var(--radius-sm); padding: 10px; }
+.exp-editor .ed-canvas--edit { min-height: 400px; }
+.exp-modal__panel--visual .exp-modal__actions { margin-top: 14px; flex-shrink: 0; }
+.exp-modal__panel--visual .exp-modal__hint { margin-bottom: 10px; flex-shrink: 0; }
+.exp-modal__panel--visual .exp-modal__title { flex-shrink: 0; }
+
+/* 经历详情预览（原页内只读，无需 GitHub 即可看编辑效果） */
+.exp-preview__panel { max-width: 760px; display: flex; flex-direction: column; }
+.exp-preview__bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-shrink: 0; }
+.exp-preview__title { font-family: var(--display); font-size: 20px; color: var(--ink); font-weight: 700; }
+.exp-preview__tools { display: flex; align-items: center; gap: 10px; }
+.exp-preview__open { font-size: 13px; color: var(--sage-dark); text-decoration: none; font-weight: 600; padding: 6px 12px; background: var(--sage-soft); border-radius: 999px; }
+.exp-preview__open:hover { color: var(--ink); }
+.exp-preview__close { border: none; background: var(--sage-soft); color: var(--sage-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1; }
+.exp-preview__body { overflow: auto; max-height: 72vh; position: relative; }
+.exp-preview__body .ed-canvas { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; }
+.exp-preview__body .ed-block { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+
 /* 覆盖层 / 编辑工具栏 */
 #overlay-layer { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
 #overlay-layer .ovl { position: absolute; pointer-events: auto; }
@@ -734,10 +753,10 @@ body.is-editing .skill-card {
 .ed-block--heading .ed-heading { font-size: 21px; margin: 0; color: var(--ink); outline: none; }
 .ed-links { display: flex; flex-wrap: wrap; gap: 10px; }
 .ed-links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--sage-soft); color: var(--sage-dark); border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; }
-.ed-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: grab; }
+.ed-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: grab; touch-action: none; user-select: none; }
 .ed-grip { font-size: 12px; color: var(--muted); user-select: none; }
 .ed-del { margin-left: auto; border: none; background: #e57373; color: #fff; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
-.ed-resize { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; background: var(--sage-dark); border-radius: 3px; cursor: nwse-resize; }
+.ed-resize { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; background: var(--sage-dark); border-radius: 3px; cursor: nwse-resize; touch-action: none; }
 .ed-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
 .ed-toolbar button { padding: 8px 14px; border: none; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; }
 .ed-toolbar .ed-save { background: var(--sage-dark); }
