@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=24" />
+  <link rel="stylesheet" href="styles.css?v=26" />
   <style>
     :root {
       --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
@@ -63,6 +63,16 @@
         .then((data) => {
           window.__works = Array.isArray(data.works) ? data.works : [];
           const list = Array.isArray(data.experience) ? data.experience : [];
+          // 合并本地草稿里的 blocks（编辑器保存后、未推送到 GitHub 前也能看到）
+          try {
+            const raw = localStorage.getItem("portfolio_draft_v1");
+            if (raw) {
+              const draft = JSON.parse(raw);
+              const dExp = Array.isArray(draft.experiences) ? draft.experiences.find((e) => e.id === id) : null;
+              const target = list.find((e) => e.id === id);
+              if (dExp && target && Array.isArray(dExp.blocks) && dExp.blocks.length) target.blocks = dExp.blocks;
+            }
+          } catch (_) {}
           const exp = list.find((e) => e.id === id) || (list[0] || null);
           if (!exp) { box.innerHTML = '<div class="empty">未找到对应经历。</div>'; return; }
           if (editMode) {
@@ -78,7 +88,7 @@
         });
     })();
   </script>
-  <script src="editor.js?v=1"></script>
-  <script src="experience-modal.js?v=1"></script>
+  <script src="editor.js?v=3"></script>
+  <script src="experience-modal.js?v=2"></script>
 </body>
 </html>
