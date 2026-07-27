@@ -210,7 +210,8 @@
             // 本地预览用 dataURL，推送时再换成 GitHub 路径
             blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result, _name: filename });
           } else {
-            blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result });
+            // 在独立详情页编辑时，本地暂存文件名，保存时直接上传
+            blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result, _name: filename, _file: { name: f.name } });
           }
           paint();
         };
@@ -242,14 +243,14 @@
             if (!t) { alert("未输入 Token，已取消保存。"); return; }
             ED.token = t.trim();
           }
-          // 上传新图片
+          // 上传新图片（dataURL 且不是外部链接）
           for (const b of blocks) {
-            if (b._file && !opts.pendingImageFiles) {
-              const rel = "assets/" + Date.now() + "_" + b._file.name.replace(/\s/g, "_");
+            if ((b._file || (b._name && b.src && b.src.startsWith("data:"))) && !opts.pendingImageFiles) {
+              const rel = b._name || ("assets/" + Date.now() + "_" + (b._file ? b._file.name.replace(/\s/g, "_") : "upload.jpg"));
               const b64 = b.src.split(",")[1];
               const res = await putAsset(rel, b64, ED.token);
               if (res.status >= 400) throw new Error("图片上传失败 " + res.status);
-              b.src = rel; delete b._file;
+              b.src = rel; delete b._file; delete b._name;
             }
           }
           if (typeof onSave === "function") {
