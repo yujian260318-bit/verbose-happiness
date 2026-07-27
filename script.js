@@ -2013,6 +2013,10 @@ function onImgSlotClick(e) {
 }
 function enableEditing() {
   editing = true;
+  // 把页面登录的 token 直接喂给可视化编辑器，避免保存时再弹一次 token
+  if (window.PortfolioEditor) {
+    try { PortfolioEditor.token = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("gh_token")) || PortfolioEditor.token || ""; } catch (_) {}
+  }
   document.body.classList.add("is-editing");
   showEditorBar(true);
   // 静态文本可编辑
