@@ -71,9 +71,15 @@
       if (b.caption) node.appendChild(el("figcaption", null, esc(b.caption)));
     } else if (b.type === "video") {
       const v = el("video", "ed-video");
-      v.src = b.src || ""; v.controls = true; v.playsInline = true;
+      v.src = b.src || ""; v.controls = !ctx.editable; v.playsInline = true;
       if (b.poster) v.poster = b.poster;
       node.appendChild(v);
+      if (ctx.editable) {
+        // 编辑模式下加一层明显占位，即使视频因网络加载不出也能拖动/缩放
+        const ph = el("div", "ed-video-placeholder");
+        ph.innerHTML = `<div class="ed-video-phicon">▶</div><div class="ed-video-phlabel">${esc(b.label || "视频块")}</div><div class="ed-video-phdim">${(b.w || 280)} × ${(b.h || 160)}</div>`;
+        node.appendChild(ph);
+      }
       if (b.label) node.appendChild(el("figcaption", null, esc(b.label)));
     } else if (b.type === "pdf") {
       const a = el("a", "ed-pdf");
