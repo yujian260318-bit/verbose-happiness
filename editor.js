@@ -15,7 +15,8 @@
     return e;
   }
   function api(method, path, body, token) {
-    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`;
+    let url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+    if (method === "GET") url += `?ref=${BRANCH}`;
     const opt = { method, headers: {
       "Authorization": "Bearer " + token,
       "Accept": "application/vnd.github+json",
@@ -23,27 +24,33 @@
       "Content-Type": "application/json"
     }};
     if (body) opt.body = JSON.stringify(body);
-    return fetch(url, opt).then(r => r.text().then(t => ({ status: r.status, text: t })));
+    return fetch(url, opt).then(async r => {
+      const text = await r.text().catch(() => "");
+      return { status: r.status, text };
+    });
   }
   function getContent(token) {
     return api("GET", "content.json", null, token).then(({ status, text }) => {
-      if (status !== 200) throw new Error("读取 content.json 失败 " + status);
+      if (status !== 200) throw new Error(`读取 content.json 失败 (${status})：${text.slice(0, 240)}`);
+      if (!text.trim()) throw new Error("读取 content.json 失败：服务器返回空响应");
       const j = JSON.parse(text);
-      return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g, "")))));
+      const data = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g, "")))));
+      return { sha: j.sha, data };
     });
   }
   function putContent(obj, token) {
-    return getContent(token).then(j => api("GET", "content.json", null, token).then(({ text }) => {
-      const sha = JSON.parse(text).sha;
+    return getContent(token).then(({ sha }) => {
       return api("PUT", "content.json", {
         message: "Edit via visual editor",
         content: btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))),
         sha, branch: BRANCH
       }, token);
-    }));
+    });
   }
   function putAsset(relPath, b64, token) {
     return api("GET", relPath, null, token).then(({ status, text }) => {
+      if (status !== 200 && status !== 404) throw new Error(`读取 ${relPath} 失败 (${status})：${text.slice(0, 240)}`);
+      if (status === 200 && !text.trim()) throw new Error(`读取 ${relPath} 失败：服务器返回空响应`);
       const body = { message: "Upload " + relPath, content: b64, branch: BRANCH };
       if (status === 200) body.sha = JSON.parse(text).sha;
       return api("PUT", relPath, body, token);
@@ -397,14 +404,14 @@
               const rel = b._name || ("assets/" + Date.now() + "_" + (b._file ? b._file.name.replace(/\s/g, "_") : "upload.jpg"));
               const b64 = b.src.split(",")[1];
               const res = await putAsset(rel, b64, ED.token);
-              if (res.status >= 400) throw new Error((b.type === "pdf" ? "PDF" : "图片") + "上传失败 " + res.status);
+              if (res.status >= 400) throw new Error(`${b.type === "pdf" ? "PDF" : "图片"}上传失败 (${res.status})：${res.text.slice(0, 240)}`);
               b.src = rel; delete b._file; delete b._name;
             }
           }
           if (typeof onSave === "function") {
             await onSave(blocks);
           } else {
-            const data = await getContent(ED.token);
+            const { data } = await getContent(ED.token);
             const arr = source === "exp" ? data.experience : data.works;
             const rec = arr.find(r => r.id === id);
             if (!rec) throw new Error("未找到记录");
@@ -446,7 +453,7 @@
             }
 
             const r2 = await putContent(data, ED.token);
-            if (r2.status >= 400) throw new Error("保存失败 " + r2.status);
+            if (r2.status >= 400) throw new Error(`保存失败 (${r2.status})：${r2.text.slice(0, 240)}`);
             alert("✅ 已保存！刷新页面即可看到效果。");
             if (typeof opts.postSave === "function") opts.postSave(blocks);
           }
