@@ -498,6 +498,15 @@ function convertExpToBlocks(exp) {
   return blocks;
 }
 
+function blocksToDetail(blocks) {
+  if (!Array.isArray(blocks)) return "";
+  return blocks
+    .filter((b) => b.type === "text" || b.type === "heading")
+    .map((b) => (b.type === "heading" ? (b.text || "") : (b.html || "").replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, "")))
+    .filter((s) => s.trim())
+    .join("\n\n");
+}
+
 /* ---------- 经历详情编辑器 ---------- */
 function openExpModal(idx) {
   expEditIndex = idx;
@@ -527,12 +536,15 @@ function saveExpModal() {
   if (expEditIndex == null || !expEditorApi) return;
   const idx = expEditIndex;
   const blocks = expEditorApi.getBlocks();
-  blocks.forEach((b) => { delete b._file; delete b._preview; });
+  blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
   experiences[idx].blocks = blocks;
+  // 同步更新 detail，让旧版只读页/缓存页也能看到文字内容
+  experiences[idx].detail = blocksToDetail(blocks);
   if (expPendingImages.length) {
     pendingImageFiles.push(...expPendingImages);
     expPendingImages = [];
   }
+  saveDraft();
   closeExpModal();
   renderExperience();
   setStatus("详情已更新，下面就是预览效果 ↓");
