@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Outfit:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="styles.css?v=26" />
 </head>
 <body>
   <!-- 导航 -->
@@ -285,23 +285,31 @@
   <!-- 经历详情编辑模态框 -->
   <div class="exp-modal" id="exp-modal" aria-hidden="true">
     <div class="exp-modal__backdrop" data-exp-close></div>
-    <div class="exp-modal__panel" role="dialog" aria-modal="true">
-      <h3 class="exp-modal__title">编辑经历详情页</h3>
-      <p class="exp-modal__hint">这里的内容会显示在「查看详情 →」页面。支持 HTML，可粘贴 &lt;img src="assets/..."&gt; 插入图片。</p>
-      <label class="exp-modal__full">详情正文
-        <textarea id="exp-detail" rows="10" placeholder="输入详情内容，支持 HTML 标签与换行"></textarea>
-      </label>
-      <label class="exp-modal__full">详情配图
-        <div id="exp-images" class="exp-images"></div>
-        <button type="button" id="exp-add-image" class="wm-add-link">＋ 上传图片</button>
-      </label>
+    <div class="exp-modal__panel exp-modal__panel--visual" role="dialog" aria-modal="true">
+      <h3 class="exp-modal__title">可视化编辑经历详情页</h3>
+      <p class="exp-modal__hint">拖动块移动位置，拖动右下角改大小；工具栏可插入文字 / 图片 / 视频框。这里保存后回到首页，仍需点顶部「保存」按钮推送到 GitHub。</p>
+      <div id="exp-editor" class="exp-editor"></div>
       <div class="exp-modal__actions">
-        <button type="button" id="exp-save" class="btn btn--primary btn--small">保存</button>
+        <button type="button" id="exp-save" class="btn btn--primary btn--small">保存到草稿</button>
         <button type="button" id="exp-cancel" class="btn btn--ghost btn--small">取消</button>
       </div>
     </div>
   </div>
-  <input type="file" id="exp-img-input" accept="image/*" hidden />
+
+  <!-- 经历详情预览（原页内只读，无需 GitHub 即可查看编辑效果） -->
+  <div class="exp-modal exp-preview" id="exp-preview" aria-hidden="true">
+    <div class="exp-modal__backdrop" data-preview-close></div>
+    <div class="exp-modal__panel exp-preview__panel" role="dialog" aria-modal="true">
+      <div class="exp-preview__bar">
+        <span class="exp-preview__title">详情预览</span>
+        <div class="exp-preview__tools">
+          <a id="exp-preview-open" class="exp-preview__open" href="#" target="_blank" rel="noopener">↗ 独立页</a>
+          <button type="button" class="exp-preview__close" data-preview-close title="关闭">✕</button>
+        </div>
+      </div>
+      <div id="exp-preview-body" class="exp-preview__body"></div>
+    </div>
+  </div>
 
   <!-- 视频管理模态框 -->
   <div class="vm-modal" id="vm-modal" aria-hidden="true">
@@ -460,8 +468,8 @@
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
 
   <script src="config.js?v=2"></script>
-  <script src="editor.js?v=1"></script>
-  <script src="experience-modal.js?v=1"></script>
-  <script src="script.js?v=13"></script>
+  <script src="editor.js?v=3"></script>
+  <script src="experience-modal.js?v=2"></script>
+  <script src="script.js?v=15"></script>
 </body>
 </html>
