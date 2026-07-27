@@ -442,9 +442,9 @@ function renderExperience() {
   const wrap = document.getElementById("experience-list");
   if (!wrap) return;
   wrap.innerHTML = experiences.map((exp, idx) => {
-    const previewBtn = `<button type="button" class="exp-card__link" data-exp-preview="${idx}">查看详情 →</button>`;
-    const extLink = exp.link ? `<a class="exp-card__link-ext" href="${exp.link}" target="_blank" rel="noopener" title="打开已发布独立页">↗</a>` : "";
-    const linkHtml = previewBtn + extLink;
+    const linkHtml = exp.link
+      ? `<a class="exp-card__link" href="${exp.link}">查看详情 →</a>`
+      : (editing ? `<span class="exp-card__link is-empty">（未填写详情链接）</span>` : "");
     const editAttr = editing ? " contenteditable=\"true\"" : "";
     const editDetailBtn = editing
       ? `<button type="button" class="exp-card__edit-detail" data-exp-detail="${idx}">✎ 编辑详情页</button>`
@@ -474,16 +474,11 @@ function bindExperienceEdit(wrap) {
     const field = el.dataset.exp;
     el.addEventListener("input", () => { experiences[idx][field] = el.textContent.trim(); });
   });
+  /* 查看详情现在直接跳转，不再绑定预览按钮 */
   wrap.querySelectorAll("[data-exp-detail]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       openExpModal(Number(btn.dataset.expDetail));
-    });
-  });
-  wrap.querySelectorAll("[data-exp-preview]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openExpPreview(Number(btn.dataset.expPreview));
     });
   });
 }
@@ -1493,15 +1488,28 @@ imgInput.addEventListener("change", (e) => {
     const key = currentImgSlot.dataset.edit;
     if (key) {
       const filename = `assets/${Date.now()}_${basename(file.name).replace(/\s+/g, "_")}`;
-      images[key] = filename;
-      const url = URL.createObjectURL(file);
-      const img = currentImgSlot.tagName === "IMG" ? currentImgSlot : currentImgSlot.querySelector("img");
-      if (img) { img.src = url; img.style.display = ""; }
-      currentImgSlot.classList.remove("is-empty");
-      pendingImageFiles.push({ name: filename, file, url });
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        images[key] = filename;
+        const img = currentImgSlot.tagName === "IMG" ? currentImgSlot : currentImgSlot.querySelector("img");
+        if (img) { img.src = dataUrl; img.style.display = ""; }
+        currentImgSlot.classList.remove("is-empty");
+        // 立即读成 data URL 存内存，避免浏览器 File 对象在保存前失效/被清理
+        pendingImageFiles.push({ name: filename, file: dataUrl, url: dataUrl });
+        currentImgSlot = null;
+        imgInput.value = "";
+      };
+      reader.onerror = () => {
+        alert("读取图片失败，请重新选择");
+        currentImgSlot = null;
+        imgInput.value = "";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      currentImgSlot = null;
+      imgInput.value = "";
     }
-    currentImgSlot = null;
-    imgInput.value = "";
     return;
   }
   const reader = new FileReader();
