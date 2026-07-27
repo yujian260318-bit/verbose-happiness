@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=29" />
+  <link rel="stylesheet" href="styles.css?v=31" />
   <style>
     :root {
       --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
@@ -42,7 +42,8 @@
     .ed-head .tag { margin-bottom: 16px; }
     .ed-head h1 { margin-bottom: 8px; }
     .ed-hint { background: #FFF7E6; border: 1px solid #FFE08A; color: #8a6d00; padding: 10px 14px; border-radius: 10px; margin: 16px 0; font-size: 14px; }
-    .exp-view-work { display: inline-flex; align-items: center; gap: 6px; margin: 28px 0 8px; padding: 12px 22px; background: var(--sage-dark, #8DA361); color: #fff; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 15px; transition: transform .15s ease, box-shadow .15s ease; }
+    .exp-view-work-wrap { display: flex; justify-content: flex-start; margin-top: 24px; }
+    .exp-view-work { display: inline-flex; align-items: center; gap: 6px; padding: 12px 22px; background: var(--sage-dark, #8DA361); color: #fff; border: none; border-radius: 999px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
     .exp-view-work:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(141,163,97,.4); }
   </style>
 </head>
@@ -85,17 +86,21 @@
           }
           PortfolioEditor.render(box, exp, { editable: editMode, source: "exp" });
 
-          // 底部「查看作品」：跳转到关联项目（work），关闭弹窗后回到本详情页
+          // 底部「查看作品」：在当前页直接打开作品弹窗
           try {
             if (exp.projectLink && Array.isArray(data.works)) {
               const w = data.works.find((x) => x.id === exp.projectLink);
               if (w) {
-                const returnUrl = encodeURIComponent(location.pathname + location.search);
-                const a = document.createElement("a");
-                a.className = "exp-view-work";
-                a.href = "index.html?work=" + encodeURIComponent(exp.projectLink) + "&return=" + returnUrl + "#portfolio";
-                a.textContent = "查看作品 →";
-                box.appendChild(a);
+                const wrap = document.createElement("div");
+                wrap.className = "exp-view-work-wrap";
+                const btn = document.createElement("button");
+                btn.className = "exp-view-work";
+                btn.textContent = "查看作品 →";
+                btn.addEventListener("click", () => {
+                  if (typeof window.openWorkModal === "function") window.openWorkModal(w);
+                });
+                wrap.appendChild(btn);
+                box.appendChild(wrap);
               }
             }
           } catch (_) {}
@@ -105,7 +110,26 @@
         });
     })();
   </script>
-  <script src="editor.js?v=7"></script>
-  <script src="experience-modal.js?v=5"></script>
+  <!-- 作品详情模态框（从经历详情页“查看作品”直接弹出） -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" data-close aria-label="关闭">×</button>
+      <div class="modal__media" id="modal-media"></div>
+      <div class="modal__body">
+        <span class="modal__cat" id="modal-cat"></span>
+        <h3 class="modal__title" id="modal-title"></h3>
+        <p class="modal__meta" id="modal-meta"></p>
+        <p class="modal__role" id="modal-role"></p>
+        <div class="modal__metrics" id="modal-metrics"></div>
+        <p class="modal__desc" id="modal-desc"></p>
+        <div class="modal__doc" id="modal-content"></div>
+        <div class="modal__links" id="modal-links"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="editor.js?v=9"></script>
+  <script src="experience-modal.js?v=6"></script>
 </body>
 </html>
