@@ -149,6 +149,8 @@
     if (ctx.editable) {
       const bar = el("div", "ed-bar");
       bar.appendChild(el("span", "ed-grip", "✥ 拖动"));
+      const dimBadge = el("span", "ed-dim", `${b.w || 0} × ${b.h || 0}`);
+      bar.appendChild(dimBadge);
       const del = el("button", "ed-del", "✕");
       del.title = "删除";
       del.addEventListener("click", () => { ctx.blocks.splice(idx, 1); ctx.rerender(); });
@@ -185,21 +187,26 @@
         try { rs.setPointerCapture(e.pointerId); } catch (_) {}
         const sx = e.clientX, sy = e.clientY;
         const ow = node.offsetWidth, oh = node.offsetHeight;
+        const dim = node.querySelector(".ed-dim");
         function mv(ev) {
           const nw = Math.max(80, ow + ev.clientX - sx);
           const nh = Math.max(40, oh + ev.clientY - sy);
           node.style.width = nw + "px";
+          node.style.height = nh + "px";
           node.style.minHeight = nh + "px";
-          const dim = node.querySelector(".ed-video-hint__dim");
           if (dim) dim.textContent = `${Math.round(nw)} × ${Math.round(nh)}`;
+          const hintDim = node.querySelector(".ed-video-hint__dim");
+          if (hintDim) hintDim.textContent = `${Math.round(nw)} × ${Math.round(nh)}`;
         }
         function up() {
           try { rs.releasePointerCapture(e.pointerId); } catch (_) {}
           rs.removeEventListener("pointermove", mv);
           rs.removeEventListener("pointerup", up);
-          b.w = parseInt(node.style.width); b.h = parseInt(node.style.minHeight);
-          const dim = node.querySelector(".ed-video-hint__dim");
+          b.w = parseInt(node.style.width);
+          b.h = parseInt(node.style.height) || parseInt(node.style.minHeight);
           if (dim) dim.textContent = `${b.w} × ${b.h}`;
+          const hintDim = node.querySelector(".ed-video-hint__dim");
+          if (hintDim) hintDim.textContent = `${b.w} × ${b.h}`;
         }
         rs.addEventListener("pointermove", mv);
         rs.addEventListener("pointerup", up);
@@ -354,6 +361,10 @@
         if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
         try {
           if (!ED.token) {
+            const pageToken = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("gh_token")) || "";
+            if (pageToken) ED.token = pageToken;
+          }
+          if (!ED.token) {
             const t = prompt("请输入 GitHub Token 以保存（仅本次使用，不会存储）：");
             if (!t) { alert("未输入 Token，已取消保存。"); return; }
             ED.token = t.trim();
@@ -400,12 +411,16 @@
               });
               rec.videoUrls = newVideoUrls;
               rec.blocks = newBlocks;
+              // 同步回传入的原始对象，保证弹窗内存对象也更新，保存后无需刷新即可见
+              record.videoUrls = newVideoUrls;
+              record.blocks = newBlocks;
             } else {
               rec.blocks = blocks.map((b) => {
                 const copy = { ...b };
                 delete copy._file; delete copy._name;
                 return copy;
               });
+              record.blocks = rec.blocks;
             }
 
             const r2 = await putContent(data, ED.token);
