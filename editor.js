@@ -186,14 +186,20 @@
         const sx = e.clientX, sy = e.clientY;
         const ow = node.offsetWidth, oh = node.offsetHeight;
         function mv(ev) {
-          node.style.width = Math.max(80, ow + ev.clientX - sx) + "px";
-          node.style.minHeight = Math.max(40, oh + ev.clientY - sy) + "px";
+          const nw = Math.max(80, ow + ev.clientX - sx);
+          const nh = Math.max(40, oh + ev.clientY - sy);
+          node.style.width = nw + "px";
+          node.style.minHeight = nh + "px";
+          const dim = node.querySelector(".ed-video-hint__dim");
+          if (dim) dim.textContent = `${Math.round(nw)} × ${Math.round(nh)}`;
         }
         function up() {
           try { rs.releasePointerCapture(e.pointerId); } catch (_) {}
           rs.removeEventListener("pointermove", mv);
           rs.removeEventListener("pointerup", up);
           b.w = parseInt(node.style.width); b.h = parseInt(node.style.minHeight);
+          const dim = node.querySelector(".ed-video-hint__dim");
+          if (dim) dim.textContent = `${b.w} × ${b.h}`;
         }
         rs.addEventListener("pointermove", mv);
         rs.addEventListener("pointerup", up);
@@ -223,6 +229,8 @@
         blocks.push({
           type: "video",
           src: url,
+          poster: isObj ? (v.poster || "") : "",
+          label: isObj ? (v.label || "") : "",
           x: 20,
           y: 60 + i * 260,
           w: 420,
