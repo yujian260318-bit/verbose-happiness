@@ -857,8 +857,13 @@ function renderMediaGroups(w) {
 function openModal(w) {
   document.getElementById("modal-cat").textContent = `${w.category || ""} · ${workBadge(w)}`;
   document.getElementById("modal-title").textContent = w.title;
-  document.getElementById("modal-meta").textContent = `${w.company || ""} · ${w.period || ""}`;
-  document.getElementById("modal-role").textContent = w.role || "";
+  // 隐藏与作品卡片重复的“公司·时间 / role”摘要，只保留标题和正文
+  const modalMeta = document.getElementById("modal-meta");
+  const modalRole = document.getElementById("modal-role");
+  modalMeta.style.display = "none";
+  modalMeta.textContent = "";
+  modalRole.style.display = "none";
+  modalRole.textContent = "";
   document.getElementById("modal-metrics").innerHTML =
     (w.metrics || []).map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
   document.getElementById("modal-desc").textContent = w.description;
@@ -885,8 +890,69 @@ function openModal(w) {
     ? w.links.map((l) => `<a class="tag" href="${l.url || "#"}" target="_blank" rel="noopener">${l.platform}${l.url ? " ↗" : "（待补充）"}</a>`).join("")
     : "";
 
-  modalMedia.innerHTML = renderMediaGroups(w);
-  initVideoWraps(modalMedia);
+  // 媒体区：如果已有 blocks 排版，就用可视化编辑器渲染；否则沿用 videoUrls/media 分组
+  modalMedia.innerHTML = "";
+  if (w.blocks && w.blocks.length && window.PortfolioEditor) {
+    window.PortfolioEditor.render(modalMedia, w, { editable: false, source: "work", skipHead: true });
+  } else {
+    modalMedia.innerHTML = renderMediaGroups(w);
+    initVideoWraps(modalMedia);
+  }
+
+  // 编辑模式下增加“编辑排版”按钮，可拖拽调整视频/图片/文字位置
+  let layoutBtn = document.getElementById("modal-layout-btn");
+  if (editing && window.PortfolioEditor) {
+    if (!layoutBtn) {
+      layoutBtn = document.createElement("button");
+      layoutBtn.id = "modal-layout-btn";
+      layoutBtn.className = "modal__edit-btn";
+      layoutBtn.textContent = "✎ 编辑排版";
+      modalMedia.parentNode.insertBefore(layoutBtn, modalMedia);
+    }
+    layoutBtn.style.display = "";
+    layoutBtn.onclick = () => {
+      modalMedia.innerHTML = "";
+      window.PortfolioEditor.render(modalMedia, w, {
+        editable: true,
+        source: "work",
+        skipHead: true,
+        postSave: (savedBlocks) => {
+          // 同步回本地 works 数组和草稿
+          const newVideoUrls = [];
+          const newBlocks = [];
+          savedBlocks.forEach((b) => {
+            const copy = { ...b };
+            delete copy._file; delete copy._name; delete copy._fromVideoUrl;
+            if (b._meta) Object.assign(copy, b._meta);
+            delete copy._meta;
+            if (b.type === "video") {
+              const v = { ...(b._meta || {}) };
+              v.url = b.src;
+              if (!v.type) v.type = "mp4";
+              if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
+              newVideoUrls.push(v);
+            } else {
+              newBlocks.push(copy);
+            }
+          });
+          w.videoUrls = newVideoUrls;
+          w.blocks = newBlocks;
+          saveDraft();
+          // 重新渲染为只读预览
+          modalMedia.innerHTML = "";
+          if (w.blocks && w.blocks.length) {
+            window.PortfolioEditor.render(modalMedia, w, { editable: false, source: "work", skipHead: true });
+          } else {
+            modalMedia.innerHTML = renderMediaGroups(w);
+            initVideoWraps(modalMedia);
+          }
+          setStatus("作品排版已保存到草稿，点顶部「保存」按钮推送到 GitHub。");
+        }
+      });
+    };
+  } else if (layoutBtn) {
+    layoutBtn.style.display = "none";
+  }
 
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
