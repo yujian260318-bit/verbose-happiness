@@ -331,7 +331,8 @@
             if (!rec) throw new Error("未找到记录");
 
             if (source === "work") {
-              // 作品：视频块保持到 videoUrls，其余块保存到 blocks
+              // 作品：视频块保持到 videoUrls，同时把视频块（含位置）也保存到 blocks，
+              // 这样弹窗渲染时才能按用户拖拽的位置显示，而不是回到默认网格。
               const newVideoUrls = [];
               const newBlocks = [];
               blocks.forEach((b) => {
@@ -345,6 +346,8 @@
                   if (!v.type) v.type = "mp4";
                   if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
                   newVideoUrls.push(v);
+                  // 关键：视频块也写入 blocks，保留 x/y/w/h 排版信息
+                  newBlocks.push(copy);
                 } else {
                   newBlocks.push(copy);
                 }
