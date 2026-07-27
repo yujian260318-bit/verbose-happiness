@@ -625,10 +625,8 @@ function renderCards(list) {
       <div class="card__body">
         <span class="card__cat"${editing ? ` data-edit="cat-${w.id}"` : ""}>${w.category}</span>
         <h3 class="card__title"${editing ? ` data-edit="title-${w.id}"` : ""}>${w.title}</h3>
-        <p class="card__role"><span${editing ? ` data-edit="company-${w.id}"` : ""}>${w.company || ""}</span> · <span${editing ? ` data-edit="period-${w.id}"` : ""}>${w.period || ""}</span></p>
-        <p class="card__role card__role2"${editing ? ` data-edit="role-${w.id}"` : ""}>${w.role || ""}</p>
         <div class="card__metrics">${metricsHtml}</div>
-        ${editing ? `<div class="card__editrow"><button type="button" class="card__vm" data-vm="${w.id}">🎬 视频（${w.videoUrls.length}）</button><button type="button" class="card__wm" data-wm="${w.id}">✎ 详情</button></div>` : ""}
+        ${editing ? `<div class="card__editrow"><button type="button" class="card__vm" data-vm="${w.id}">🎬 视频（${w.videoUrls.length}）</button><button type="button" class="card__layout" data-layout="${w.id}">🎨 排版</button><button type="button" class="card__wm" data-wm="${w.id}">✎ 详情</button></div>` : ""}
       </div>`;
     if (editing) {
       bindWorkEdit(card, w);
@@ -657,6 +655,8 @@ function bindWorkEdit(card, w) {
   });
   const vmBtn = card.querySelector(".card__vm");
   if (vmBtn) vmBtn.addEventListener("click", (e) => { e.stopPropagation(); openVideoManager(w); });
+  const layoutBtn = card.querySelector(".card__layout");
+  if (layoutBtn) layoutBtn.addEventListener("click", (e) => { e.stopPropagation(); openModal(w); });
   const wmBtn = card.querySelector(".card__wm");
   if (wmBtn) wmBtn.addEventListener("click", (e) => { e.stopPropagation(); openWorkModal(w); });
 }
