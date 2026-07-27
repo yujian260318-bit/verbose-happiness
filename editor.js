@@ -103,10 +103,11 @@
       rs.title = "拖拽调整大小";
       node.appendChild(rs);
 
-      // 拖动移动
-      bar.addEventListener("mousedown", (e) => {
+      // 拖动移动（Pointer Events + 指针捕获，根治「停不下来」）
+      bar.addEventListener("pointerdown", (e) => {
         if (e.target === del) return;
         e.preventDefault();
+        try { bar.setPointerCapture(e.pointerId); } catch (_) {}
         const sx = e.clientX, sy = e.clientY;
         const ol = parseInt(node.style.left) || 0, ot = parseInt(node.style.top) || 0;
         function mv(ev) {
@@ -114,16 +115,18 @@
           node.style.top = (ot + ev.clientY - sy) + "px";
         }
         function up() {
-          document.removeEventListener("mousemove", mv);
-          document.removeEventListener("mouseup", up);
+          try { bar.releasePointerCapture(e.pointerId); } catch (_) {}
+          bar.removeEventListener("pointermove", mv);
+          bar.removeEventListener("pointerup", up);
           b.x = parseInt(node.style.left); b.y = parseInt(node.style.top);
         }
-        document.addEventListener("mousemove", mv);
-        document.addEventListener("mouseup", up);
+        bar.addEventListener("pointermove", mv);
+        bar.addEventListener("pointerup", up);
       });
       // 缩放
-      rs.addEventListener("mousedown", (e) => {
+      rs.addEventListener("pointerdown", (e) => {
         e.preventDefault(); e.stopPropagation();
+        try { rs.setPointerCapture(e.pointerId); } catch (_) {}
         const sx = e.clientX, sy = e.clientY;
         const ow = node.offsetWidth, oh = node.offsetHeight;
         function mv(ev) {
@@ -131,12 +134,13 @@
           node.style.minHeight = Math.max(40, oh + ev.clientY - sy) + "px";
         }
         function up() {
-          document.removeEventListener("mousemove", mv);
-          document.removeEventListener("mouseup", up);
+          try { rs.releasePointerCapture(e.pointerId); } catch (_) {}
+          rs.removeEventListener("pointermove", mv);
+          rs.removeEventListener("pointerup", up);
           b.w = parseInt(node.style.width); b.h = parseInt(node.style.minHeight);
         }
-        document.addEventListener("mousemove", mv);
-        document.removeEventListener("mouseup", up);
+        rs.addEventListener("pointermove", mv);
+        rs.addEventListener("pointerup", up);
       });
       // 文字实时同步
       node.addEventListener("input", () => {
@@ -181,7 +185,11 @@
     }
     paint();
 
-    if (editable) {
+    const showToolbar = opts.showToolbar !== false;
+    const showSave = opts.showSave !== false;
+    const onSave = opts.onSave;
+
+    if (editable && showToolbar) {
       // 工具栏
       const tb = el("div", "ed-toolbar");
       const addText = el("button", null, "+ 文字");
@@ -196,8 +204,15 @@
         const f = e.target.files[0]; if (!f) return;
         const r = new FileReader();
         r.onload = () => {
-          const b = { type: "image", src: r.result, x: 20, y: canvas.scrollHeight + 10, w: 280, _file: f };
-          blocks.push(b); paint();
+          const filename = `assets/${Date.now()}_${f.name.replace(/\s+/g, "_")}`;
+          if (opts.pendingImageFiles && Array.isArray(opts.pendingImageFiles)) {
+            opts.pendingImageFiles.push({ name: filename, file: f, url: r.result });
+            // 本地预览用 dataURL，推送时再换成 GitHub 路径
+            blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result, _name: filename });
+          } else {
+            blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result });
+          }
+          paint();
         };
         r.readAsDataURL(f);
       });
@@ -206,14 +221,21 @@
         const url = prompt("粘贴视频直链（mp4）：", "");
         if (url) { blocks.push({ type: "video", src: url, x: 20, y: canvas.scrollHeight + 10, w: 420 }); paint(); }
       });
-      const saveBtn = el("button", "ed-save", "💾 保存");
-      saveBtn.addEventListener("click", () => save());
+      tb.appendChild(addText);
+      tb.appendChild(addImg);
+      tb.appendChild(addVid);
+      tb.appendChild(fileInput);
 
-      [addText, addImg, addVid, fileInput, saveBtn].forEach(n => tb.appendChild(n));
+      if (showSave) {
+        const saveBtn = el("button", "ed-save", "💾 保存");
+        saveBtn.addEventListener("click", () => save());
+        tb.appendChild(saveBtn);
+      }
       container.insertBefore(tb, canvas);
 
       async function save() {
-        saveBtn.disabled = true; saveBtn.textContent = "保存中…";
+        const saveBtn = container.querySelector(".ed-save");
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
         try {
           if (!ED.token) {
             const t = prompt("请输入 GitHub Token 以保存（仅本次使用，不会存储）：");
@@ -222,7 +244,7 @@
           }
           // 上传新图片
           for (const b of blocks) {
-            if (b._file) {
+            if (b._file && !opts.pendingImageFiles) {
               const rel = "assets/" + Date.now() + "_" + b._file.name.replace(/\s/g, "_");
               const b64 = b.src.split(",")[1];
               const res = await putAsset(rel, b64, ED.token);
@@ -230,21 +252,34 @@
               b.src = rel; delete b._file;
             }
           }
-          const data = await getContent(ED.token);
-          const arr = source === "exp" ? data.experience : data.works;
-          const rec = arr.find(r => r.id === id);
-          if (!rec) throw new Error("未找到记录");
-          rec.blocks = blocks;
-          const r2 = await putContent(data, ED.token);
-          if (r2.status >= 400) throw new Error("保存失败 " + r2.status);
-          alert("✅ 已保存！刷新页面即可看到效果。");
+          if (typeof onSave === "function") {
+            await onSave(blocks);
+          } else {
+            const data = await getContent(ED.token);
+            const arr = source === "exp" ? data.experience : data.works;
+            const rec = arr.find(r => r.id === id);
+            if (!rec) throw new Error("未找到记录");
+            rec.blocks = blocks;
+            const r2 = await putContent(data, ED.token);
+            if (r2.status >= 400) throw new Error("保存失败 " + r2.status);
+            alert("✅ 已保存！刷新页面即可看到效果。");
+          }
         } catch (err) {
           alert("保存出错：" + err.message + "\n若提示 401，说明 Token 失效，请重新生成后再次保存。");
         } finally {
-          saveBtn.disabled = false; saveBtn.textContent = "💾 保存";
+          if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 保存"; }
         }
       }
     }
+
+    return {
+      container,
+      getBlocks: () => JSON.parse(JSON.stringify(blocks)),
+      setBlocks: (newBlocks) => {
+        blocks = Array.isArray(newBlocks) ? JSON.parse(JSON.stringify(newBlocks)) : [];
+        paint();
+      }
+    };
   };
 
   window.PortfolioEditor = ED;
