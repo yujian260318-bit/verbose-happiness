@@ -269,7 +269,19 @@
       editBtn.style.display = "";
       editBtn.onclick = () => {
         modalMedia.innerHTML = "";
-        window.PortfolioEditor.render(modalMedia, w, { editable: true, source: "work", skipHead: true });
+        window.PortfolioEditor.render(modalMedia, w, {
+          editable: true, source: "work", skipHead: true,
+          postSave: () => {
+            // 保存后立刻以只读方式重渲染，立即看到新尺寸/位置
+            modalMedia.innerHTML = "";
+            if (w.blocks && w.blocks.length && window.PortfolioEditor) {
+              window.PortfolioEditor.render(modalMedia, w, { editable: false, source: "work", skipHead: true });
+            } else {
+              modalMedia.innerHTML = renderMediaGroups(w);
+              initVideoWraps(modalMedia);
+            }
+          }
+        });
       };
     } else if (editBtn) {
       editBtn.style.display = "none";
