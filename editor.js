@@ -71,14 +71,49 @@
       if (b.caption) node.appendChild(el("figcaption", null, esc(b.caption)));
     } else if (b.type === "video") {
       const v = el("video", "ed-video");
-      v.src = b.src || ""; v.controls = !ctx.editable; v.playsInline = true;
+      v.src = b.src || "";
+      v.controls = !ctx.editable;
+      v.playsInline = true;
+      v.muted = true;
+      v.preload = "metadata";
+      v.crossOrigin = "anonymous";
       if (b.poster) v.poster = b.poster;
       node.appendChild(v);
       if (ctx.editable) {
-        // 编辑模式下加一层明显占位，即使视频因网络加载不出也能拖动/缩放
-        const ph = el("div", "ed-video-placeholder");
-        ph.innerHTML = `<div class="ed-video-phicon">▶</div><div class="ed-video-phlabel">${esc(b.label || "视频块")}</div><div class="ed-video-phdim">${(b.w || 280)} × ${(b.h || 160)}</div>`;
-        node.appendChild(ph);
+        // 编辑模式：优先显示视频画面；若未设置 poster，自动抓取第一帧
+        const ensurePoster = () => {
+          if (b.poster || !v.videoWidth) return;
+          try {
+            v.currentTime = 0.1;
+            v.addEventListener("seeked", function once() {
+              v.removeEventListener("seeked", once);
+              try {
+                const canvas = document.createElement("canvas");
+                canvas.width = v.videoWidth || 320;
+                canvas.height = v.videoHeight || 180;
+                const ctx2d = canvas.getContext("2d");
+                ctx2d.drawImage(v, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+                b.poster = dataUrl;
+                v.poster = dataUrl;
+              } catch (_) {}
+            });
+          } catch (_) {}
+        };
+        v.addEventListener("loadedmetadata", ensurePoster, { once: true });
+        if (v.readyState >= 1) ensurePoster();
+        // 网络异常或加载极慢时显示备用提示，而不是纯黑
+        const showHint = () => {
+          let hint = node.querySelector(".ed-video-hint");
+          if (!hint) {
+            hint = el("div", "ed-video-hint");
+            hint.innerHTML = `<div class="ed-video-hint__icon">▶</div><div class="ed-video-hint__label">${esc(b.label || "视频")}</div><div class="ed-video-hint__dim">${(b.w || 280)} × ${(b.h || 160)}</div>`;
+            node.appendChild(hint);
+          }
+        };
+        v.addEventListener("error", showHint);
+        const hintTimer = setTimeout(showHint, 2500);
+        v.addEventListener("loadeddata", () => { clearTimeout(hintTimer); }, { once: true });
       }
       if (b.label) node.appendChild(el("figcaption", null, esc(b.label)));
     } else if (b.type === "pdf") {
