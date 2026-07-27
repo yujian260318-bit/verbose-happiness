@@ -1828,14 +1828,22 @@ async function commitToGitHub(str) {
   const cfg = SITE_CONFIG.github || {};
   const token = await getToken();
   if (!token) throw new Error("未提供 token");
-  const url = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.contentPath}?ref=${cfg.branch}`;
+  const baseUrl = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.contentPath}`;
+  const getUrl = `${baseUrl}?ref=${cfg.branch}`;
+  const putUrl = baseUrl;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
 
   let sha = null;
-  const head = await fetch(url, { headers });
+  const head = await fetch(getUrl, { headers });
   if (head.status === 404) sha = null;
-  else if (head.ok) sha = (await head.json()).sha;
-  else throw new Error("读取仓库失败（" + head.status + "）");
+  else if (head.ok) {
+    const headText = await head.text().catch(() => "");
+    if (!headText.trim()) throw new Error("读取仓库失败：服务器返回空响应");
+    sha = JSON.parse(headText).sha;
+  } else {
+    const detail = await head.text().catch(() => "");
+    throw new Error(`读取仓库失败（${head.status}）：${detail.slice(0, 240)}`);
+  }
 
   const body = {
     message: "Update portfolio content via site editor",
@@ -1844,7 +1852,7 @@ async function commitToGitHub(str) {
   };
   if (sha) body.sha = sha;
 
-  const res = await fetch(url, {
+  const res = await fetch(putUrl, {
     method: "PUT",
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify(body)
@@ -1854,9 +1862,9 @@ async function commitToGitHub(str) {
     let why = "";
     if (res.status === 404) why = "：token 没有该仓库的写入权限，或仓库/分支路径错误";
     else if (res.status === 401) why = "：token 无效或已过期";
-    else if (res.status === 422) why = "：请求参数错误（可打开浏览器控制台查看详情）";
+    else if (res.status === 422) why = "：请求参数错误";
     console.error("[commitToGitHub]", res.status, detail);
-    throw new Error("提交失败（" + res.status + "）" + why);
+    throw new Error("提交失败（" + res.status + "）" + why + (detail ? "：" + detail.slice(0, 240) : ""));
   }
 }
 
