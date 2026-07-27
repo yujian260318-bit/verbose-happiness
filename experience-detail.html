@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=27" />
+  <link rel="stylesheet" href="styles.css?v=28" />
   <style>
     :root {
       --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
@@ -42,6 +42,8 @@
     .ed-head .tag { margin-bottom: 16px; }
     .ed-head h1 { margin-bottom: 8px; }
     .ed-hint { background: #FFF7E6; border: 1px solid #FFE08A; color: #8a6d00; padding: 10px 14px; border-radius: 10px; margin: 16px 0; font-size: 14px; }
+    .exp-view-work { display: inline-flex; align-items: center; gap: 6px; margin: 28px 0 8px; padding: 12px 22px; background: var(--sage-dark, #8DA361); color: #fff; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 15px; transition: transform .15s ease, box-shadow .15s ease; }
+    .exp-view-work:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(141,163,97,.4); }
   </style>
 </head>
 <body>
@@ -58,7 +60,7 @@
       const editMode = params.get("edit") === "1";
       const box = document.getElementById("content");
 
-      fetch("content.json", { cache: "no-store" })
+      fetch("content.json?t=" + Date.now(), { cache: "no-store" })
         .then((r) => r.json())
         .then((data) => {
           window.__works = Array.isArray(data.works) ? data.works : [];
@@ -82,13 +84,28 @@
             box.appendChild(hint);
           }
           PortfolioEditor.render(box, exp, { editable: editMode, source: "exp" });
+
+          // 底部「查看作品」：跳转到关联项目（work），关闭弹窗后回到本详情页
+          try {
+            if (exp.projectLink && Array.isArray(data.works)) {
+              const w = data.works.find((x) => x.id === exp.projectLink);
+              if (w) {
+                const returnUrl = encodeURIComponent(location.pathname + location.search);
+                const a = document.createElement("a");
+                a.className = "exp-view-work";
+                a.href = "index.html?work=" + encodeURIComponent(exp.projectLink) + "&return=" + returnUrl + "#portfolio";
+                a.textContent = "查看作品 →";
+                box.appendChild(a);
+              }
+            }
+          } catch (_) {}
         })
         .catch((err) => {
           box.innerHTML = '<div class="empty">内容加载失败：' + (err && err.message ? err.message : "") + '</div>';
         });
     })();
   </script>
-  <script src="editor.js?v=5"></script>
-  <script src="experience-modal.js?v=3"></script>
+  <script src="editor.js?v=6"></script>
+  <script src="experience-modal.js?v=4"></script>
 </body>
 </html>
