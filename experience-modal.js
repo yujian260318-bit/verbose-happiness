@@ -223,8 +223,11 @@
     const editMode = new URLSearchParams(location.search).get("edit") === "1";
     document.getElementById("modal-cat").textContent = `${w.category || ""} · ${workBadge(w)}`;
     document.getElementById("modal-title").textContent = w.title;
-    document.getElementById("modal-meta").textContent = `${w.company || ""} · ${w.period || ""}`;
-    document.getElementById("modal-role").textContent = w.role || "";
+    // 隐藏与卡片重复的「公司·时间 / 角色」摘要，避免弹窗里重复展示
+    const mMeta = document.getElementById("modal-meta");
+    const mRole = document.getElementById("modal-role");
+    if (mMeta) { mMeta.style.display = "none"; mMeta.textContent = ""; }
+    if (mRole) { mRole.style.display = "none"; mRole.textContent = ""; }
     document.getElementById("modal-metrics").innerHTML =
       (w.metrics || []).map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
     document.getElementById("modal-desc").textContent = w.description;
