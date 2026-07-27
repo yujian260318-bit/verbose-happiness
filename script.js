@@ -655,7 +655,13 @@ function bindWorkEdit(card, w) {
   const vmBtn = card.querySelector(".card__vm");
   if (vmBtn) vmBtn.addEventListener("click", (e) => { e.stopPropagation(); openVideoManager(w); });
   const layoutBtn = card.querySelector(".card__layout");
-  if (layoutBtn) layoutBtn.addEventListener("click", (e) => { e.stopPropagation(); openModal(w); });
+  if (layoutBtn) layoutBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    // 直接打开弹窗并进入编辑排版，不再只读预览
+    openModal(w);
+    const modalLayoutBtn = document.getElementById("modal-layout-btn");
+    if (modalLayoutBtn && modalLayoutBtn.style.display !== "none") modalLayoutBtn.click();
+  });
   const wmBtn = card.querySelector(".card__wm");
   if (wmBtn) wmBtn.addEventListener("click", (e) => { e.stopPropagation(); openWorkModal(w); });
 }
@@ -916,7 +922,7 @@ function openModal(w) {
         source: "work",
         skipHead: true,
         postSave: (savedBlocks) => {
-          // 同步回本地 works 数组和草稿
+          // 同步回本地 works 数组和草稿（视频块也要保留 x/y/w/h 排版）
           const newVideoUrls = [];
           const newBlocks = [];
           savedBlocks.forEach((b) => {
@@ -930,6 +936,8 @@ function openModal(w) {
               if (!v.type) v.type = "mp4";
               if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
               newVideoUrls.push(v);
+              // 关键：视频块的位置信息（拖拽后的 x/y/w/h）也要写入 blocks
+              newBlocks.push(copy);
             } else {
               newBlocks.push(copy);
             }
@@ -937,7 +945,7 @@ function openModal(w) {
           w.videoUrls = newVideoUrls;
           w.blocks = newBlocks;
           saveDraft();
-          // 重新渲染为只读预览
+          // 重新渲染为只读预览（editor.js 的 save 已经把带排版的 content.json 推送到 GitHub）
           modalMedia.innerHTML = "";
           if (w.blocks && w.blocks.length) {
             window.PortfolioEditor.render(modalMedia, w, { editable: false, source: "work", skipHead: true });
@@ -945,13 +953,7 @@ function openModal(w) {
             modalMedia.innerHTML = renderMediaGroups(w);
             initVideoWraps(modalMedia);
           }
-          setStatus("作品排版已保存到草稿，正在推送 GitHub…");
-          // 自动推送 GitHub，避免用户以为保存没变化
-          saveContent().then(() => {
-            setStatus("作品排版已保存并推送到 GitHub。");
-          }).catch((err) => {
-            setStatus("草稿已保存，但 GitHub 推送失败：" + err.message);
-          });
+          setStatus("作品排版已保存并推送到 GitHub。");
         }
       });
     };
