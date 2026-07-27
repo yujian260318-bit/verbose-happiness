@@ -625,7 +625,6 @@ function renderCards(list) {
       <div class="card__body">
         <span class="card__cat"${editing ? ` data-edit="cat-${w.id}"` : ""}>${w.category}</span>
         <h3 class="card__title"${editing ? ` data-edit="title-${w.id}"` : ""}>${w.title}</h3>
-        <div class="card__metrics">${metricsHtml}</div>
         ${editing ? `<div class="card__editrow"><button type="button" class="card__vm" data-vm="${w.id}">🎬 视频（${w.videoUrls.length}）</button><button type="button" class="card__layout" data-layout="${w.id}">🎨 排版</button><button type="button" class="card__wm" data-wm="${w.id}">✎ 详情</button></div>` : ""}
       </div>`;
     if (editing) {
@@ -946,7 +945,13 @@ function openModal(w) {
             modalMedia.innerHTML = renderMediaGroups(w);
             initVideoWraps(modalMedia);
           }
-          setStatus("作品排版已保存到草稿，点顶部「保存」按钮推送到 GitHub。");
+          setStatus("作品排版已保存到草稿，正在推送 GitHub…");
+          // 自动推送 GitHub，避免用户以为保存没变化
+          saveContent().then(() => {
+            setStatus("作品排版已保存并推送到 GitHub。");
+          }).catch((err) => {
+            setStatus("草稿已保存，但 GitHub 推送失败：" + err.message);
+          });
         }
       });
     };
