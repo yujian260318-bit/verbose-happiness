@@ -56,7 +56,10 @@
     node.style.left = (b.x != null ? b.x : 20) + "px";
     node.style.top = (b.y != null ? b.y : 20 + idx * 60) + "px";
     if (b.w) node.style.width = b.w + "px";
-    if (b.h) node.style.minHeight = (b.h || 60) + "px";
+    if (b.h) {
+      if (b.type === "text") node.style.minHeight = (b.h || 60) + "px";
+      else node.style.height = (b.h || 60) + "px";
+    }
 
     if (b.type === "text") {
       const c = el("div", "ed-text");
