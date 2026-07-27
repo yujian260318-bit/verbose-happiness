@@ -211,8 +211,9 @@ p { margin: 0; }
 .exp-card__desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
 .exp-card__link {
   display: inline-flex; align-items: center; gap: 4px;
+  padding: 0; background: transparent; border: none;
   font-size: 13px; color: var(--sage-dark); font-weight: 600; text-decoration: none;
-  transition: all .2s;
+  transition: all .2s; cursor: pointer;
 }
 .exp-card__link:hover { color: var(--sage); transform: translateX(3px); }
 .exp-card__link.is-empty {
