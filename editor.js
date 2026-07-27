@@ -74,7 +74,19 @@
       v.src = b.src || ""; v.controls = true; v.playsInline = true;
       if (b.poster) v.poster = b.poster;
       node.appendChild(v);
-    } else if (b.type === "links") {
+      if (b.label) node.appendChild(el("figcaption", null, esc(b.label)));
+    } else if (b.type === "pdf") {
+      const a = el("a", "ed-pdf");
+      a.href = b.src || "#";
+      a.target = "_blank";
+      a.rel = "noopener";
+      const icon = el("span", "ed-pdf-icon", "📄");
+      const info = el("span", "ed-pdf-info");
+      info.appendChild(el("strong", null, esc(b.label || "PDF 文件")));
+      info.appendChild(el("span", "ed-pdf-meta", b._name ? esc(b._name.split("/").pop()) : "点击预览 / 下载"));
+      a.appendChild(icon);
+      a.appendChild(info);
+      node.appendChild(a);
       const wrap = el("div", "ed-links");
       (b.items || []).forEach(it => {
         const a = el("a", null, esc(it.platform || "链接") + " ↗");
@@ -158,6 +170,25 @@
     const id = record.id;
     let blocks = Array.isArray(record.blocks) ? JSON.parse(JSON.stringify(record.blocks)) : [];
 
+    // 作品弹窗编辑：把已有的 videoUrls 也导入成可拖拽视频块
+    if (source === "work" && Array.isArray(record.videoUrls)) {
+      record.videoUrls.forEach((v, i) => {
+        const isObj = typeof v === "object";
+        const url = isObj ? (v.url || "") : v;
+        if (!url || blocks.some((b) => b.type === "video" && b.src === url)) return;
+        blocks.push({
+          type: "video",
+          src: url,
+          x: 20,
+          y: 60 + i * 260,
+          w: 420,
+          h: 240,
+          _fromVideoUrl: true,
+          _meta: isObj ? v : { type: "mp4", url: v, label: "视频 " + (i + 1) }
+        });
+      });
+    }
+
     container.innerHTML = "";
     // 固定头部（仅详情页需要；作品弹窗已有标题，可跳过）
     if (!opts.skipHead) {
@@ -182,6 +213,17 @@
         return;
       }
       blocks.forEach((b, i) => canvas.appendChild(renderBlock(b, i, ctx)));
+      // 根据内容撑开画布，避免绝对定位块被截断
+      requestAnimationFrame(() => {
+        const nodes = canvas.querySelectorAll(".ed-block");
+        let maxH = 0;
+        nodes.forEach((node) => {
+          const top = parseInt(node.style.top) || 0;
+          const h = node.offsetHeight || parseInt(node.style.minHeight) || 60;
+          if (top + h > maxH) maxH = top + h;
+        });
+        if (maxH > 0) canvas.style.height = (maxH + 20) + "px";
+      });
     }
     paint();
 
@@ -220,12 +262,33 @@
       const addVid = el("button", null, "+ 视频框");
       addVid.addEventListener("click", () => {
         const url = prompt("粘贴视频直链（mp4）：", "");
-        if (url) { blocks.push({ type: "video", src: url, x: 20, y: canvas.scrollHeight + 10, w: 420 }); paint(); }
+        if (!url) return;
+        const label = prompt("视频标签（可选，如“Talib 正片”）：", "") || "";
+        blocks.push({ type: "video", src: url, x: 20, y: canvas.scrollHeight + 10, w: 420, h: 240, label: label });
+        paint();
+      });
+      const addPdf = el("button", null, "+ PDF");
+      const pdfInput = el("input"); pdfInput.type = "file"; pdfInput.accept = ".pdf,application/pdf"; pdfInput.style.display = "none";
+      addPdf.addEventListener("click", () => pdfInput.click());
+      pdfInput.addEventListener("change", (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          const filename = `assets/${Date.now()}_${f.name.replace(/\s+/g, "_")}`;
+          if (opts.pendingImageFiles && Array.isArray(opts.pendingImageFiles)) {
+            opts.pendingImageFiles.push({ name: filename, file: r.result, url: r.result });
+          }
+          blocks.push({ type: "pdf", x: 20, y: canvas.scrollHeight + 10, w: 260, h: 80, src: r.result, _name: filename, label: f.name, _file: { name: f.name } });
+          paint();
+        };
+        r.readAsDataURL(f);
       });
       tb.appendChild(addText);
       tb.appendChild(addImg);
       tb.appendChild(addVid);
+      tb.appendChild(addPdf);
       tb.appendChild(fileInput);
+      tb.appendChild(pdfInput);
 
       if (showSave) {
         const saveBtn = el("button", "ed-save", "💾 保存");
@@ -243,13 +306,13 @@
             if (!t) { alert("未输入 Token，已取消保存。"); return; }
             ED.token = t.trim();
           }
-          // 上传新图片（dataURL 且不是外部链接）
+          // 上传新图片 / PDF（dataURL 且不是外部链接）
           for (const b of blocks) {
             if ((b._file || (b._name && b.src && b.src.startsWith("data:"))) && !opts.pendingImageFiles) {
               const rel = b._name || ("assets/" + Date.now() + "_" + (b._file ? b._file.name.replace(/\s/g, "_") : "upload.jpg"));
               const b64 = b.src.split(",")[1];
               const res = await putAsset(rel, b64, ED.token);
-              if (res.status >= 400) throw new Error("图片上传失败 " + res.status);
+              if (res.status >= 400) throw new Error((b.type === "pdf" ? "PDF" : "图片") + "上传失败 " + res.status);
               b.src = rel; delete b._file; delete b._name;
             }
           }
@@ -260,10 +323,40 @@
             const arr = source === "exp" ? data.experience : data.works;
             const rec = arr.find(r => r.id === id);
             if (!rec) throw new Error("未找到记录");
-            rec.blocks = blocks;
+
+            if (source === "work") {
+              // 作品：视频块保持到 videoUrls，其余块保存到 blocks
+              const newVideoUrls = [];
+              const newBlocks = [];
+              blocks.forEach((b) => {
+                const copy = { ...b };
+                delete copy._file; delete copy._name; delete copy._fromVideoUrl;
+                if (b._meta) Object.assign(copy, b._meta);
+                delete copy._meta;
+                if (b.type === "video") {
+                  const v = { ...(b._meta || {}) };
+                  v.url = b.src;
+                  if (!v.type) v.type = "mp4";
+                  if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
+                  newVideoUrls.push(v);
+                } else {
+                  newBlocks.push(copy);
+                }
+              });
+              rec.videoUrls = newVideoUrls;
+              rec.blocks = newBlocks;
+            } else {
+              rec.blocks = blocks.map((b) => {
+                const copy = { ...b };
+                delete copy._file; delete copy._name;
+                return copy;
+              });
+            }
+
             const r2 = await putContent(data, ED.token);
             if (r2.status >= 400) throw new Error("保存失败 " + r2.status);
             alert("✅ 已保存！刷新页面即可看到效果。");
+            if (typeof opts.postSave === "function") opts.postSave(blocks);
           }
         } catch (err) {
           alert("保存出错：" + err.message + "\n若提示 401，说明 Token 失效，请重新生成后再次保存。");
