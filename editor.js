@@ -115,8 +115,13 @@
           }
         };
         v.addEventListener("error", showHint);
-        const hintTimer = setTimeout(showHint, 2500);
-        v.addEventListener("loadeddata", () => { clearTimeout(hintTimer); }, { once: true });
+        const hintTimer = setTimeout(showHint, 4000);
+        const hideHint = () => {
+          const hint = node.querySelector(".ed-video-hint");
+          if (hint) hint.remove();
+        };
+        v.addEventListener("loadeddata", () => { clearTimeout(hintTimer); hideHint(); }, { once: true });
+        v.addEventListener("canplay", () => { clearTimeout(hintTimer); hideHint(); }, { once: true });
       }
       if (b.label) node.appendChild(el("figcaption", null, esc(b.label)));
     } else if (b.type === "pdf") {
@@ -148,7 +153,7 @@
 
     if (ctx.editable) {
       const bar = el("div", "ed-bar");
-      bar.appendChild(el("span", "ed-grip", "✥ 拖动"));
+      bar.appendChild(el("span", "ed-grip", "✥ 拖动移动"));
       const dimBadge = el("span", "ed-dim", `${b.w || 0} × ${b.h || 0}`);
       bar.appendChild(dimBadge);
       const del = el("button", "ed-del", "✕");
@@ -161,25 +166,35 @@
       rs.title = "拖拽调整大小";
       node.appendChild(rs);
 
-      // 拖动移动（Pointer Events + 指针捕获，根治「停不下来」）
-      bar.addEventListener("pointerdown", (e) => {
-        if (e.target === del) return;
+      // 判断点击目标是否应触发拖拽（排除文字编辑区、删除按钮、缩放柄、PDF 链接）
+      function shouldDrag(e) {
+        if (e.target === del || e.target.closest(".ed-resize")) return false;
+        if (e.target.closest(".ed-text") || e.target.closest(".ed-heading")) return false;
+        if (e.target.closest(".ed-pdf")) return false;
+        return true;
+      }
+
+      // 拖动移动：点击块内任意有效区域即可拖动
+      node.addEventListener("pointerdown", (e) => {
+        if (!shouldDrag(e)) return;
         e.preventDefault();
-        try { bar.setPointerCapture(e.pointerId); } catch (_) {}
+        try { node.setPointerCapture(e.pointerId); } catch (_) {}
         const sx = e.clientX, sy = e.clientY;
         const ol = parseInt(node.style.left) || 0, ot = parseInt(node.style.top) || 0;
+        node.classList.add("is-dragging");
         function mv(ev) {
           node.style.left = (ol + ev.clientX - sx) + "px";
           node.style.top = (ot + ev.clientY - sy) + "px";
         }
         function up() {
-          try { bar.releasePointerCapture(e.pointerId); } catch (_) {}
-          bar.removeEventListener("pointermove", mv);
-          bar.removeEventListener("pointerup", up);
+          try { node.releasePointerCapture(e.pointerId); } catch (_) {}
+          node.removeEventListener("pointermove", mv);
+          node.removeEventListener("pointerup", up);
+          node.classList.remove("is-dragging");
           b.x = parseInt(node.style.left); b.y = parseInt(node.style.top);
         }
-        bar.addEventListener("pointermove", mv);
-        bar.addEventListener("pointerup", up);
+        node.addEventListener("pointermove", mv);
+        node.addEventListener("pointerup", up);
       });
       // 缩放
       rs.addEventListener("pointerdown", (e) => {
@@ -233,15 +248,19 @@
         const isObj = typeof v === "object";
         const url = isObj ? (v.url || "") : v;
         if (!url || blocks.some((b) => b.type === "video" && b.src === url)) return;
+        const lower = url.toLowerCase();
+        const isPortrait = (isObj && v.portrait === true) || /vertical|portrait|竖版|9.?16|预告/.test(lower);
+        const w0 = isPortrait ? 320 : 760;
+        const h0 = isPortrait ? 568 : 428;
         blocks.push({
           type: "video",
           src: url,
           poster: isObj ? (v.poster || "") : "",
           label: isObj ? (v.label || "") : "",
           x: 20,
-          y: 60 + i * 260,
-          w: 420,
-          h: 240,
+          y: 60 + i * (h0 + 32),
+          w: w0,
+          h: h0,
           _fromVideoUrl: true,
           _meta: isObj ? v : { type: "mp4", url: v, label: "视频 " + (i + 1) }
         });
@@ -291,6 +310,9 @@
     const onSave = opts.onSave;
 
     if (editable && showToolbar) {
+      const hint = el("div", "ed-hint", "提示：拖动视频/图片块移动位置，拖右下角绿色方块改大小；文字块双击编辑。");
+      container.insertBefore(hint, canvas);
+
       // 工具栏
       const tb = el("div", "ed-toolbar");
       const addText = el("button", null, "+ 文字");
