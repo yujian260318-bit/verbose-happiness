@@ -206,7 +206,7 @@
         r.onload = () => {
           const filename = `assets/${Date.now()}_${f.name.replace(/\s+/g, "_")}`;
           if (opts.pendingImageFiles && Array.isArray(opts.pendingImageFiles)) {
-            opts.pendingImageFiles.push({ name: filename, file: f, url: r.result });
+            opts.pendingImageFiles.push({ name: filename, file: r.result, url: r.result });
             // 本地预览用 dataURL，推送时再换成 GitHub 路径
             blocks.push({ type: "image", x: 20, y: canvas.scrollHeight + 10, w: 280, src: r.result, _name: filename });
           } else {
