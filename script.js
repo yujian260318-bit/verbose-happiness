@@ -519,7 +519,20 @@ function openExpModal(idx) {
     source: "exp",
     skipHead: true,
     showSave: false,
-    pendingImageFiles: expPendingImages
+    pendingImageFiles: expPendingImages,
+    onSave: (blocks) => {
+      // 保留 _file/_preview/_name 标记，让 externalizeInlineBlocks 识别新上传资源并上传；
+      // 上传成功后 commitSanitizeBlocks 会清理这些标记。
+      experiences[idx].blocks = blocks;
+      experiences[idx].detail = blocksToDetail(blocks);
+      saveDraft();
+      closeExpModal();
+      renderExperience();
+      openExpPreview(idx);
+      setStatus("详情已更新，正在发布到 GitHub…");
+      // 保存即发布
+      saveContent();
+    }
   });
   expModal.classList.add("is-open");
   expModal.setAttribute("aria-hidden", "false");
@@ -532,25 +545,30 @@ function closeExpModal() {
   expPendingImages = [];
   expEditor.innerHTML = "";
 }
-function saveExpModal() {
+async function saveExpModal() {
   if (expEditIndex == null || !expEditorApi) return;
-  const idx = expEditIndex;
-  const blocks = expEditorApi.getBlocks();
-  blocks.forEach((b) => { delete b._file; delete b._preview; });
-  experiences[idx].blocks = blocks;
-  // 同步更新 detail，让旧版只读页/缓存页也能看到文字内容
-  experiences[idx].detail = blocksToDetail(blocks);
-  if (expPendingImages.length) {
-    pendingImageFiles.push(...expPendingImages);
-    expPendingImages = [];
-  }
-  saveDraft();
-  closeExpModal();
-  renderExperience();
   setStatus("详情已更新，正在发布到 GitHub…");
-  openExpPreview(idx);
-  // 保存即发布：经历修改（文字/位置/图片）一键上线，避免“保存≠上线”的困惑
-  saveContent();
+  // 关键：先让 editor.js 内部 save() 上传图片/PDF（data URL -> assets/），
+  // 上传完成后再通过 openExpModal 传入的 onSave 回调把 blocks 写回 experiences 并发布。
+  if (expEditorApi.save) {
+    await expEditorApi.save();
+  } else {
+    // 兼容：没有 save 方法时回退到旧逻辑（图片会丢失，理论上不会走到这里）
+    const idx = expEditIndex;
+    const blocks = expEditorApi.getBlocks();
+    blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
+    experiences[idx].blocks = blocks;
+    experiences[idx].detail = blocksToDetail(blocks);
+    if (expPendingImages.length) {
+      pendingImageFiles.push(...expPendingImages);
+      expPendingImages = [];
+    }
+    saveDraft();
+    closeExpModal();
+    renderExperience();
+    openExpPreview(idx);
+    saveContent();
+  }
 }
 
 /* ---------- 经历详情预览（原页内只读，无需 GitHub 即可看效果） ---------- */
@@ -1302,44 +1320,50 @@ function closeWorkModal() {
   wmWork = null;
   document.body.style.overflow = "";
 }
-function saveWorkModal() {
-  const title = document.getElementById("wm-title-input").value.trim();
-  if (!title) { alert("请填写作品标题"); return; }
-  const data = {
-    title,
-    category: document.getElementById("wm-category").value,
-    type: document.getElementById("wm-type").value,
-    company: document.getElementById("wm-company").value.trim(),
-    period: document.getElementById("wm-period").value.trim(),
-    role: document.getElementById("wm-role").value.trim(),
-    description: document.getElementById("wm-desc").value.trim(),
-    content: document.getElementById("wm-content").value,
-    metrics: parseMetrics(document.getElementById("wm-metrics").value),
-    links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
-    media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接", "策划"].includes(m.kind) ? !!(m.url || m.file) : !!(m.url || m.title || m.body || m.label)).map((m) => {
-      const o = Object.assign({}, m);
-      if (o.file || o.preview || (o.url || "").startsWith("blob:")) o.url = o.name || o.url; // 用最终仓库路径，确保上传后能播放
-      delete o.file;
-      delete o.preview;
-      delete o.dataUrl; // base64 缓存不写入 content.json
-      return o;
-    })
-  };
-  if (wmWork) {
-    Object.assign(wmWork, data);
-  } else {
-    const w = Object.assign({
-      id: "wk-" + Date.now(),
-      cover: pickCover(data.category),
-      videoUrls: [],
-      links: []
-    }, data);
-    works.push(w);
+async function saveWorkModal() {
+  const saveBtn = document.getElementById("wm-save");
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
+  try {
+    const title = document.getElementById("wm-title-input").value.trim();
+    if (!title) { alert("请填写作品标题"); return; }
+    const data = {
+      title,
+      category: document.getElementById("wm-category").value,
+      type: document.getElementById("wm-type").value,
+      company: document.getElementById("wm-company").value.trim(),
+      period: document.getElementById("wm-period").value.trim(),
+      role: document.getElementById("wm-role").value.trim(),
+      description: document.getElementById("wm-desc").value.trim(),
+      content: document.getElementById("wm-content").value,
+      metrics: parseMetrics(document.getElementById("wm-metrics").value),
+      links: wmLinks.filter((l) => l.platform || l.url).map((l) => ({ platform: l.platform, url: l.url })),
+      media: wmMedia.filter((m) => ["视频", "图片", "Word", "PDF", "社媒链接", "策划"].includes(m.kind) ? !!(m.url || m.file) : !!(m.url || m.title || m.body || m.label)).map((m) => {
+        const o = Object.assign({}, m);
+        if (o.file || o.preview || (o.url || "").startsWith("blob:")) o.url = o.name || o.url; // 用最终仓库路径，确保上传后能播放
+        delete o.file;
+        delete o.preview;
+        delete o.dataUrl; // base64 缓存不写入 content.json
+        return o;
+      })
+    };
+    if (wmWork) {
+      Object.assign(wmWork, data);
+    } else {
+      const w = Object.assign({
+        id: "wk-" + Date.now(),
+        cover: pickCover(data.category),
+        videoUrls: [],
+        links: []
+      }, data);
+      works.push(w);
+    }
+    closeWorkModal();
+    paint();
+    // 保存即发布：作品修改（含上传的图片/视频）一键上线
+    await saveContent();
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "保存"; }
   }
-  closeWorkModal();
-  paint();
-  // 保存即发布：作品修改（含上传的图片/视频）一键上线
-  saveContent();
 }
 function deleteWork() {
   if (!wmWork) return;
@@ -2023,9 +2047,13 @@ async function externalizeInlineBlocks() {
               delete b._file; delete b._preview;
               externalized.add(b.src);
             } catch (e) {
-              // 单个资源外置失败不影响其余内容与纯文本/位置的保存
-              console.warn("[externalizeInlineBlocks] 块资源外置失败，保留原引用：", e && e.message);
-              setStatus("⚠️ 有 1 个内联资源上传失败（已跳过，不影响其他内容保存）");
+              console.warn("[externalizeInlineBlocks] 块资源外置失败：", e && e.message);
+              // 刚上传的新资源（带 _file/_preview 标记）外置失败必须阻断保存，避免 content.json 残留 data URL
+              if (b._file || b._preview) {
+                throw new Error(`${b.type === "pdf" ? "PDF" : "图片"}上传失败：${e && e.message}`);
+              }
+              // 历史脏数据失败则跳过，避免旧数据影响新内容保存
+              setStatus("⚠️ 有 1 个历史内联资源外置失败（已跳过）");
             }
           }
         }
@@ -2097,57 +2125,47 @@ async function saveContent() {
       await externalizeInlineBlocks();
       for (const pi of pendingImageFiles) {
         const oldName = pi.name;
-        try {
-          setStatus("上传图片：" + basename(oldName) + " …");
-          pi.name = await commitBinaryFile(oldName, pi.file);
-          for (const w of works) {
-            if (Array.isArray(w.media)) {
-              for (const m of w.media) {
-                if (m.kind === "图片" && m.url === oldName) m.url = pi.name;
-              }
+        setStatus("上传图片：" + basename(oldName) + " …");
+        pi.name = await commitBinaryFile(oldName, pi.file);
+        for (const w of works) {
+          if (Array.isArray(w.media)) {
+            for (const m of w.media) {
+              if (m.kind === "图片" && m.url === oldName) m.url = pi.name;
             }
           }
-          for (const e of experiences) {
-            if (Array.isArray(e.blocks)) {
-              for (const b of e.blocks) {
-                if (b.src === oldName) b.src = pi.name;
-              }
+        }
+        for (const e of experiences) {
+          if (Array.isArray(e.blocks)) {
+            for (const b of e.blocks) {
+              if (b.src === oldName) b.src = pi.name;
             }
           }
-        } catch (e) {
-          console.warn("[saveContent] 图片上传失败，保留原引用：", e && e.message);
-          setStatus("⚠️ 有 1 张图片上传失败（已跳过，其余内容已保存）");
         }
       }
       pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
-        try {
-          setStatus("上传视频：" + basename(pv.name) + " …");
-          let finalUrl = pv.name;
-          if (pv.file && pv.file.size > 50 * 1024 * 1024) {
-            finalUrl = await commitReleaseAsset(pv.file, basename(pv.name));
-          } else {
-            await commitBinaryFile(pv.name, pv.file);
-          }
-          // 把作品里对应临时路径替换为最终路径（Releases 直链或 assets/ 路径）
-          for (const w of works) {
-            if (Array.isArray(w.media)) {
-              for (const m of w.media) {
-                if (m.kind === "视频" && (m.url === pv.name || m.name === pv.name)) {
-                  m.url = finalUrl;
-                  if (m.name) m.name = finalUrl;
-                }
-              }
-            }
-            if (Array.isArray(w.videoUrls)) {
-              for (const v of w.videoUrls) {
-                if (v.url === pv.name) v.url = finalUrl;
+        setStatus("上传视频：" + basename(pv.name) + " …");
+        let finalUrl = pv.name;
+        if (pv.file && pv.file.size > 50 * 1024 * 1024) {
+          finalUrl = await commitReleaseAsset(pv.file, basename(pv.name));
+        } else {
+          await commitBinaryFile(pv.name, pv.file);
+        }
+        // 把作品里对应临时路径替换为最终路径（Releases 直链或 assets/ 路径）
+        for (const w of works) {
+          if (Array.isArray(w.media)) {
+            for (const m of w.media) {
+              if (m.kind === "视频" && (m.url === pv.name || m.name === pv.name)) {
+                m.url = finalUrl;
+                if (m.name) m.name = finalUrl;
               }
             }
           }
-        } catch (e) {
-          console.warn("[saveContent] 视频上传失败，保留原引用：", e && e.message);
-          setStatus("⚠️ 有 1 个视频上传失败（已跳过，其余内容已保存）");
+          if (Array.isArray(w.videoUrls)) {
+            for (const v of w.videoUrls) {
+              if (v.url === pv.name) v.url = finalUrl;
+            }
+          }
         }
       }
       pendingVideoFiles.length = 0;
