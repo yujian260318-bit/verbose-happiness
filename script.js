@@ -159,12 +159,51 @@ function clearDraft() {
   localStorage.removeItem(DRAFT_KEY);
   if (draftAutoSaveTimer) { clearInterval(draftAutoSaveTimer); draftAutoSaveTimer = null; }
 }
+/* 草稿合并：对 works/experiences 这类在详情页单独编辑的数据，
+   不能直接用旧草稿覆盖线上最新内容。按“内容丰富度”合并，
+   保留 media/blocks 更多的那份，避免详情页保存后被首页旧草稿冲掉。 */
+function mergeWorks(current, draft) {
+  if (!Array.isArray(current)) return draft || [];
+  if (!Array.isArray(draft)) return current;
+  const draftMap = new Map(draft.map((w) => [w.id, w]));
+  const result = [];
+  const seen = new Set();
+  current.forEach((w) => {
+    const d = draftMap.get(w.id);
+    const preferDraft = d && (d.media || []).length > (w.media || []).length;
+    result.push(JSON.parse(JSON.stringify(preferDraft ? d : w)));
+    seen.add(w.id);
+  });
+  draft.forEach((w) => {
+    if (!seen.has(w.id)) result.push(JSON.parse(JSON.stringify(w)));
+  });
+  return result;
+}
+function mergeExperiences(current, draft) {
+  if (!Array.isArray(current)) return draft || [];
+  if (!Array.isArray(draft)) return current;
+  const draftMap = new Map(draft.map((e) => [e.id, e]));
+  const result = [];
+  const seen = new Set();
+  current.forEach((e) => {
+    const d = draftMap.get(e.id);
+    const dBlocks = (d && d.blocks) || (d && d.detail && convertExpToBlocks(d)) || [];
+    const cBlocks = e.blocks || (e.detail && convertExpToBlocks(e)) || [];
+    const preferDraft = dBlocks.length > cBlocks.length;
+    result.push(JSON.parse(JSON.stringify(preferDraft ? d : e)));
+    seen.add(e.id);
+  });
+  draft.forEach((e) => {
+    if (!seen.has(e.id)) result.push(JSON.parse(JSON.stringify(e)));
+  });
+  return result;
+}
 function applyDraft(draft) {
   if (!draft) return;
   if (draft.texts) texts = draft.texts;
   if (draft.categories) categories = draft.categories;
-  if (draft.works) works = draft.works;
-  if (draft.experiences) experiences = draft.experiences;
+  if (draft.works) works = mergeWorks(works, draft.works);
+  if (draft.experiences) experiences = mergeExperiences(experiences, draft.experiences);
   if (draft.overlays) overlays = draft.overlays;
   if (draft.theme) theme = draft.theme;
   if (draft.styles) styles = draft.styles;
@@ -1371,6 +1410,7 @@ async function saveWorkModal() {
     closeWorkModal();
     paint();
     // 保存即发布：作品修改（含上传的图片/视频）一键上线
+    saveDraft(); // 同步更新本地草稿，避免后续首页编辑时旧草稿覆盖作品
     await saveContent();
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "保存"; }
@@ -2667,7 +2707,7 @@ loadContent().then(() => {
   if (draft && draft.savedAt) {
     const ageMin = (Date.now() - draft.savedAt) / 60000;
     if (ageMin < 60 * 24 * 7) {
-      if (confirm(`检测到 ${new Date(draft.savedAt).toLocaleString()} 的未保存编辑草稿，是否恢复？\n点击“确定”恢复草稿，点击“取消”丢弃草稿（不可恢复）。`)) {
+      if (confirm(`检测到 ${new Date(draft.savedAt).toLocaleString()} 的未保存编辑草稿，是否恢复？\n\n提示：恢复草稿会与你已发布的最新内容自动合并；如果你刚在“项目详情/作品”里上传过图片，这些最新内容不会被草稿覆盖。\n点击“确定”恢复草稿，点击“取消”使用线上最新内容。`)) {
         applyDraft(draft);
       } else {
         clearDraft();
