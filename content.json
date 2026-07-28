@@ -433,12 +433,12 @@
       "description": "参与卫视访谈栏目制作，完成脚本创作、现场统筹与剪辑包装。",
       "link": "experience-detail.html?v=55&id=exp-yujian",
       "projectLink": "yujian",
-      "detail": "嘉宾内容策划：通过嘉宾沟通会，深挖其个人故事与经历，独立撰写拍摄脚本，锁定内容核心叙事亮点。\n\n现场统筹调度：对接嘉宾、摄影及现场执行团队，统筹拍摄行程与现场调度，保障录制高效落地。\n\n视频剪辑迭代：独立完成多版本视频剪辑包装，根据团队反馈优化叙事节奏与视觉呈现，跟进多轮修改直至成片定稿交付，成片于海南卫视播出。",
+      "detail": "",
       "images": [],
       "blocks": [
         {
           "type": "text",
-          "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16.0001px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\"><b>嘉宾内容策划：</b>通过嘉宾沟通会，深挖其个人故事与经历，独立撰写拍摄脚本，锁定内容核心叙事亮点。</span></p>",
+          "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16.0001px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">嘉宾内容策划：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\">通过嘉宾沟通会，深挖其个人故事与经历，独立撰写拍摄脚本，锁定内容核心叙事亮点。</span></p>",
           "x": 1,
           "y": 3,
           "w": 802,
@@ -563,15 +563,6 @@
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
           "label": "《主厨密码》王兴顺完整物料.pdf"
-        },
-        {
-          "type": "pdf",
-          "x": 14,
-          "y": 120,
-          "w": 260,
-          "h": 80,
-          "src": "assets/1785230389216_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
-          "label": "名厨《主厨密码》-Talib 采访视频策划方案.pdf"
         }
       ]
     },
@@ -599,7 +590,7 @@
       "description": "主创品牌广告短片，统筹拍摄、独立完成剪辑包装，获得北京赛区三等奖。",
       "link": "experience-detail.html?v=55&id=exp-adaward",
       "projectLink": "ad-award",
-      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。\n\n。。。。。。。。。。",
+      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。",
       "images": [],
       "blocks": [
         {
@@ -641,19 +632,12 @@
         },
         {
           "type": "pdf",
-          "x": 8,
-          "y": 708,
+          "x": 20,
+          "y": 508,
           "w": 260,
           "h": 80,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
-        },
-        {
-          "type": "text",
-          "html": "。。。。。。。。。。",
-          "x": 12,
-          "y": 621,
-          "w": 360
         }
       ]
     }
