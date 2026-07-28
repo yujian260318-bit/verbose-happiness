@@ -650,10 +650,10 @@
         },
         {
           "type": "pdf",
-          "x": 4,
-          "y": 700,
-          "w": 348,
-          "h": 85,
+          "x": 2,
+          "y": 679,
+          "w": 358,
+          "h": 83,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
         },
@@ -661,7 +661,7 @@
           "type": "text",
           "html": "作为超能品牌营销策划项目核心成员，完成市场洞察、创意构思与传播路径设计，输出完整策划方案。",
           "x": 1,
-          "y": 631,
+          "y": 619,
           "w": 802,
           "h": 44
         }
