@@ -624,21 +624,21 @@
           "h": 80
         },
         {
-          "type": "pdf",
-          "x": 2,
-          "y": 696,
-          "w": 269,
-          "h": 86,
-          "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
-          "label": "《超能》19秒策划案.pdf"
-        },
-        {
           "type": "text",
           "html": "双击编辑文字",
-          "x": 3,
-          "y": 623,
-          "w": 799,
-          "h": 72
+          "x": 20,
+          "y": 609,
+          "w": 764,
+          "h": 60
+        },
+        {
+          "type": "pdf",
+          "x": 20,
+          "y": 685,
+          "w": 260,
+          "h": 80,
+          "src": "assets/1785220481202_超能19秒策划案.pdf",
+          "label": "超能19秒策划案.pdf"
         }
       ]
     }
