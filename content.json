@@ -583,7 +583,7 @@
       "description": "主创品牌广告短片，统筹拍摄、独立完成剪辑包装，获得北京赛区三等奖。",
       "link": "experience-detail.html?v=48&id=exp-adaward",
       "projectLink": "ad-award",
-      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。",
+      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。\n\n双击编辑文字",
       "images": [],
       "blocks": [
         {
@@ -625,12 +625,20 @@
         },
         {
           "type": "pdf",
-          "x": 20,
-          "y": 508,
-          "w": 260,
-          "h": 80,
+          "x": 4,
+          "y": 683,
+          "w": 293,
+          "h": 84,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
+        },
+        {
+          "type": "text",
+          "html": "双击编辑文字",
+          "x": 4,
+          "y": 618,
+          "w": 799,
+          "h": 66
         }
       ]
     }
