@@ -334,7 +334,7 @@
       "location": "深圳",
       "period": "2026.05 – 至今",
       "description": "负责小红书、即刻账号内容创作与、KOC 资源拓展与线下活动拍摄，助力账号冷启动。",
-      "link": "experience-detail.html?v=54&id=exp-tencent",
+      "link": "experience-detail.html?v=55&id=exp-tencent",
       "projectLink": "ai-next",
       "detail": "活动社媒内容创作：负责小红书、即刻双平台活动账号的短视频剪辑与文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引数千至万粉量级的行业用户关注。&nbsp;\n\nKOC拓展与声量扩散：挖掘对接垂类KOC资源，通过该渠道累计触达 10000+ 人；在活动以定向邀约为主、原本未设定线上引流目标的情况下，额外带动每场约 10 人经线上渠道自主报名。\n\n&nbsp;活动摄制执行：完成 AI Next 疯享会线下活动的现场拍摄，保障成片素材质量。",
       "images": [
@@ -431,9 +431,9 @@
       "location": "北京",
       "period": "2026.03 – 2026.05",
       "description": "参与卫视访谈栏目制作，完成脚本创作、现场统筹与剪辑包装。",
-      "link": "experience-detail.html?v=54&id=exp-yujian",
+      "link": "experience-detail.html?v=55&id=exp-yujian",
       "projectLink": "yujian",
-      "detail": "嘉宾内容策划：通过嘉宾沟通会，深挖其个人故事与经历，独立撰写拍摄脚本，锁定内容核心叙事亮点。\n\n现场统筹调度：对接嘉宾、摄影及现场执行团队，统筹拍摄行程与现场调度，保障录制高效落地。\n\n视频剪辑迭代：独立完成多版本视频剪辑包装，根据团队反馈优化叙事节奏与视觉呈现，跟进多轮修改直至成片定稿交付，成片于海南卫视播出。",
+      "detail": "",
       "images": [],
       "blocks": [
         {
@@ -497,13 +497,6 @@
           "y": 488,
           "w": 280,
           "src": "assets/experience/exp-yujian/block-7.jpg"
-        },
-        {
-          "type": "image",
-          "x": 20,
-          "y": 871,
-          "w": 280,
-          "src": "assets/1785229719203_ece944b96a1e0e176b327b5e7f148a64.jpg"
         }
       ]
     },
@@ -516,7 +509,7 @@
       "location": "北京",
       "period": "2025.10 – 2026.01",
       "description": "参与美食人文纪录片全链路制作，独立剪辑多条成片，完成项目归档与上线落地。",
-      "link": "experience-detail.html?v=54&id=exp-zhupassword",
+      "link": "experience-detail.html?v=55&id=exp-zhupassword",
       "projectLink": "zhupassword",
       "detail": "纪录片全案编导：深度参与美食人文纪录片《主厨密码》从选题策划、脚本构思、现场勘景拍摄到后期剪辑包装的全链路内容制作，把控栏目整体内容调性。\n\n跨部门协作对接：联动设计、运营团队同步内容需求，整理归档项目资料，配合完成内容审核、细节调整，协助栏目顺利完成上线发布。\n\n成片独立产出：独立完成海量素材筛选、归档与精剪，落地 3 条正片 + 3 条预告片，自主把控叙事逻辑、镜头节奏与画面调色，统一成片视觉风格，保障成片质感，成片发布于《名厨》公众号、爱奇艺平台。",
       "images": [],
@@ -570,15 +563,6 @@
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
           "label": "《主厨密码》王兴顺完整物料.pdf"
-        },
-        {
-          "type": "pdf",
-          "x": 2,
-          "y": 125,
-          "w": 420,
-          "h": 82,
-          "src": "assets/1785229502924_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
-          "label": "名厨《主厨密码》-Talib 采访视频策划方案.pdf"
         }
       ]
     },
@@ -591,7 +575,7 @@
       "location": "湖北十堰",
       "period": "2025.08 – 至今",
       "description": "规划实地走访路线，参与受助学生访谈，实时更新走访进度。",
-      "link": "charity-detail.html?v=54",
+      "link": "charity-detail.html?v=55",
       "detail": "",
       "images": []
     },
@@ -604,9 +588,9 @@
       "location": "北京",
       "period": "2025.05",
       "description": "主创品牌广告短片，统筹拍摄、独立完成剪辑包装，获得北京赛区三等奖。",
-      "link": "experience-detail.html?v=54&id=exp-adaward",
+      "link": "experience-detail.html?v=55&id=exp-adaward",
       "projectLink": "ad-award",
-      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。\n\n。。。。。。。",
+      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。",
       "images": [],
       "blocks": [
         {
@@ -648,20 +632,12 @@
         },
         {
           "type": "pdf",
-          "x": 4,
-          "y": 739,
-          "w": 273,
-          "h": 87,
+          "x": 20,
+          "y": 508,
+          "w": 260,
+          "h": 80,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
-        },
-        {
-          "type": "text",
-          "html": "。。。。。。。",
-          "x": 1,
-          "y": 629,
-          "w": 800,
-          "h": 93
         }
       ]
     }
