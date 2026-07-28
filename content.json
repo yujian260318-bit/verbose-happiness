@@ -314,7 +314,14 @@
       "description": "人像、静物与纪实摄影作品精选（内容待补充）。",
       "content": "",
       "links": [],
-      "media": []
+      "media": [
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/1785225029567-f8da8fbf8a895283bbb4745cef7bc6e4.jpg",
+          "name": "assets/works/photography/1785225029567-f8da8fbf8a895283bbb4745cef7bc6e4.jpg",
+          "caption": ""
+        }
+      ]
     }
   ],
   "experience": [
