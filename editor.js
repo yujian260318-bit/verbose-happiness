@@ -136,18 +136,27 @@
       // href 编码：相对路径含中文/空格时需 encodeURI；data: 内联不做编码
       const rawHref = b.src || "#";
       const href = (rawHref && rawHref.startsWith("data:")) ? rawHref : (rawHref ? encodeURI(rawHref) : "#");
+      const row = el("div", "ed-pdf-row");
+      // 主卡片：仅预览（新标签页打开），不带 download 属性，避免点击直接下载
       const a = el("a", "ed-pdf");
       a.href = href;
       a.target = "_blank";
       a.rel = "noopener";
-      a.setAttribute("download", (b.label || "pdf") + ".pdf");
       const icon = el("span", "ed-pdf-icon", "📄");
       const info = el("span", "ed-pdf-info");
       info.appendChild(el("strong", null, esc(b.label || "PDF 文件")));
-      info.appendChild(el("span", "ed-pdf-meta", b._name ? esc(b._name.split("/").pop()) : "点击预览 / 下载"));
+      info.appendChild(el("span", "ed-pdf-meta", b._name ? esc(b._name.split("/").pop()) : "点击预览"));
       a.appendChild(icon);
       a.appendChild(info);
-      node.appendChild(a);
+      row.appendChild(a);
+      // 独立的下载按钮：带 download 属性
+      const dl = el("a", "ed-pdf-dl");
+      dl.href = href;
+      dl.setAttribute("download", (b.label || "pdf") + ".pdf");
+      dl.rel = "noopener";
+      dl.textContent = "⬇ 下载";
+      row.appendChild(dl);
+      node.appendChild(row);
       const wrap = el("div", "ed-links");
       (b.items || []).forEach(it => {
         const a = el("a", null, esc(it.platform || "链接") + " ↗");
