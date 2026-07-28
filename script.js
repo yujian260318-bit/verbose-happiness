@@ -1725,7 +1725,7 @@ async function commitBinaryFile(path, fileOrDataUrl) {
       headers: Object.assign({ "Content-Type": "application/json" }, headers),
       body: JSON.stringify(body)
     });
-    if (res.ok) return;
+    if (res.ok) return path;
     lastErr = { status: res.status, detail: await res.text().catch(() => "") };
     if (res.status === 422 || res.status === 404 || res.status === 401) break; // 不重试权限/校验错误
     await new Promise((r) => setTimeout(r, 1000));
@@ -1800,6 +1800,7 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
     body: JSON.stringify({ sha: newCommitSha })
   });
   if (!updateRes.ok) throw new Error(`更新分支失败（${updateRes.status}）`);
+  return path;
 }
 
 // 上传大文件到 GitHub Releases（单个文件最大 2GB，适合超过 50MB 的视频）
