@@ -13,9 +13,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Outfit:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=51" />
+  <link rel="stylesheet" href="styles.css?v=52" />
 </head>
 <body>
+  <script>
+    (function () {
+      var CURRENT = 52;
+      fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && d.version && d.version !== CURRENT) location.reload(true); })
+        .catch(function () {});
+    })();
+  </script>
   <!-- 导航 -->
   <nav class="nav" id="nav">
     <div class="nav__inner">
@@ -420,7 +429,7 @@
     <button type="button" data-add="video">＋ 视频</button>
     <button type="button" data-add="text">＋ 文本</button>
     <span class="editor-bar__sep"></span>
-    <button type="button" data-action="save" class="is-primary">保存</button>
+    <button type="button" data-action="save" class="is-primary">保存页面布局</button>
     <button type="button" data-action="exit">退出</button>
     <span id="editor-status" class="editor-bar__status"></span>
   </div>
@@ -470,8 +479,8 @@
   <button id="login-entry" class="login-entry" type="button" title="站长登录">站长登录</button>
 
   <script src="config.js?v=3"></script>
-  <script src="editor.js?v=51"></script>
-  <script src="experience-modal.js?v=51"></script>
-  <script src="script.js?v=51"></script>
+  <script src="editor.js?v=52"></script>
+  <script src="experience-modal.js?v=52"></script>
+  <script src="script.js?v=52"></script>
 </body>
 </html>
