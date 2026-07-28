@@ -783,7 +783,7 @@ body.is-editing .skill-card {
 .ed-pdf-info { display: flex; flex-direction: column; min-width: 0; }
 .ed-pdf-info strong { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ed-pdf-meta { font-size: 12px; color: var(--muted); }
-.ed-pdf-dl { display: inline-flex; align-items: center; padding: 10px 16px; background: var(--sage-dark); color: #fff; border-radius: 12px; text-decoration: none; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.ed-pdf-dl { display: inline-flex; align-items: center; justify-content: center; align-self: stretch; padding: 0 14px; background: var(--sage-dark); color: #fff; border-radius: 12px; text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .ed-pdf-dl:hover { background: var(--sage); }
 .modal__media .ed-canvas { min-height: 260px; background: var(--bg); border-radius: 16px; padding: 12px; }
 .modal__media .ed-block--video { width: auto; height: auto; }
