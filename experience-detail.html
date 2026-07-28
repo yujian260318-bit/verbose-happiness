@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>经历详情 · 李欣怡作品集</title>
-  <link rel="stylesheet" href="styles.css?v=54" />
+  <link rel="stylesheet" href="styles.css?v=55" />
   <style>
     :root {
       --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
@@ -50,7 +50,7 @@
 <body>
   <script>
     (function () {
-      var CURRENT = 54;
+      var CURRENT = 55;
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then(function (r) { return r.json(); })
         .then(function (d) { if (d && d.version && d.version !== CURRENT) location.reload(true); })
@@ -75,14 +75,21 @@
         .then((data) => {
           window.__works = Array.isArray(data.works) ? data.works : [];
           const list = Array.isArray(data.experience) ? data.experience : [];
-          // 合并本地草稿里的 blocks（编辑器保存后、未推送到 GitHub 前也能看到）
+          // 合并本地草稿里的 blocks：按内容丰富度合并，避免旧草稿覆盖线上最新内容。
+          // 仅当草稿比线上内容更多，或草稿中包含未上传的本地 dataURL 时，才采用草稿。
           try {
             const raw = localStorage.getItem("portfolio_draft_v1");
             if (raw) {
               const draft = JSON.parse(raw);
               const dExp = Array.isArray(draft.experiences) ? draft.experiences.find((e) => e.id === id) : null;
               const target = list.find((e) => e.id === id);
-              if (dExp && target && Array.isArray(dExp.blocks) && dExp.blocks.length) target.blocks = dExp.blocks;
+              if (dExp && target && Array.isArray(dExp.blocks) && dExp.blocks.length) {
+                const onlineBlocks = Array.isArray(target.blocks) ? target.blocks : [];
+                const hasNewUpload = dExp.blocks.some((b) => b.src && String(b.src).startsWith("data:"));
+                if (dExp.blocks.length > onlineBlocks.length || hasNewUpload) {
+                  target.blocks = dExp.blocks;
+                }
+              }
             }
           } catch (_) {}
           const exp = list.find((e) => e.id === id) || (list[0] || null);
@@ -155,7 +162,7 @@
     </div>
   </div>
 
-  <script src="editor.js?v=54"></script>
-  <script src="experience-modal.js?v=54"></script>
+  <script src="editor.js?v=55"></script>
+  <script src="experience-modal.js?v=55"></script>
 </body>
 </html>
