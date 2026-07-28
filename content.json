@@ -297,12 +297,7 @@
       ],
       "description": "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
       "content": "",
-      "links": [
-        {
-          "platform": "《超能》19秒策划案",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf"
-        }
-      ],
+      "links": [],
       "media": []
     },
     {
@@ -627,6 +622,15 @@
           "y": 28,
           "w": 801,
           "h": 80
+        },
+        {
+          "type": "pdf",
+          "x": 20,
+          "y": 508,
+          "w": 260,
+          "h": 80,
+          "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
+          "label": "《超能》19秒策划案.pdf"
         }
       ]
     }
