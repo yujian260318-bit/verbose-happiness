@@ -114,7 +114,8 @@
       video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
       video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
     });
-    reorderVideosByOrientation(root);
+    // 横竖排序已在 renderMediaGroups 中依据数据里的 portrait 标记同步完成，
+    // 此处不再依赖视频元数据异步重排 DOM（否则首开未缓存时视频会跳动 / 错位，重开才正常）。
   }
   function reorderVideosByOrientation(root) {
     const groups = (root || document).querySelectorAll(".modal__group-items--video");
