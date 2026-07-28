@@ -620,32 +620,26 @@ async function saveExpModal() {
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
   if (cancelBtn) cancelBtn.disabled = true;
   try {
+    // 直接取编辑器里的 blocks，由站点统一的 saveContent() 负责上传新资源（用站点 token）并提交，
+    // 不再调用 editor.js 的 save()（它会弹 token 框、且用自己的 GitHub 写入路径，易造成双写/静默失败）。
+    const blocks = expEditorApi.getBlocks();
+    experiences[expEditIndex].blocks = blocks;
+    experiences[expEditIndex].detail = blocksToDetail(blocks);
     setStatus("详情已更新，正在发布到 GitHub…");
-    // 关键：先让 editor.js 内部 save() 处理 token 与数据准备，
-    // 再通过 onSave 回调把 blocks 写回 experiences 并发布。
-    if (expEditorApi.save) {
-      await expEditorApi.save();
-    } else {
-      // 兼容：没有 save 方法时回退到旧逻辑（理论上不会走到这里）
-      const idx = expEditIndex;
-      const blocks = expEditorApi.getBlocks();
-      blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
-      experiences[idx].blocks = blocks;
-      experiences[idx].detail = blocksToDetail(blocks);
-      if (expPendingImages.length) {
-        pendingImageFiles.push(...expPendingImages);
-        expPendingImages = [];
-      }
-      saveDraft();
-      await saveContent();
-      clearDraft();
-      closeExpModal();
-      renderExperience();
-      openExpPreview(idx);
+    try {
+      await saveContent(); // 内部 externalizeInlineBlocks 会用站点 token 上传新图/PDF，并提交 content.json
+      setStatus("已保存到 GitHub ✓");
+    } catch (err) {
+      setStatus("保存失败：" + err.message + "（请重试）");
+      alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
+      return; // 保存失败：保持弹窗打开，不丢失编辑内容
     }
+    closeExpModal();
+    renderExperience();
+    openExpPreview(expEditIndex);
   } catch (err) {
-    setStatus("保存失败：" + err.message + "（请重试）");
-    alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
+    setStatus("保存失败：" + err.message);
+    alert("保存失败：" + err.message);
   } finally {
     saveExpModalLock = false;
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = origText; }
