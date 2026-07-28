@@ -1098,10 +1098,10 @@ document.getElementById("vm-file").addEventListener("change", (e) => {
   if (!file) return;
   if (file.size > 50 * 1024 * 1024) {
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-    alert(`该视频 ${sizeMb} MB，GitHub 在线上传超过 50MB 基本都会失败（422/500）。\n\n请先用剪映 / HandBrake / FFmpeg 压缩到 50MB 以下再传；或者使用对象存储直链：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制公开直链（https 开头）；\n3. 关闭本窗口，点击「＋ 链接」把直链粘进去即可播放。`);
-    return;
-  }
-  if (file.size > 25 * 1024 * 1024) {
+    if (!confirm(`该视频 ${sizeMb} MB，超过 50MB。\n\n已支持自动上传到 GitHub Releases（单文件最大 2GB，仍可正常播放），保存时会自动处理，无需手动压缩。\n\n是否继续？`)) {
+      return;
+    }
+  } else if (file.size > 25 * 1024 * 1024) {
     const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
     if (!confirm(`该视频 ${sizeMb} MB，已超过 25MB。GitHub API 对超过 25MB 的文件容易返回 422/500，最稳的做法是压缩到 25MB 以下。\n\n仍要继续尝试上传吗？`)) {
       return;
@@ -1227,10 +1227,10 @@ function bindWmMediaAdd() {
       if (!file) return;
       if (file.size > 50 * 1024 * 1024) {
         const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-        alert(`该视频 ${sizeMb} MB，GitHub 在线上传超过 50MB 基本都会失败（422/500）。\n\n请先用剪映 / HandBrake / FFmpeg 压缩到 50MB 以下再传；或者使用对象存储直链：\n1. 把视频传到七牛云 Kodo / 腾讯云 COS / 阿里云 OSS 等对象存储；\n2. 复制公开直链（https 开头）；\n3. 关闭本窗口，在作品详情弹窗点「＋ 视频链接」，把直链粘进去即可播放。`);
-        return;
-      }
-      if (file.size > 25 * 1024 * 1024) {
+        if (!confirm(`该视频 ${sizeMb} MB，超过 50MB。\n\n已支持自动上传到 GitHub Releases（单文件最大 2GB，仍可正常播放），保存时会自动处理，无需手动压缩。\n\n是否继续？`)) {
+          return;
+        }
+      } else if (file.size > 25 * 1024 * 1024) {
         const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
         if (!confirm(`该视频 ${sizeMb} MB，已超过 25MB。GitHub API 对超过 25MB 的文件容易返回 422/500，最稳的做法是压缩到 25MB 以下。\n\n仍要继续尝试上传吗？`)) {
           return;
@@ -1664,6 +1664,14 @@ function base64FromArrayBuffer(buffer) {
   }
   return btoa(binary);
 }
+function dataUrlToBlob(dataUrl) {
+  const idx = dataUrl.indexOf(",");
+  const mime = (dataUrl.slice(0, idx).match(/:(.*?);/) || [])[1] || "application/octet-stream";
+  const bin = atob(dataUrl.slice(idx + 1));
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
 async function commitBinaryFile(path, fileOrDataUrl) {
   const cfg = SITE_CONFIG.github || {};
   const token = await getToken();
@@ -1689,9 +1697,13 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   const baseUrl = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}`;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
 
-  // GitHub 实际能稳定在线上传的大小约 25MB；25-50MB 尝试 Git Database API；>50MB 拒绝
+  // 超过 50MB 的文件（视频 / PDF / 大图）自动改走 GitHub Releases（单文件最大 2GB），不再拦截
   if (fileSize > 50 * 1024 * 1024) {
-    throw new Error("视频超过 50MB，GitHub 在线上传极易失败，请先压缩到 50MB 以下，或使用对象存储直链");
+    let blob = fileOrDataUrl;
+    if (typeof fileOrDataUrl === "string" && fileOrDataUrl.startsWith("data:")) {
+      blob = dataUrlToBlob(fileOrDataUrl);
+    }
+    return await commitReleaseAsset(blob, basename(path));
   }
   if (fileSize > 25 * 1024 * 1024) {
     return await commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg);
@@ -1730,11 +1742,8 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   throw new Error("上传视频失败（" + lastErr.status + "）" + why);
 }
 
-// 通过 Git Database API 上传中等文件（25MB–50MB），超过 50MB 不应进入此函数
+// 通过 Git Database API 上传中等文件（25MB–50MB）；>50MB 已在 commitBinaryFile 提前改走 Releases
 async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg) {
-  if (fileSize > 50 * 1024 * 1024) {
-    throw new Error("视频超过 50MB，GitHub 在线上传极易失败，请先压缩到 50MB 以下，或使用对象存储直链");
-  }
   // 1. 创建 blob
   const blobRes = await fetch(`${baseUrl}/git/blobs`, {
     method: "POST",
@@ -1792,6 +1801,55 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
   });
   if (!updateRes.ok) throw new Error(`更新分支失败（${updateRes.status}）`);
 }
+
+// 上传大文件到 GitHub Releases（单个文件最大 2GB，适合超过 50MB 的视频）
+async function commitReleaseAsset(fileOrBlob, filename) {
+  const cfg = SITE_CONFIG.github || {};
+  const token = await getToken();
+  if (!token) throw new Error("未提供 token");
+  const baseUrl = `${cfg.apiBase}/repos/${cfg.owner}/${cfg.repo}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+  const tag = "videos";
+
+  let releaseRes = await fetch(`${baseUrl}/releases/tags/${tag}`, { headers });
+  if (!releaseRes.ok) {
+    releaseRes = await fetch(`${baseUrl}/releases`, {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, headers),
+      body: JSON.stringify({
+        tag_name: tag,
+        name: "作品集视频",
+        body: "视频资源托管（GitHub Releases，支持大文件）",
+        draft: false,
+        prerelease: false
+      })
+    });
+    if (!releaseRes.ok) throw new Error(`创建 Releases 失败（${releaseRes.status}），大视频无法上传`);
+  }
+  const release = await releaseRes.json();
+
+  const existing = (release.assets || []).find((a) => a.name === filename);
+  if (existing) {
+    const delRes = await fetch(`${baseUrl}/releases/assets/${existing.id}`, { method: "DELETE", headers });
+    if (!delRes.ok && delRes.status !== 404) {
+      console.warn("[commitReleaseAsset] 删除旧资源失败", delRes.status);
+    }
+  }
+
+  const uploadUrl = `https://uploads.github.com/repos/${cfg.owner}/${cfg.repo}/releases/${release.id}/assets?name=${encodeURIComponent(filename)}`;
+  const uploadRes = await fetch(uploadUrl, {
+    method: "POST",
+    headers: Object.assign({ "Content-Type": "application/octet-stream" }, headers),
+    body: fileOrBlob
+  });
+  if (!uploadRes.ok) {
+    const detail = await uploadRes.text().catch(() => "");
+    throw new Error(`上传视频到 Releases 失败（${uploadRes.status}）${detail ? ":" + detail.slice(0, 240) : ""}`);
+  }
+  const asset = await uploadRes.json();
+  return asset.browser_download_url;
+}
+
 let tokenResolve = null;
 function openTokenModal() {
   const m = document.getElementById("token-modal");
@@ -1936,10 +1994,10 @@ async function externalizeInlineBlocks() {
               ? b._name
               : ("assets/inline/" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + guessExtFromDataUrl(b.src));
             setStatus("外置内联资源：" + basename(path) + " …");
-            await commitBinaryFile(path, b.src);
-            b.src = path; b._name = path;
+            b.src = await commitBinaryFile(path, b.src);
+            b._name = b.src;
             delete b._file; delete b._preview;
-            externalized.add(path);
+            externalized.add(b.src);
           }
         }
       }
@@ -1947,11 +2005,20 @@ async function externalizeInlineBlocks() {
         for (const m of rec.media) {
           if (m && typeof m.url === "string" && m.url.startsWith("data:")) {
             const dir = (rec.id || "wk");
-            const path = "assets/works/" + dir + "/" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + guessExtFromDataUrl(m.url);
-            setStatus("外置内联资源：" + basename(path) + " …");
-            await commitBinaryFile(path, m.url);
-            m.url = path;
-            externalized.add(path);
+            const ext = guessExtFromDataUrl(m.url);
+            const filename = Date.now() + "_" + Math.random().toString(36).slice(2, 8) + ext;
+            const dataSize = Math.floor((m.url.length * 3) / 4);
+            const isVideo = /^\.(mp4|webm|ogg|mov|m4v)$/i.test(ext) || (m.url || "").startsWith("data:video/");
+            if (isVideo && dataSize > 50 * 1024 * 1024) {
+              setStatus("外置大视频到 Releases：" + filename + " …");
+              const blob = await (await fetch(m.url)).blob();
+              m.url = await commitReleaseAsset(blob, filename);
+            } else {
+              const path = "assets/works/" + dir + "/" + filename;
+              setStatus("外置内联资源：" + basename(path) + " …");
+              m.url = await commitBinaryFile(path, m.url);
+            }
+            externalized.add(m.url);
           }
         }
       }
@@ -1980,7 +2047,7 @@ async function saveContent() {
   });
   // 收集教育背景自定义布局
   educationLayout = collectEducationLayout();
-  const str = JSON.stringify({ texts, categories, works: commitSanitizeBlocks(works), experience: commitSanitizeBlocks(experiences), overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
+  let str = JSON.stringify({ texts, categories, works: commitSanitizeBlocks(works), experience: commitSanitizeBlocks(experiences), overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
   const cfg = SITE_CONFIG.github || {};
   if (cfg.owner && cfg.repo) {
     try {
@@ -1988,15 +2055,53 @@ async function saveContent() {
       // 硬防护：先把任何残留的内联 data URL 强制外置，杜绝 content.json 体积膨胀
       await externalizeInlineBlocks();
       for (const pi of pendingImageFiles) {
-        setStatus("上传图片：" + basename(pi.name) + " …");
-        await commitBinaryFile(pi.name, pi.file);
+        const oldName = pi.name;
+        setStatus("上传图片：" + basename(oldName) + " …");
+        pi.name = await commitBinaryFile(oldName, pi.file);
+        for (const w of works) {
+          if (Array.isArray(w.media)) {
+            for (const m of w.media) {
+              if (m.kind === "图片" && m.url === oldName) m.url = pi.name;
+            }
+          }
+        }
+        for (const e of experiences) {
+          if (Array.isArray(e.blocks)) {
+            for (const b of e.blocks) {
+              if (b.src === oldName) b.src = pi.name;
+            }
+          }
+        }
       }
       pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
         setStatus("上传视频：" + basename(pv.name) + " …");
-        await commitBinaryFile(pv.name, pv.file);
+        let finalUrl = pv.name;
+        if (pv.file && pv.file.size > 50 * 1024 * 1024) {
+          finalUrl = await commitReleaseAsset(pv.file, basename(pv.name));
+        } else {
+          await commitBinaryFile(pv.name, pv.file);
+        }
+        // 把作品里对应临时路径替换为最终路径（Releases 直链或 assets/ 路径）
+        for (const w of works) {
+          if (Array.isArray(w.media)) {
+            for (const m of w.media) {
+              if (m.kind === "视频" && (m.url === pv.name || m.name === pv.name)) {
+                m.url = finalUrl;
+                if (m.name) m.name = finalUrl;
+              }
+            }
+          }
+          if (Array.isArray(w.videoUrls)) {
+            for (const v of w.videoUrls) {
+              if (v.url === pv.name) v.url = finalUrl;
+            }
+          }
+        }
       }
       pendingVideoFiles.length = 0;
+      // 视频 URL 已替换，重新序列化后再提交
+      str = JSON.stringify({ texts, categories, works: commitSanitizeBlocks(works), experience: commitSanitizeBlocks(experiences), overlays, theme, styles, skills, sectionOrder, images, educationLayout }, null, 2);
       await commitToGitHub(str);
       clearDraft();
       setStatus("已保存到 GitHub ✓（本地草稿已清除）");
