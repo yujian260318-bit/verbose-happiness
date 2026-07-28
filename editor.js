@@ -431,9 +431,10 @@
             if (pageToken) ED.token = pageToken;
           }
           if (!ED.token) {
-            const t = prompt("请输入 GitHub Token 以保存（仅本次使用，不会存储）：");
+            const t = prompt("请输入 GitHub Token 以保存：");
             if (!t) { alert("未输入 Token，已取消保存。"); return; }
             ED.token = t.trim();
+            if (typeof sessionStorage !== "undefined") sessionStorage.setItem("gh_token", ED.token);
           }
           // 上传新图片 / PDF（dataURL 且不是外部链接）
           for (const b of blocks) {
@@ -447,53 +448,55 @@
           }
           if (typeof onSave === "function") {
             await onSave(blocks);
-          } else {
-            const { data } = await getContent(ED.token);
-            const arr = source === "exp" ? data.experience : data.works;
-            const rec = arr.find(r => r.id === id);
-            if (!rec) throw new Error("未找到记录");
-
-            if (source === "work") {
-              // 作品：视频块保持到 videoUrls，同时把视频块（含位置）也保存到 blocks，
-              // 这样弹窗渲染时才能按用户拖拽的位置显示，而不是回到默认网格。
-              const newVideoUrls = [];
-              const newBlocks = [];
-              blocks.forEach((b) => {
-                const copy = { ...b };
-                delete copy._file; delete copy._name; delete copy._fromVideoUrl;
-                if (b._meta) Object.assign(copy, b._meta);
-                delete copy._meta;
-                if (b.type === "video") {
-                  const v = { ...(b._meta || {}) };
-                  v.url = b.src;
-                  if (!v.type) v.type = "mp4";
-                  if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
-                  newVideoUrls.push(v);
-                  // 关键：视频块也写入 blocks，保留 x/y/w/h 排版信息
-                  newBlocks.push(copy);
-                } else {
-                  newBlocks.push(copy);
-                }
-              });
-              rec.videoUrls = newVideoUrls;
-              rec.blocks = newBlocks;
-              // 同步回传入的原始对象，保证弹窗内存对象也更新，保存后无需刷新即可见
-              record.videoUrls = newVideoUrls;
-              record.blocks = newBlocks;
-            } else {
-              rec.blocks = blocks.map((b) => {
-                const copy = { ...b };
-                delete copy._file; delete copy._name;
-                return copy;
-              });
-              record.blocks = rec.blocks;
-            }
-
-            const r2 = await putContent(data, ED.token);
-            if (r2.status >= 400) throw new Error(`保存失败 (${r2.status})：${r2.text.slice(0, 240)}`);
-            alert("✅ 已保存！刷新页面即可看到效果。");
-            if (typeof opts.postSave === "function") opts.postSave(blocks);
+            return;
           }
+          // 下方是 editor.js 独立保存到 GitHub 的旧逻辑，
+          // 当外部（如 script.js saveExpModal）通过 onSave 回调接管时不会执行。
+          const { data } = await getContent(ED.token);
+          const arr = source === "exp" ? data.experience : data.works;
+          const rec = arr.find(r => r.id === id);
+          if (!rec) throw new Error("未找到记录");
+
+          if (source === "work") {
+            // 作品：视频块保持到 videoUrls，同时把视频块（含位置）也保存到 blocks，
+            // 这样弹窗渲染时才能按用户拖拽的位置显示，而不是回到默认网格。
+            const newVideoUrls = [];
+            const newBlocks = [];
+            blocks.forEach((b) => {
+              const copy = { ...b };
+              delete copy._file; delete copy._name; delete copy._fromVideoUrl;
+              if (b._meta) Object.assign(copy, b._meta);
+              delete copy._meta;
+              if (b.type === "video") {
+                const v = { ...(b._meta || {}) };
+                v.url = b.src;
+                if (!v.type) v.type = "mp4";
+                if (!v.label) v.label = b.label || "视频 " + (newVideoUrls.length + 1);
+                newVideoUrls.push(v);
+                // 关键：视频块也写入 blocks，保留 x/y/w/h 排版信息
+                newBlocks.push(copy);
+              } else {
+                newBlocks.push(copy);
+              }
+            });
+            rec.videoUrls = newVideoUrls;
+            rec.blocks = newBlocks;
+            // 同步回传入的原始对象，保证弹窗内存对象也更新，保存后无需刷新即可见
+            record.videoUrls = newVideoUrls;
+            record.blocks = newBlocks;
+          } else {
+            rec.blocks = blocks.map((b) => {
+              const copy = { ...b };
+              delete copy._file; delete copy._name;
+              return copy;
+            });
+            record.blocks = rec.blocks;
+          }
+
+          const r2 = await putContent(data, ED.token);
+          if (r2.status >= 400) throw new Error(`保存失败 (${r2.status})：${r2.text.slice(0, 240)}`);
+          alert("✅ 已保存！刷新页面即可看到效果。");
+          if (typeof opts.postSave === "function") opts.postSave(blocks);
         } catch (err) {
           alert("保存出错：" + err.message + "\n若提示 401，说明 Token 失效，请重新生成后再次保存。");
         } finally {
@@ -508,7 +511,8 @@
       setBlocks: (newBlocks) => {
         blocks = Array.isArray(newBlocks) ? JSON.parse(JSON.stringify(newBlocks)) : [];
         paint();
-      }
+      },
+      save
     };
   };
 
