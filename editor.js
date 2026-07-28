@@ -2,6 +2,9 @@
   "use strict";
   const ED = { token: "" };
   const OWNER = "yujian260318-bit", REPO = "verbose-happiness", BRANCH = "main";
+  // 体积阈值：超过此大小的图片/PDF 一律作为 assets/ 资源外置上传，禁止内嵌进 content.json，
+  // 避免文件体积膨胀触发 GitHub "file is too large" 422。
+  const MAX_INLINE_BYTES = 200 * 1024;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({
@@ -348,6 +351,9 @@
       addImg.addEventListener("click", () => fileInput.click());
       fileInput.addEventListener("change", (e) => {
         const f = e.target.files[0]; if (!f) return;
+        if (f.size > MAX_INLINE_BYTES) {
+          console.info(`[editor] 图片 ${f.name} (${(f.size/1024).toFixed(0)}KB) 超过内嵌阈值，将作为 assets/ 资源上传，不写入 content.json`);
+        }
         const r = new FileReader();
         r.onload = () => {
           const filename = `assets/${Date.now()}_${f.name.replace(/\s+/g, "_")}`;
@@ -376,6 +382,9 @@
       addPdf.addEventListener("click", () => pdfInput.click());
       pdfInput.addEventListener("change", (e) => {
         const f = e.target.files[0]; if (!f) return;
+        if (f.size > MAX_INLINE_BYTES) {
+          console.info(`[editor] PDF ${f.name} (${(f.size/1024).toFixed(0)}KB) 超过内嵌阈值，将作为 assets/ 资源上传，不写入 content.json`);
+        }
         const r = new FileReader();
         r.onload = () => {
           const filename = `assets/${Date.now()}_${f.name.replace(/\s+/g, "_")}`;
