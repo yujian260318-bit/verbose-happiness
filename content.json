@@ -145,7 +145,7 @@
     },
     {
       "id": "ai-next",
-      "title": "AI Next 疯享会",
+      "title": "AI Next 疯享会（活动拍摄 + 传播）",
       "category": "社媒内容",
       "type": "视频",
       "company": "腾讯 CDG · 青腾",
@@ -314,14 +314,7 @@
       "description": "人像、静物与纪实摄影作品精选（内容待补充）。",
       "content": "",
       "links": [],
-      "media": [
-        {
-          "kind": "图片",
-          "url": "assets/works/photography/1785221636049-2eca01cdddc0361e3de60bd3893a4b78.jpg",
-          "name": "assets/works/photography/1785221636049-2eca01cdddc0361e3de60bd3893a4b78.jpg",
-          "caption": ""
-        }
-      ]
+      "media": []
     }
   ],
   "experience": [
