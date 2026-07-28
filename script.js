@@ -1171,8 +1171,11 @@ function renderWmMedia() {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="视频链接或 assets/videos/xxx.mp4" value="${escAttr(m.url || "")}" />
                 <input class="wm-media-label" data-i="${i}" placeholder="标签，如：正片 / 预告" value="${escAttr(m.label || "")}" />${badge}`;
     } else if (m.kind === "图片") {
+      const iname = m.name ? basename(m.name) : (m.url ? basename(m.url) : "");
+      const iprev = m.preview ? `<a class="wm-media-prev" href="${escAttr(m.preview)}" target="_blank" rel="noopener">预览</a>` : "";
+      const badge = (m.file || (m.url || "").startsWith("assets/works/")) ? `<span class="wm-media-fname">🖼️ ${esc(iname)}</span>${iprev}` : "";
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="图片链接或 assets/xxx.jpg" value="${escAttr(m.url || "")}" />
-                <input class="wm-media-cap" data-i="${i}" placeholder="图片说明" value="${escAttr(m.caption || "")}" />`;
+                <input class="wm-media-cap" data-i="${i}" placeholder="图片说明" value="${escAttr(m.caption || "")}" />${badge}`;
     } else if (m.kind === "Word" || m.kind === "PDF") {
       fields = `<input class="wm-media-url" data-i="${i}" placeholder="文件链接或 assets/docs/xxx.${m.kind === "Word" ? "docx" : "pdf"}" value="${escAttr(m.url || "")}" />
                 <input class="wm-media-label" data-i="${i}" placeholder="标题 / 文件名" value="${escAttr(m.label || "")}" />`;
@@ -1239,6 +1242,25 @@ function bindWmMediaAdd() {
       // 保持原始 File 对象，保存时再用 file.arrayBuffer() 读取上传，避免大视频读 base64 失败
       wmMedia.push({ kind: "视频", url: name, name, label: "", preview, file });
       pendingVideoFiles.push({ name, file });
+      renderWmMedia();
+      e.target.value = "";
+    });
+  }
+  // 作品详情弹窗：直接上传本地图片文件（与视频上传一致，复用 pendingImageFiles 通道）
+  const upI = document.getElementById("wm-upload-image");
+  const upImgFile = document.getElementById("wm-image-file");
+  if (upI && upImgFile) {
+    upI.addEventListener("click", () => upImgFile.click());
+    upImgFile.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!/^image\//.test(file.type)) { alert("请选择图片文件（jpg / png / webp 等）。"); e.target.value = ""; return; }
+      const safe = (file.name || "image.jpg").replace(/[^\w\-.\u4e00-\u9fa5]/g, "_");
+      const dir = (typeof wmWork !== "undefined" && wmWork && wmWork.id) ? wmWork.id : "wk";
+      const name = "assets/works/" + dir + "/" + Date.now() + "-" + safe;
+      const preview = URL.createObjectURL(file);
+      wmMedia.push({ kind: "图片", url: name, name, caption: "", preview, file });
+      pendingImageFiles.push({ name, file });
       renderWmMedia();
       e.target.value = "";
     });
