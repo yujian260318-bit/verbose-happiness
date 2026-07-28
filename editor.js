@@ -65,6 +65,7 @@
     if (b.w) node.style.width = b.w + "px";
     if (b.h) {
       if (b.type === "text") node.style.minHeight = (b.h || 60) + "px";
+      else if (b.type === "pdf") { if (ctx.editable) node.style.height = (b.h || 60) + "px"; }
       else node.style.height = (b.h || 60) + "px";
     }
 
@@ -132,14 +133,27 @@
       }
       if (b.label) node.appendChild(el("figcaption", null, esc(b.label)));
     } else if (b.type === "pdf") {
+      // href 编码：相对路径含中文/空格时需 encodeURI；data: 内联不做编码
+      const rawHref = b.src || "#";
+      const href = (rawHref && rawHref.startsWith("data:")) ? rawHref : (rawHref ? encodeURI(rawHref) : "#");
+      if (!ctx.editable) {
+        // 查看态：内联预览（iframe 自动适配浏览器 PDF 阅读器）
+        const frame = el("iframe", "ed-pdf-frame");
+        frame.src = href;
+        frame.title = b.label || "PDF 预览";
+        frame.setAttribute("style", "width:100%;height:520px;border:1px solid #D1D5C7;border-radius:10px;background:#fff;margin-bottom:10px;");
+        node.appendChild(frame);
+      }
       const a = el("a", "ed-pdf");
-      a.href = b.src || "#";
+      a.href = href;
       a.target = "_blank";
       a.rel = "noopener";
+      a.setAttribute("download", (b.label || "pdf") + ".pdf");
+      if (ctx.editable) a.setAttribute("style", "display:inline-block;margin-top:6px;");
       const icon = el("span", "ed-pdf-icon", "📄");
       const info = el("span", "ed-pdf-info");
       info.appendChild(el("strong", null, esc(b.label || "PDF 文件")));
-      info.appendChild(el("span", "ed-pdf-meta", b._name ? esc(b._name.split("/").pop()) : "点击预览 / 下载"));
+      info.appendChild(el("span", "ed-pdf-meta", b._name ? esc(b._name.split("/").pop()) : (ctx.editable ? "点击预览 / 下载" : "在新标签页预览或下载")));
       a.appendChild(icon);
       a.appendChild(info);
       node.appendChild(a);
