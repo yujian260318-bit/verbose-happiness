@@ -1767,7 +1767,7 @@ async function commitBinaryFile(path, fileOrDataUrl) {
         ? "：文件较大，GitHub Contents API 可能拒绝；建议压缩到 50MB 以下或用对象存储直链"
         : "";
   console.error("[commitBinaryFile]", lastErr.status, lastErr.detail);
-  throw new Error("上传视频失败（" + lastErr.status + "）" + why);
+  throw new Error("上传文件失败（" + lastErr.status + "）" + why);
 }
 
 // 通过 Git Database API 上传中等文件（25MB–50MB）；>50MB 已在 commitBinaryFile 提前改走 Releases
@@ -2177,6 +2177,8 @@ async function saveContent() {
     } catch (err) {
       setStatus("保存失败：" + err.message + "（已下载备份）");
       downloadJson(str);
+      pendingImageFiles.forEach((pi) => downloadFile(pi.file, basename(pi.name)));
+      pendingImageFiles.length = 0;
       pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
       pendingVideoFiles.length = 0;
     }
