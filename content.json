@@ -377,24 +377,24 @@
         },
         {
           "type": "image",
-          "x": 3,
-          "y": 567,
-          "w": 312,
+          "x": 5,
+          "y": 570,
+          "w": 304,
           "src": "assets/1785132672631_ee4541df-a670-4482-81f3-4941d2acb51b.png",
-          "h": 350
+          "h": 345
         },
         {
           "type": "image",
-          "x": 366,
-          "y": 561,
+          "x": 365,
+          "y": 563,
           "w": 188,
           "src": "assets/1785132677794_220c5f0bdc9a2808421cbed069113540.jpg",
           "h": 353
         },
         {
           "type": "image",
-          "x": 597,
-          "y": 559,
+          "x": 599,
+          "y": 560,
           "w": 189,
           "src": "assets/1785132681681_2c16a4786ad6deae99a73c0b3c409c46.jpg",
           "h": 350
@@ -426,7 +426,7 @@
       "description": "参与卫视访谈栏目制作，完成脚本创作、现场统筹与剪辑包装。",
       "link": "experience-detail.html?v=43&id=exp-yujian",
       "projectLink": "yujian",
-      "detail": "嘉宾内容策划：通过嘉宾沟通会，深挖其个人故事与经历，独立撰写拍摄脚本，锁定内容核心叙事亮点。\n\n现场统筹调度：对接嘉宾、摄影及现场执行团队，统筹拍摄行程与现场调度，保障录制高效落地。\n\n视频剪辑迭代：独立完成多版本视频剪辑包装，根据团队反馈优化叙事节奏与视觉呈现，跟进多轮修改直至成片定稿交付，成片于海南卫视播出。",
+      "detail": "",
       "images": [],
       "blocks": [
         {
@@ -441,15 +441,15 @@
           "type": "text",
           "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">现场统筹调度：</span>对接嘉宾、摄影及现场执行团队，统筹拍摄行程与现场调度，保障录制高效落地。",
           "x": 1,
-          "y": 171,
+          "y": 195,
           "w": 803,
           "h": 79
         },
         {
           "type": "text",
           "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgb(30, 30, 30); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16.0001px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-weight: 700; font-kerning: none;\">视频剪辑迭代：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-kerning: none;\">独立完成多版本视频剪辑包装，根据团队反馈优化叙事节奏与视觉呈现，跟进多轮修改直至成片定稿交付，成片于</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-weight: 700; font-kerning: none;\">海南卫视播出</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-kerning: none;\">。</span></p>",
-          "x": 3,
-          "y": 731,
+          "x": 1,
+          "y": 759,
           "w": 802,
           "h": 86
         },
@@ -464,30 +464,30 @@
         },
         {
           "type": "image",
-          "x": 415,
-          "y": 240,
+          "x": 422,
+          "y": 261,
           "w": 280,
           "src": "assets/experience/exp-yujian/block-4.jpg"
         },
         {
           "type": "image",
-          "x": 52,
-          "y": 238,
+          "x": 53,
+          "y": 259,
           "w": 283,
           "src": "assets/experience/exp-yujian/block-5.jpg",
           "h": 241
         },
         {
           "type": "image",
-          "x": 417,
-          "y": 473,
+          "x": 420,
+          "y": 490,
           "w": 280,
           "src": "assets/experience/exp-yujian/block-6.jpg"
         },
         {
           "type": "image",
-          "x": 52,
-          "y": 473,
+          "x": 51,
+          "y": 488,
           "w": 280,
           "src": "assets/experience/exp-yujian/block-7.jpg"
         }
