@@ -233,6 +233,9 @@ function applyAllStyles() { applyUserTheme(); applyUserStyles(); }
 const grid = document.getElementById("works-grid");
 const overlayLayer = document.getElementById("overlay-layer");
 const editorBar = document.getElementById("editor-bar");
+function setEditorBarHidden(hidden) {
+  if (editorBar) editorBar.classList.toggle("is-hidden", hidden);
+}
 const imgInput = document.getElementById("img-input");
 const editorStatus = document.getElementById("editor-status");
 const expModal = document.getElementById("exp-modal");
@@ -536,10 +539,12 @@ function openExpModal(idx) {
   });
   expModal.classList.add("is-open");
   expModal.setAttribute("aria-hidden", "false");
+  setEditorBarHidden(true);
 }
 function closeExpModal() {
   expModal.classList.remove("is-open");
   expModal.setAttribute("aria-hidden", "true");
+  setEditorBarHidden(false);
   expEditIndex = null;
   expEditorApi = null;
   expPendingImages = [];
@@ -984,6 +989,7 @@ function openModal(w) {
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
+  setEditorBarHidden(true);
 
   /* 记录详情页返回地址（从“查看作品”跳转过来时会带 ?return=...） */
   modalReturnUrl = new URLSearchParams(location.search).get("return");
@@ -994,6 +1000,7 @@ function closeModal() {
   modal.setAttribute("aria-hidden", "true");
   modalMedia.innerHTML = "";
   document.body.style.overflow = "";
+  setEditorBarHidden(false);
 
   /* 如果是从“查看作品”跳转回来，关闭弹窗后回到原详情页 */
   if (modalReturnUrl) {
@@ -1092,10 +1099,12 @@ function openVideoManager(w) {
   renderVmList();
   document.getElementById("vm-modal").classList.add("is-open");
   document.getElementById("vm-modal").setAttribute("aria-hidden", "false");
+  setEditorBarHidden(true);
 }
 function closeVideoManager() {
   document.getElementById("vm-modal").classList.remove("is-open");
   document.getElementById("vm-modal").setAttribute("aria-hidden", "true");
+  setEditorBarHidden(false);
   vmWork = null;
 }
 function saveVideoManager() {
@@ -1313,12 +1322,14 @@ function openWorkModal(existing) {
   document.getElementById("wm-modal").classList.add("is-open");
   document.getElementById("wm-modal").setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
+  setEditorBarHidden(true);
 }
 function closeWorkModal() {
   document.getElementById("wm-modal").classList.remove("is-open");
   document.getElementById("wm-modal").setAttribute("aria-hidden", "true");
   wmWork = null;
   document.body.style.overflow = "";
+  setEditorBarHidden(false);
 }
 async function saveWorkModal() {
   const saveBtn = document.getElementById("wm-save");
@@ -1393,10 +1404,12 @@ function openCatModal() {
   document.getElementById("cat-new-input").value = "";
   document.getElementById("cat-modal").classList.add("is-open");
   document.getElementById("cat-modal").setAttribute("aria-hidden", "false");
+  setEditorBarHidden(true);
 }
 function closeCatModal() {
   document.getElementById("cat-modal").classList.remove("is-open");
   document.getElementById("cat-modal").setAttribute("aria-hidden", "true");
+  setEditorBarHidden(false);
 }
 function renderCatList() {
   const box = document.getElementById("cat-list");
