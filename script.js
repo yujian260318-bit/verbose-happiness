@@ -536,7 +536,7 @@ function saveExpModal() {
   if (expEditIndex == null || !expEditorApi) return;
   const idx = expEditIndex;
   const blocks = expEditorApi.getBlocks();
-  blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
+  blocks.forEach((b) => { delete b._file; delete b._preview; });
   experiences[idx].blocks = blocks;
   // 同步更新 detail，让旧版只读页/缓存页也能看到文字内容
   experiences[idx].detail = blocksToDetail(blocks);
@@ -1906,6 +1906,63 @@ function commitSanitizeBlocks(arr) {
   });
 }
 
+// 根据 data URL 的 MIME 推断文件扩展名
+function guessExtFromDataUrl(dataUrl) {
+  const m = /^data:([^;]+)/.exec(dataUrl || "");
+  const t = m ? m[1].toLowerCase() : "application/octet-stream";
+  if (t.includes("pdf")) return ".pdf";
+  if (t.includes("png")) return ".png";
+  if (t.includes("jpeg") || t.includes("jpg")) return ".jpg";
+  if (t.includes("gif")) return ".gif";
+  if (t.includes("webp")) return ".webp";
+  if (t.includes("svg")) return ".svg";
+  return ".bin";
+}
+
+// 硬防护：提交前扫描所有内联的 data URL（图片 / PDF / 视频封面等），
+// 强制上传到 GitHub assets/ 并替换回相对路径，确保 content.json 永远不含 base64 内联，
+// 避免文件体积膨胀触发 GitHub "file is too large" 422。
+async function externalizeInlineBlocks() {
+  const externalized = new Set();
+  const lists = [];
+  if (Array.isArray(experiences)) lists.push(experiences);
+  if (Array.isArray(works)) lists.push(works);
+  for (const list of lists) {
+    for (const rec of list) {
+      if (Array.isArray(rec.blocks)) {
+        for (const b of rec.blocks) {
+          if (b && typeof b.src === "string" && b.src.startsWith("data:")) {
+            const path = (b._name && !b._name.startsWith("data:"))
+              ? b._name
+              : ("assets/inline/" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + guessExtFromDataUrl(b.src));
+            setStatus("外置内联资源：" + basename(path) + " …");
+            await commitBinaryFile(path, b.src);
+            b.src = path; b._name = path;
+            delete b._file; delete b._preview;
+            externalized.add(path);
+          }
+        }
+      }
+      if (Array.isArray(rec.media)) {
+        for (const m of rec.media) {
+          if (m && typeof m.url === "string" && m.url.startsWith("data:")) {
+            const dir = (rec.id || "wk");
+            const path = "assets/works/" + dir + "/" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + guessExtFromDataUrl(m.url);
+            setStatus("外置内联资源：" + basename(path) + " …");
+            await commitBinaryFile(path, m.url);
+            m.url = path;
+            externalized.add(path);
+          }
+        }
+      }
+    }
+  }
+  // 去重：已外置的路径无需再由 pendingImageFiles 重复上传
+  if (externalized.size && Array.isArray(pendingImageFiles) && pendingImageFiles.length) {
+    pendingImageFiles = pendingImageFiles.filter((pi) => !externalized.has(pi.name));
+  }
+}
+
 async function saveContent() {
   // 收集文本覆盖（剔除样式点，避免污染数据）
   document.querySelectorAll("[data-edit]").forEach((el) => {
@@ -1928,6 +1985,8 @@ async function saveContent() {
   if (cfg.owner && cfg.repo) {
     try {
       setStatus("保存中…");
+      // 硬防护：先把任何残留的内联 data URL 强制外置，杜绝 content.json 体积膨胀
+      await externalizeInlineBlocks();
       for (const pi of pendingImageFiles) {
         setStatus("上传图片：" + basename(pi.name) + " …");
         await commitBinaryFile(pi.name, pi.file);
