@@ -1918,8 +1918,10 @@ async function commitToGitHub(str) {
   const putUrl = baseUrl;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
 
-  async function fetchSha() {
-    const head = await fetch(getUrl, { headers });
+  async function fetchSha(noCache) {
+    // 加时间戳防止 CDN/浏览器返回缓存的过期 sha
+    const url = noCache ? `${getUrl}&_=${Date.now()}` : getUrl;
+    const head = await fetch(url, { headers });
     if (head.status === 404) return null;
     if (head.ok) {
       const headText = await head.text().catch(() => "");
@@ -1945,16 +1947,16 @@ async function commitToGitHub(str) {
     return res;
   }
 
-  // 409 冲突时自动重试：重新拉取最新 sha 再提交（最多 3 次）
+  // 409 冲突时自动重试：重新拉取最新 sha 再提交（最多 5 次）
   let lastDetail = "";
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const sha = await fetchSha();
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    const sha = await fetchSha(attempt > 1);
     const res = await tryPut(sha);
     if (res.ok) return;
     lastDetail = await res.text().catch(() => "");
     if (res.status === 409) {
-      setStatus(`检测到远程内容有更新，自动重试第 ${attempt}/3 次 …`);
-      await new Promise((r) => setTimeout(r, 500 * attempt));
+      setStatus(`检测到远程内容有更新，自动重试第 ${attempt}/5 次 …`);
+      await new Promise((r) => setTimeout(r, 700 * attempt));
       continue;
     }
     let why = "";
@@ -2062,7 +2064,14 @@ async function externalizeInlineBlocks() {
   }
 }
 
+let saveContentLock = false;
 async function saveContent() {
+  if (saveContentLock) {
+    setStatus("保存进行中，请勿重复点击…");
+    return;
+  }
+  saveContentLock = true;
+  try {
   // 收集文本覆盖（剔除样式点，避免污染数据）
   document.querySelectorAll("[data-edit]").forEach((el) => {
     if (el.closest("#works-grid")) return;
@@ -2160,6 +2169,9 @@ async function saveContent() {
     pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
     pendingVideoFiles.length = 0;
     setStatus("已下载 content.json、图片与视频文件，请放入对应 assets/ 目录并重新部署");
+  }
+  } finally {
+    saveContentLock = false;
   }
 }
 
