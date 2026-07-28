@@ -547,8 +547,10 @@ function saveExpModal() {
   saveDraft();
   closeExpModal();
   renderExperience();
-  setStatus("详情已更新，下面就是预览效果 ↓");
+  setStatus("详情已更新，正在发布到 GitHub…");
   openExpPreview(idx);
+  // 保存即发布：经历修改（文字/位置/图片）一键上线，避免“保存≠上线”的困惑
+  saveContent();
 }
 
 /* ---------- 经历详情预览（原页内只读，无需 GitHub 即可看效果） ---------- */
@@ -1336,6 +1338,8 @@ function saveWorkModal() {
   }
   closeWorkModal();
   paint();
+  // 保存即发布：作品修改（含上传的图片/视频）一键上线
+  saveContent();
 }
 function deleteWork() {
   if (!wmWork) return;
@@ -1957,7 +1961,9 @@ function commitSanitizeBlocks(arr) {
     const copy = Object.assign({}, r);
     copy.blocks = r.blocks.map((b) => {
       const nb = Object.assign({}, b);
-      if (nb._name) nb.src = nb._name;
+      // 仅当 _name 是有效路径（assets/ 或 https）时才用其覆盖 src；
+      // 若是 data:/blob: 等脏值则保留原 src，避免污染最终数据
+      if (nb._name && !/^(data:|blob:)/.test(nb._name)) nb.src = nb._name;
       delete nb._name; delete nb._file; delete nb._preview;
       return nb;
     });
@@ -1994,11 +2000,17 @@ async function externalizeInlineBlocks() {
             const path = (b._name && !b._name.startsWith("data:"))
               ? b._name
               : ("assets/inline/" + Date.now() + "_" + Math.random().toString(36).slice(2, 8) + guessExtFromDataUrl(b.src));
-            setStatus("外置内联资源：" + basename(path) + " …");
-            b.src = await commitBinaryFile(path, b.src);
-            b._name = b.src;
-            delete b._file; delete b._preview;
-            externalized.add(b.src);
+            try {
+              setStatus("外置内联资源：" + basename(path) + " …");
+              b.src = await commitBinaryFile(path, b.src);
+              b._name = b.src;
+              delete b._file; delete b._preview;
+              externalized.add(b.src);
+            } catch (e) {
+              // 单个资源外置失败不影响其余内容与纯文本/位置的保存
+              console.warn("[externalizeInlineBlocks] 块资源外置失败，保留原引用：", e && e.message);
+              setStatus("⚠️ 有 1 个内联资源上传失败（已跳过，不影响其他内容保存）");
+            }
           }
         }
       }
@@ -2010,16 +2022,21 @@ async function externalizeInlineBlocks() {
             const filename = Date.now() + "_" + Math.random().toString(36).slice(2, 8) + ext;
             const dataSize = Math.floor((m.url.length * 3) / 4);
             const isVideo = /^\.(mp4|webm|ogg|mov|m4v)$/i.test(ext) || (m.url || "").startsWith("data:video/");
-            if (isVideo && dataSize > 50 * 1024 * 1024) {
-              setStatus("外置大视频到 Releases：" + filename + " …");
-              const blob = await (await fetch(m.url)).blob();
-              m.url = await commitReleaseAsset(blob, filename);
-            } else {
-              const path = "assets/works/" + dir + "/" + filename;
-              setStatus("外置内联资源：" + basename(path) + " …");
-              m.url = await commitBinaryFile(path, m.url);
+            try {
+              if (isVideo && dataSize > 50 * 1024 * 1024) {
+                setStatus("外置大视频到 Releases：" + filename + " …");
+                const blob = await (await fetch(m.url)).blob();
+                m.url = await commitReleaseAsset(blob, filename);
+              } else {
+                const path = "assets/works/" + dir + "/" + filename;
+                setStatus("外置内联资源：" + basename(path) + " …");
+                m.url = await commitBinaryFile(path, m.url);
+              }
+              externalized.add(m.url);
+            } catch (e) {
+              console.warn("[externalizeInlineBlocks] 媒体资源外置失败，保留原引用：", e && e.message);
+              setStatus("⚠️ 有 1 个内联资源上传失败（已跳过，不影响其他内容保存）");
             }
-            externalized.add(m.url);
           }
         }
       }
@@ -2057,47 +2074,57 @@ async function saveContent() {
       await externalizeInlineBlocks();
       for (const pi of pendingImageFiles) {
         const oldName = pi.name;
-        setStatus("上传图片：" + basename(oldName) + " …");
-        pi.name = await commitBinaryFile(oldName, pi.file);
-        for (const w of works) {
-          if (Array.isArray(w.media)) {
-            for (const m of w.media) {
-              if (m.kind === "图片" && m.url === oldName) m.url = pi.name;
+        try {
+          setStatus("上传图片：" + basename(oldName) + " …");
+          pi.name = await commitBinaryFile(oldName, pi.file);
+          for (const w of works) {
+            if (Array.isArray(w.media)) {
+              for (const m of w.media) {
+                if (m.kind === "图片" && m.url === oldName) m.url = pi.name;
+              }
             }
           }
-        }
-        for (const e of experiences) {
-          if (Array.isArray(e.blocks)) {
-            for (const b of e.blocks) {
-              if (b.src === oldName) b.src = pi.name;
+          for (const e of experiences) {
+            if (Array.isArray(e.blocks)) {
+              for (const b of e.blocks) {
+                if (b.src === oldName) b.src = pi.name;
+              }
             }
           }
+        } catch (e) {
+          console.warn("[saveContent] 图片上传失败，保留原引用：", e && e.message);
+          setStatus("⚠️ 有 1 张图片上传失败（已跳过，其余内容已保存）");
         }
       }
       pendingImageFiles.length = 0;
       for (const pv of pendingVideoFiles) {
-        setStatus("上传视频：" + basename(pv.name) + " …");
-        let finalUrl = pv.name;
-        if (pv.file && pv.file.size > 50 * 1024 * 1024) {
-          finalUrl = await commitReleaseAsset(pv.file, basename(pv.name));
-        } else {
-          await commitBinaryFile(pv.name, pv.file);
-        }
-        // 把作品里对应临时路径替换为最终路径（Releases 直链或 assets/ 路径）
-        for (const w of works) {
-          if (Array.isArray(w.media)) {
-            for (const m of w.media) {
-              if (m.kind === "视频" && (m.url === pv.name || m.name === pv.name)) {
-                m.url = finalUrl;
-                if (m.name) m.name = finalUrl;
+        try {
+          setStatus("上传视频：" + basename(pv.name) + " …");
+          let finalUrl = pv.name;
+          if (pv.file && pv.file.size > 50 * 1024 * 1024) {
+            finalUrl = await commitReleaseAsset(pv.file, basename(pv.name));
+          } else {
+            await commitBinaryFile(pv.name, pv.file);
+          }
+          // 把作品里对应临时路径替换为最终路径（Releases 直链或 assets/ 路径）
+          for (const w of works) {
+            if (Array.isArray(w.media)) {
+              for (const m of w.media) {
+                if (m.kind === "视频" && (m.url === pv.name || m.name === pv.name)) {
+                  m.url = finalUrl;
+                  if (m.name) m.name = finalUrl;
+                }
+              }
+            }
+            if (Array.isArray(w.videoUrls)) {
+              for (const v of w.videoUrls) {
+                if (v.url === pv.name) v.url = finalUrl;
               }
             }
           }
-          if (Array.isArray(w.videoUrls)) {
-            for (const v of w.videoUrls) {
-              if (v.url === pv.name) v.url = finalUrl;
-            }
-          }
+        } catch (e) {
+          console.warn("[saveContent] 视频上传失败，保留原引用：", e && e.message);
+          setStatus("⚠️ 有 1 个视频上传失败（已跳过，其余内容已保存）");
         }
       }
       pendingVideoFiles.length = 0;
