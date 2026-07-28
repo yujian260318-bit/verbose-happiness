@@ -310,24 +310,36 @@
     container.appendChild(canvas);
 
     const ctx = { editable, blocks, rerender: paint };
+    function recomputeCanvas() {
+      const nodes = canvas.querySelectorAll(".ed-block");
+      let maxH = 0;
+      nodes.forEach((node) => {
+        const top = parseInt(node.style.top) || 0;
+        const h = node.offsetHeight || parseInt(node.style.minHeight) || 60;
+        if (top + h > maxH) maxH = top + h;
+      });
+      if (maxH > 0) canvas.style.height = (maxH + 20) + "px";
+    }
     function paint() {
       canvas.innerHTML = "";
       if (!blocks.length && !editable) {
         canvas.appendChild(el("p", null, "暂无内容块。"));
         return;
       }
-      blocks.forEach((b, i) => canvas.appendChild(renderBlock(b, i, ctx)));
-      // 根据内容撑开画布，避免绝对定位块被截断
-      requestAnimationFrame(() => {
-        const nodes = canvas.querySelectorAll(".ed-block");
-        let maxH = 0;
-        nodes.forEach((node) => {
-          const top = parseInt(node.style.top) || 0;
-          const h = node.offsetHeight || parseInt(node.style.minHeight) || 60;
-          if (top + h > maxH) maxH = top + h;
-        });
-        if (maxH > 0) canvas.style.height = (maxH + 20) + "px";
+      blocks.forEach((b, i) => {
+        const node = renderBlock(b, i, ctx);
+        // 图片加载完成后再重算画布高度：首开未缓存时图片尚未加载、offsetHeight 为 0，
+        // 若只在初次 rAF 算一次，画布会过矮，导致下方块被压缩、与「查看作品」按钮错位；
+        // 重开（图片命中缓存）即时加载才正常。改为每次图片 load 都校正，彻底消除错位。
+        const im = node.querySelector("img.ed-img");
+        if (im) {
+          im.addEventListener("load", recomputeCanvas);
+          if (im.complete && im.naturalHeight) recomputeCanvas();
+        }
+        canvas.appendChild(node);
       });
+      // 初次布局后算一次；图片陆续加载后各自的 onload 再校正
+      requestAnimationFrame(recomputeCanvas);
     }
     paint();
 
