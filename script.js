@@ -1918,39 +1918,53 @@ async function commitToGitHub(str) {
   const putUrl = baseUrl;
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
 
-  let sha = null;
-  const head = await fetch(getUrl, { headers });
-  if (head.status === 404) sha = null;
-  else if (head.ok) {
-    const headText = await head.text().catch(() => "");
-    if (!headText.trim()) throw new Error("读取仓库失败：服务器返回空响应");
-    sha = JSON.parse(headText).sha;
-  } else {
+  async function fetchSha() {
+    const head = await fetch(getUrl, { headers });
+    if (head.status === 404) return null;
+    if (head.ok) {
+      const headText = await head.text().catch(() => "");
+      if (!headText.trim()) throw new Error("读取仓库失败：服务器返回空响应");
+      return JSON.parse(headText).sha;
+    }
     const detail = await head.text().catch(() => "");
     throw new Error(`读取仓库失败（${head.status}）：${detail.slice(0, 240)}`);
   }
 
-  const body = {
-    message: "Update portfolio content via site editor",
-    content: btoa(unescape(encodeURIComponent(str))),
-    branch: cfg.branch
-  };
-  if (sha) body.sha = sha;
+  async function tryPut(sha) {
+    const body = {
+      message: "Update portfolio content via site editor",
+      content: btoa(unescape(encodeURIComponent(str))),
+      branch: cfg.branch
+    };
+    if (sha) body.sha = sha;
+    const res = await fetch(putUrl, {
+      method: "PUT",
+      headers: Object.assign({ "Content-Type": "application/json" }, headers),
+      body: JSON.stringify(body)
+    });
+    return res;
+  }
 
-  const res = await fetch(putUrl, {
-    method: "PUT",
-    headers: Object.assign({ "Content-Type": "application/json" }, headers),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
+  // 409 冲突时自动重试：重新拉取最新 sha 再提交（最多 3 次）
+  let lastDetail = "";
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const sha = await fetchSha();
+    const res = await tryPut(sha);
+    if (res.ok) return;
+    lastDetail = await res.text().catch(() => "");
+    if (res.status === 409) {
+      setStatus(`检测到远程内容有更新，自动重试第 ${attempt}/3 次 …`);
+      await new Promise((r) => setTimeout(r, 500 * attempt));
+      continue;
+    }
     let why = "";
     if (res.status === 404) why = "：token 没有该仓库的写入权限，或仓库/分支路径错误";
     else if (res.status === 401) why = "：token 无效或已过期";
     else if (res.status === 422) why = "：请求参数错误";
-    console.error("[commitToGitHub]", res.status, detail);
-    throw new Error("提交失败（" + res.status + "）" + why + (detail ? "：" + detail.slice(0, 240) : ""));
+    console.error("[commitToGitHub]", res.status, lastDetail);
+    throw new Error("提交失败（" + res.status + "）" + why + (lastDetail ? "：" + lastDetail.slice(0, 240) : ""));
   }
+  throw new Error("提交失败（409）：远程内容多次冲突，请刷新页面后重试。" + (lastDetail ? "：" + lastDetail.slice(0, 240) : ""));
 }
 
 // 推送前清洗 blocks：把本地预览用的 dataURL / 文件名标记换成可发布的路径
