@@ -179,6 +179,16 @@ function mergeWorks(current, draft) {
   });
   return result;
 }
+function blocksEqual(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  const clean = (arr) => arr.map((b) => {
+    const copy = Object.assign({}, b);
+    delete copy._file; delete copy._preview; delete copy._name;
+    return copy;
+  });
+  return JSON.stringify(clean(a)) === JSON.stringify(clean(b));
+}
 function mergeExperiences(current, draft) {
   if (!Array.isArray(current)) return draft || [];
   if (!Array.isArray(draft)) return current;
@@ -189,7 +199,9 @@ function mergeExperiences(current, draft) {
     const d = draftMap.get(e.id);
     const dBlocks = (d && d.blocks) || (d && d.detail && convertExpToBlocks(d)) || [];
     const cBlocks = e.blocks || (e.detail && convertExpToBlocks(e)) || [];
-    const preferDraft = dBlocks.length > cBlocks.length;
+    const hasNewUpload = dBlocks.some((b) => b.src && String(b.src).startsWith("data:"));
+    const contentChanged = !blocksEqual(dBlocks, cBlocks);
+    const preferDraft = dBlocks.length > cBlocks.length || hasNewUpload || contentChanged;
     result.push(JSON.parse(JSON.stringify(preferDraft ? d : e)));
     seen.add(e.id);
   });
@@ -562,18 +574,26 @@ function openExpModal(idx) {
     skipHead: true,
     showSave: false,
     pendingImageFiles: expPendingImages,
-    onSave: (blocks) => {
+    onSave: async (blocks) => {
       // 保留 _file/_preview/_name 标记，让 externalizeInlineBlocks 识别新上传资源并上传；
       // 上传成功后 commitSanitizeBlocks 会清理这些标记。
       experiences[idx].blocks = blocks;
       experiences[idx].detail = blocksToDetail(blocks);
       saveDraft();
-      closeExpModal();
-      renderExperience();
-      openExpPreview(idx);
       setStatus("详情已更新，正在发布到 GitHub…");
-      // 保存即发布
-      saveContent();
+      try {
+        await saveContent();
+        clearDraft();
+        closeExpModal();
+        renderExperience();
+        openExpPreview(idx);
+        setStatus("已保存到 GitHub ✓");
+      } catch (err) {
+        // 保持弹窗打开，让用户看到错误并重试
+        setStatus("保存失败：" + err.message + "（请重试）");
+        alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
+        throw err;
+      }
     }
   });
   expModal.classList.add("is-open");
@@ -589,29 +609,47 @@ function closeExpModal() {
   expPendingImages = [];
   expEditor.innerHTML = "";
 }
+let saveExpModalLock = false;
 async function saveExpModal() {
+  if (saveExpModalLock) return;
   if (expEditIndex == null || !expEditorApi) return;
-  setStatus("详情已更新，正在发布到 GitHub…");
-  // 关键：先让 editor.js 内部 save() 上传图片/PDF（data URL -> assets/），
-  // 上传完成后再通过 openExpModal 传入的 onSave 回调把 blocks 写回 experiences 并发布。
-  if (expEditorApi.save) {
-    await expEditorApi.save();
-  } else {
-    // 兼容：没有 save 方法时回退到旧逻辑（图片会丢失，理论上不会走到这里）
-    const idx = expEditIndex;
-    const blocks = expEditorApi.getBlocks();
-    blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
-    experiences[idx].blocks = blocks;
-    experiences[idx].detail = blocksToDetail(blocks);
-    if (expPendingImages.length) {
-      pendingImageFiles.push(...expPendingImages);
-      expPendingImages = [];
+  saveExpModalLock = true;
+  const saveBtn = document.getElementById("exp-save");
+  const cancelBtn = document.getElementById("exp-cancel");
+  const origText = saveBtn ? saveBtn.textContent : "保存并发布";
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
+  if (cancelBtn) cancelBtn.disabled = true;
+  try {
+    setStatus("详情已更新，正在发布到 GitHub…");
+    // 关键：先让 editor.js 内部 save() 处理 token 与数据准备，
+    // 再通过 onSave 回调把 blocks 写回 experiences 并发布。
+    if (expEditorApi.save) {
+      await expEditorApi.save();
+    } else {
+      // 兼容：没有 save 方法时回退到旧逻辑（理论上不会走到这里）
+      const idx = expEditIndex;
+      const blocks = expEditorApi.getBlocks();
+      blocks.forEach((b) => { delete b._file; delete b._preview; delete b._name; });
+      experiences[idx].blocks = blocks;
+      experiences[idx].detail = blocksToDetail(blocks);
+      if (expPendingImages.length) {
+        pendingImageFiles.push(...expPendingImages);
+        expPendingImages = [];
+      }
+      saveDraft();
+      await saveContent();
+      clearDraft();
+      closeExpModal();
+      renderExperience();
+      openExpPreview(idx);
     }
-    saveDraft();
-    closeExpModal();
-    renderExperience();
-    openExpPreview(idx);
-    saveContent();
+  } catch (err) {
+    setStatus("保存失败：" + err.message + "（请重试）");
+    alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
+  } finally {
+    saveExpModalLock = false;
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = origText; }
+    if (cancelBtn) cancelBtn.disabled = false;
   }
 }
 
