@@ -19,7 +19,7 @@
   }
   function api(method, path, body, token) {
     let url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
-    if (method === "GET") url += `?ref=${BRANCH}`;
+    if (method === "GET") url += `?ref=${BRANCH}&_=${Date.now()}`;
     const opt = { method, headers: {
       "Authorization": "Bearer " + token,
       "Accept": "application/vnd.github+json",
@@ -42,13 +42,21 @@
     });
   }
   function putContent(obj, token) {
-    return getContent(token).then(({ sha }) => {
-      return api("PUT", "content.json", {
+    const tryPut = async (attempt) => {
+      const { sha } = await getContent(token);
+      const res = await api("PUT", "content.json", {
         message: "Edit via visual editor",
         content: btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))),
         sha, branch: BRANCH
       }, token);
-    });
+      if (res.status === 409 && attempt < 3) {
+        console.warn(`[editor] putContent 409 conflict, retry ${attempt + 1}/3`);
+        await new Promise((r) => setTimeout(r, 800 + attempt * 400));
+        return tryPut(attempt + 1);
+      }
+      return res;
+    };
+    return tryPut(0);
   }
   function putAsset(relPath, b64, token) {
     return api("GET", relPath, null, token).then(({ status, text }) => {
@@ -420,10 +428,10 @@
 
         const r2 = await putContent(data, ED.token);
         if (r2.status >= 400) throw new Error(`保存失败 (${r2.status})：${r2.text.slice(0, 240)}`);
-        alert("✅ 已保存！刷新页面即可看到效果。");
+        alert("✅ 已保存到 GitHub！请刷新页面查看最新效果。");
         if (typeof opts.postSave === "function") opts.postSave(blocks);
       } catch (err) {
-        alert("保存出错：" + err.message + "\n若提示 401，说明 Token 失效，请重新生成后再次保存。");
+        alert("保存出错：" + err.message + "\n常见原因：Token 失效（401）、网络超时、或同时有多处编辑冲突（409）。请重试，或检查 Token 是否有效。");
       } finally {
         if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 保存"; }
       }
