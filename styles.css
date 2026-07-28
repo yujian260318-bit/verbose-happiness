@@ -350,7 +350,7 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 
 /* 作品详情模态框 */
 .modal, .wm-modal, .vm-modal, .cat-modal {
-  position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px;
+  position: fixed; inset: 0; z-index: 350; display: none; align-items: center; justify-content: center; padding: 24px;
 }
 .modal.is-open, .wm-modal.is-open, .vm-modal.is-open, .cat-modal.is-open { display: flex; }
 .modal__backdrop, .wm-modal__backdrop, .vm-modal__backdrop, .cat-modal__backdrop {
@@ -494,7 +494,7 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 .cat-modal__addrow button, .cat-add { background: var(--sage); color: #fff; border: none; padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-family: inherit; }
 
 /* 经历详情编辑器 */
-.exp-modal { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; }
+.exp-modal { position: fixed; inset: 0; z-index: 350; display: none; align-items: center; justify-content: center; padding: 24px; }
 .exp-modal.is-open { display: flex; }
 .exp-modal__backdrop { position: absolute; inset: 0; background: rgba(30, 22, 16, .55); backdrop-filter: blur(3px); }
 .exp-modal__panel {
