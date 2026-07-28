@@ -525,23 +525,23 @@
         {
           "type": "text",
           "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgb(30, 30, 30); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-weight: 700; font-kerning: none;\">跨部门协作对接：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-kerning: none;\">联动设计、运营团队同步内容需求，整理归档项目资料，配合完成内容审核、细节调整，协助栏目顺利完成上线发布。</span></p>",
-          "x": -1,
-          "y": 385,
+          "x": 0,
+          "y": 372,
           "w": 799,
           "h": 76
         },
         {
           "type": "text",
           "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">成片独立产出：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\">独立完成海量素材筛选、归档与精剪，落地 3 条正片 + 3 条预告片，自主把控叙事逻辑、镜头节奏与画面调色，统一成片视觉风格，保障成片质感，成片发布于《名厨》公众号、</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">爱奇艺平台</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\">。</span></p>",
-          "x": -1,
-          "y": 587,
+          "x": 1,
+          "y": 573,
           "w": 800,
           "h": 71
         },
         {
           "type": "image",
-          "x": 602,
-          "y": 93,
+          "x": 598,
+          "y": 89,
           "w": 180,
           "src": "assets/experience/exp-zhupassword/block-3.jpg",
           "h": 237
@@ -549,7 +549,7 @@
         {
           "type": "pdf",
           "x": 0,
-          "y": 470,
+          "y": 458,
           "w": 365,
           "h": 86,
           "src": "assets/experience/exp-zhupassword/block-4.pdf",
@@ -557,8 +557,8 @@
         },
         {
           "type": "pdf",
-          "x": 422,
-          "y": 469,
+          "x": 424,
+          "y": 456,
           "w": 373,
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
@@ -566,12 +566,21 @@
         },
         {
           "type": "pdf",
-          "x": 11,
-          "y": 138,
-          "w": 260,
-          "h": 80,
-          "src": "assets/1785233008867_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
+          "x": 4,
+          "y": 124,
+          "w": 443,
+          "h": 83,
+          "src": "assets/1785232876525_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
           "label": "名厨《主厨密码》-Talib 采访视频策划方案.pdf"
+        },
+        {
+          "type": "pdf",
+          "x": 1,
+          "y": 227,
+          "w": 488,
+          "h": 82,
+          "src": "assets/1785233074706_【主厨密码】冯国正师傅｜视频拍摄方案（含脚本）.pdf",
+          "label": "【主厨密码】冯国正师傅｜视频拍摄方案（含脚本）.pdf"
         }
       ]
     },
