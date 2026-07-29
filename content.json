@@ -149,7 +149,7 @@
     },
     {
       "id": "ai-next",
-      "title": "AI Next 疯享会（活动拍摄 + 传播）",
+      "title": "AI Next 疯享会（小红书+即刻）",
       "category": "社媒内容",
       "type": "视频",
       "company": "腾讯 CDG · 青腾",
@@ -215,7 +215,7 @@
       "id": "social",
       "title": "青腾TencentX视频号",
       "category": "视频号",
-      "type": "图文",
+      "type": "视频",
       "company": "腾讯 CDG · 青腾",
       "period": "2026.05 – 至今",
       "role": "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
@@ -774,5 +774,10 @@
     "frame-edu-1": "assets/1784882479007_R.jpg",
     "frame-edu-2": "assets/1784882483337_80b4fa3b-a8ff-4cdb-8b26-99e53035ff1e.jpg"
   },
-  "educationLayout": null
+  "educationLayout": {
+    "text": {
+      "x": -141,
+      "y": 2
+    }
+  }
 }
