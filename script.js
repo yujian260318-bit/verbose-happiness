@@ -1798,6 +1798,12 @@ function dataUrlToBlob(dataUrl) {
   for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
   return new Blob([arr], { type: mime });
 }
+// 带超时的 fetch，避免网络卡死导致保存按钮一直“保存中”
+function fetchWithTimeout(url, options = {}, timeoutMs = 20000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, Object.assign({}, options, { signal: controller.signal })).finally(() => clearTimeout(id));
+}
 async function commitBinaryFile(path, fileOrDataUrl) {
   const cfg = SITE_CONFIG.github || {};
   const token = await getToken();
@@ -1837,7 +1843,7 @@ async function commitBinaryFile(path, fileOrDataUrl) {
 
   const getUrl = `${baseUrl}/contents/${encodeURIComponent(path)}?ref=${cfg.branch}`;
   let sha = null;
-  const head = await fetch(getUrl, { headers });
+  const head = await fetchWithTimeout(getUrl, { headers });
   if (head.ok) sha = (await head.json()).sha;
 
   const body = { message: "Add media: " + path, content: b64, branch: cfg.branch };
@@ -1846,7 +1852,7 @@ async function commitBinaryFile(path, fileOrDataUrl) {
   const putUrl = `${baseUrl}/contents/${encodeURIComponent(path)}`;
   let lastErr = null;
   for (let attempt = 0; attempt < 2; attempt++) {
-    const res = await fetch(putUrl, {
+    const res = await fetchWithTimeout(putUrl, {
       method: "PUT",
       headers: Object.assign({ "Content-Type": "application/json" }, headers),
       body: JSON.stringify(body)
@@ -1871,7 +1877,7 @@ async function commitBinaryFile(path, fileOrDataUrl) {
 // 通过 Git Database API 上传中等文件（25MB–50MB）；>50MB 已在 commitBinaryFile 提前改走 Releases
 async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg) {
   // 1. 创建 blob
-  const blobRes = await fetch(`${baseUrl}/git/blobs`, {
+  const blobRes = await fetchWithTimeout(`${baseUrl}/git/blobs`, {
     method: "POST",
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify({ content: b64, encoding: "base64" })
@@ -1886,16 +1892,16 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
   const { sha: blobSha } = await blobRes.json();
 
   // 2. 获取当前分支 commit / tree
-  const refRes = await fetch(`${baseUrl}/git/ref/heads/${cfg.branch}`, { headers });
+  const refRes = await fetchWithTimeout(`${baseUrl}/git/ref/heads/${cfg.branch}`, { headers });
   if (!refRes.ok) throw new Error(`获取分支 ${cfg.branch} 失败（${refRes.status}）`);
   const { object: { sha: commitSha } } = await refRes.json();
 
-  const commitRes = await fetch(`${baseUrl}/git/commits/${commitSha}`, { headers });
+  const commitRes = await fetchWithTimeout(`${baseUrl}/git/commits/${commitSha}`, { headers });
   if (!commitRes.ok) throw new Error(`获取当前提交失败（${commitRes.status}）`);
   const { tree: { sha: treeSha } } = await commitRes.json();
 
   // 3. 创建新 tree
-  const treeRes = await fetch(`${baseUrl}/git/trees`, {
+  const treeRes = await fetchWithTimeout(`${baseUrl}/git/trees`, {
     method: "POST",
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify({
@@ -1907,7 +1913,7 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
   const { sha: newTreeSha } = await treeRes.json();
 
   // 4. 创建 commit
-  const newCommitRes = await fetch(`${baseUrl}/git/commits`, {
+  const newCommitRes = await fetchWithTimeout(`${baseUrl}/git/commits`, {
     method: "POST",
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify({
@@ -1920,7 +1926,7 @@ async function commitLargeBinaryFile(path, b64, fileSize, baseUrl, headers, cfg)
   const { sha: newCommitSha } = await newCommitRes.json();
 
   // 5. 更新分支引用
-  const updateRes = await fetch(`${baseUrl}/git/refs/heads/${cfg.branch}`, {
+  const updateRes = await fetchWithTimeout(`${baseUrl}/git/refs/heads/${cfg.branch}`, {
     method: "PATCH",
     headers: Object.assign({ "Content-Type": "application/json" }, headers),
     body: JSON.stringify({ sha: newCommitSha })
@@ -1938,9 +1944,9 @@ async function commitReleaseAsset(fileOrBlob, filename) {
   const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
   const tag = "videos";
 
-  let releaseRes = await fetch(`${baseUrl}/releases/tags/${tag}`, { headers });
+  let releaseRes = await fetchWithTimeout(`${baseUrl}/releases/tags/${tag}`, { headers });
   if (!releaseRes.ok) {
-    releaseRes = await fetch(`${baseUrl}/releases`, {
+    releaseRes = await fetchWithTimeout(`${baseUrl}/releases`, {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, headers),
       body: JSON.stringify({
@@ -1957,18 +1963,19 @@ async function commitReleaseAsset(fileOrBlob, filename) {
 
   const existing = (release.assets || []).find((a) => a.name === filename);
   if (existing) {
-    const delRes = await fetch(`${baseUrl}/releases/assets/${existing.id}`, { method: "DELETE", headers });
+    const delRes = await fetchWithTimeout(`${baseUrl}/releases/assets/${existing.id}`, { method: "DELETE", headers });
     if (!delRes.ok && delRes.status !== 404) {
       console.warn("[commitReleaseAsset] 删除旧资源失败", delRes.status);
     }
   }
 
   const uploadUrl = `https://uploads.github.com/repos/${cfg.owner}/${cfg.repo}/releases/${release.id}/assets?name=${encodeURIComponent(filename)}`;
-  const uploadRes = await fetch(uploadUrl, {
+  // 大文件上传放宽超时到 120 秒
+  const uploadRes = await fetchWithTimeout(uploadUrl, {
     method: "POST",
     headers: Object.assign({ "Content-Type": "application/octet-stream" }, headers),
     body: fileOrBlob
-  });
+  }, 120000);
   if (!uploadRes.ok) {
     const detail = await uploadRes.text().catch(() => "");
     throw new Error(`上传视频到 Releases 失败（${uploadRes.status}）${detail ? ":" + detail.slice(0, 240) : ""}`);
@@ -2028,6 +2035,7 @@ async function getToken() {
   // GitHub secret scanning 不允许把 token 写进部署文件，因此这里弹窗让用户粘贴
   return new Promise((resolve) => {
     tokenResolve = resolve;
+    setStatus("需要 GitHub Token 才能保存，请输入 token");
     openTokenModal();
   });
 }
@@ -2043,7 +2051,7 @@ async function commitToGitHub(str) {
   async function fetchSha(noCache) {
     // 加时间戳防止 CDN/浏览器返回缓存的过期 sha
     const url = noCache ? `${getUrl}&_=${Date.now()}` : getUrl;
-    const head = await fetch(url, { headers });
+    const head = await fetchWithTimeout(url, { headers });
     if (head.status === 404) return null;
     if (head.ok) {
       const headText = await head.text().catch(() => "");
@@ -2061,7 +2069,7 @@ async function commitToGitHub(str) {
       branch: cfg.branch
     };
     if (sha) body.sha = sha;
-    const res = await fetch(putUrl, {
+    const res = await fetchWithTimeout(putUrl, {
       method: "PUT",
       headers: Object.assign({ "Content-Type": "application/json" }, headers),
       body: JSON.stringify(body)
