@@ -2754,17 +2754,9 @@ const io = new IntersectionObserver(
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 loadContent().then(() => {
-  const draft = loadDraft();
-  if (draft && draft.savedAt) {
-    const ageMin = (Date.now() - draft.savedAt) / 60000;
-    if (ageMin < 60 * 24 * 7) {
-      if (confirm(`检测到 ${new Date(draft.savedAt).toLocaleString()} 的未保存编辑草稿，是否恢复？\n\n提示：恢复草稿会与你已发布的最新内容自动合并；如果你刚在“项目详情/作品”里上传过图片，这些最新内容不会被草稿覆盖。\n点击“确定”恢复草稿，点击“取消”使用线上最新内容。`)) {
-        applyDraft(draft);
-      } else {
-        clearDraft();
-      }
-    }
-  }
+  // v60 修复：本地草稿曾反复把线上已发布内容覆盖成脏数据（如刚恢复的项目详情又被清掉）。
+  // 线上 content.json 是权威数据源，init 时一律清空本地草稿，绝不用草稿覆盖线上内容。
+  clearDraft();
   applyUserTheme();
   applyTexts();
   applyImages();
