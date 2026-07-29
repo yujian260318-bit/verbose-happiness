@@ -105,11 +105,7 @@
       "links": [
         {
           "platform": "爱奇艺",
-          "url": "https://www.iqiyi.com/v_xe8txy1ei8.html?e2=366a180ee6ded58f9cbd2978d78cfaee&qyTrace=TukmHhV91GIboRrM"
-        },
-        {
-          "platform": "视频号",
-          "url": "https://weixin.qq.com/sph/A06h9bsN3u"
+          "url": ""
         }
       ],
       "media": []
@@ -149,7 +145,7 @@
     },
     {
       "id": "ai-next",
-      "title": "AI Next 疯享会（小红书+即刻）",
+      "title": "AI Next 疯享会（活动拍摄 + 传播）",
       "category": "社媒内容",
       "type": "视频",
       "company": "腾讯 CDG · 青腾",
@@ -213,7 +209,7 @@
     },
     {
       "id": "social",
-      "title": "青腾TencentX视频号",
+      "title": "小红书 / 即刻 社媒内容",
       "category": "视频号",
       "type": "图文",
       "company": "腾讯 CDG · 青腾",
@@ -529,23 +525,23 @@
         {
           "type": "text",
           "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgb(30, 30, 30); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-weight: 700; font-kerning: none;\">跨部门协作对接：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"--Ys-XuQ: none; font-kerning: none;\">联动设计、运营团队同步内容需求，整理归档项目资料，配合完成内容审核、细节调整，协助栏目顺利完成上线发布。</span></p>",
-          "x": 0,
-          "y": 372,
+          "x": -1,
+          "y": 385,
           "w": 799,
           "h": 76
         },
         {
           "type": "text",
           "html": "<p class=\"cvGsUA block-font-kerning-none block-font-feature-liga-off block-font-feature-clig-off block-font-feature-calt-off direction-ltr align-justify para-style-body\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); caret-color: rgb(30, 30, 30); --8sD0Kg: none; font-family: YAFmnEdlx1o_0, _fb_, auto; --cyV3ZQ: 16px; --gJPlXQ: 1.68; --s8NbEA: p; line-height: 26px;\"><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">成片独立产出：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\">独立完成海量素材筛选、归档与精剪，落地 3 条正片 + 3 条预告片，自主把控叙事逻辑、镜头节奏与画面调色，统一成片视觉风格，保障成片质感，成片发布于《名厨》公众号、</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">爱奇艺平台</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgba(30,30,30,var(--O42jJQ,1)); --Ys-XuQ: none; font-kerning: none;\">。</span></p>",
-          "x": 1,
-          "y": 573,
+          "x": -1,
+          "y": 587,
           "w": 800,
           "h": 71
         },
         {
           "type": "image",
-          "x": 598,
-          "y": 89,
+          "x": 602,
+          "y": 93,
           "w": 180,
           "src": "assets/experience/exp-zhupassword/block-3.jpg",
           "h": 237
@@ -553,7 +549,7 @@
         {
           "type": "pdf",
           "x": 0,
-          "y": 458,
+          "y": 470,
           "w": 365,
           "h": 86,
           "src": "assets/experience/exp-zhupassword/block-4.pdf",
@@ -561,30 +557,12 @@
         },
         {
           "type": "pdf",
-          "x": 424,
-          "y": 456,
+          "x": 422,
+          "y": 469,
           "w": 373,
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
           "label": "《主厨密码》王兴顺完整物料.pdf"
-        },
-        {
-          "type": "pdf",
-          "x": 4,
-          "y": 124,
-          "w": 443,
-          "h": 83,
-          "src": "assets/1785232876525_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
-          "label": "名厨《主厨密码》-Talib 采访视频策划方案.pdf"
-        },
-        {
-          "type": "pdf",
-          "x": 1,
-          "y": 227,
-          "w": 488,
-          "h": 82,
-          "src": "assets/1785233074706_【主厨密码】冯国正师傅｜视频拍摄方案（含脚本）.pdf",
-          "label": "【主厨密码】冯国正师傅｜视频拍摄方案（含脚本）.pdf"
         }
       ]
     },
@@ -612,7 +590,7 @@
       "description": "主创品牌广告短片，统筹拍摄、独立完成剪辑包装，获得北京赛区三等奖。",
       "link": "experience-detail.html?v=55&id=exp-adaward",
       "projectLink": "ad-award",
-      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。\n\n作为超能品牌营销策划项目核心成员，完成市场洞察、创意构思与传播路径设计，输出完整策划方案。",
+      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。",
       "images": [],
       "blocks": [
         {
@@ -654,20 +632,12 @@
         },
         {
           "type": "pdf",
-          "x": 2,
-          "y": 679,
-          "w": 358,
-          "h": 83,
+          "x": 20,
+          "y": 508,
+          "w": 260,
+          "h": 80,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
-        },
-        {
-          "type": "text",
-          "html": "作为超能品牌营销策划项目核心成员，完成市场洞察、创意构思与传播路径设计，输出完整策划方案。",
-          "x": 1,
-          "y": 619,
-          "w": 802,
-          "h": 44
         }
       ]
     }
@@ -774,5 +744,10 @@
     "frame-edu-1": "assets/1784882479007_R.jpg",
     "frame-edu-2": "assets/1784882483337_80b4fa3b-a8ff-4cdb-8b26-99e53035ff1e.jpg"
   },
-  "educationLayout": null
+  "educationLayout": {
+    "text": {
+      "x": -141,
+      "y": 2
+    }
+  }
 }
