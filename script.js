@@ -14,7 +14,7 @@ const DEFAULT_WORKS = [
     role: "编导实习生：参与栏目全链路制作，独立完成素材筛选与精剪，统一视觉风格。",
     cover: "linear-gradient(135deg, #A9BF7D, #8DA361)", videoUrls: [],
     metrics: [{ label: "成片", value: "3 正片 + 3 预告" }, { label: "分发", value: "公众号 + 爱奇艺" }],
-    description: "参与短视频纪实栏目《主厨密码》从选题策划、脚本构思、现场勘景拍摄到后期剪辑包装的全链路内容制作，把控栏目整体内容调性；成片发布于企业公众号并登陆爱奇艺平台。",
+    description: "",
     content: "", links: [{ platform: "爱奇艺", url: "" }]
   },
   {
