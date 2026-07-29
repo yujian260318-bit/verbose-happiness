@@ -43,6 +43,11 @@
     h2 { font-size: 20px; margin: 36px 0 14px; color: var(--ink); }
     ul { padding-left: 22px; margin-bottom: 20px; }
     li { font-size: 16px; color: #3a4050; margin-bottom: 8px; }
+    .charity-text { font-size: 17px; color: #3a4050; margin-bottom: 20px; line-height: 1.9; }
+    .charity-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .charity-img { width: 100%; border-radius: var(--radius); object-fit: cover; display: block; }
+    .charity-doc { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: var(--sage-soft); color: var(--sage-dark); border-radius: 999px; text-decoration: none; font-weight: 600; margin-bottom: 20px; }
+    .charity-hint { color: var(--muted); font-size: 15px; margin-top: 12px; }
     .footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 13px; }
   </style>
 </head>
@@ -58,22 +63,62 @@
       <span style="opacity:.85">项目封面（替换 assets/charity-cover.jpg）</span>
     </div>
 
-    <p>湖北省育才教育基金会致力于资助困境家庭学生完成学业，通过奖助学金、物资帮扶与成长陪伴，帮助更多孩子拥有平等的教育机会。我作为项目志愿者参与其中，协助项目的落地执行与公益传播。</p>
+    <div id="charity-content"><p style="color:var(--muted)">加载中…</p></div>
 
-    <h2>我的角色与贡献</h2>
-    <ul>
-      <li>协助困境学生资助信息的收集、核验与对接，确保帮扶资源精准送达。</li>
-      <li>参与公益活动的策划与现场执行，包括探访、宣讲与志愿陪伴。</li>
-      <li>负责项目内容的文案与社媒传播，扩大项目声量，吸引更多爱心力量加入。</li>
-    </ul>
+    <script>
+      (function () {
+        const box = document.getElementById("charity-content");
+        function render(blocks) {
+          if (!Array.isArray(blocks) || !blocks.length) {
+            box.innerHTML = "<p class=\"charity-text\">暂无内容。</p>";
+            return;
+          }
+          box.innerHTML = "";
+          let gallery = null;
+          blocks.forEach(function (b) {
+            if (b.type === "text" || b.type === "heading") {
+              if (gallery) { box.appendChild(gallery); gallery = null; }
+              const el = document.createElement(b.type === "heading" ? "h2" : "p");
+              el.className = b.type === "heading" ? "" : "charity-text";
+              el.textContent = b.content || b.text || "";
+              box.appendChild(el);
+            } else if (b.type === "image") {
+              if (!gallery) {
+                gallery = document.createElement("div");
+                gallery.className = "charity-gallery";
+              }
+              const img = document.createElement("img");
+              img.className = "charity-img";
+              img.src = b.src || "";
+              img.alt = b.alt || "项目图片";
+              img.onerror = function () { this.style.display = "none"; };
+              gallery.appendChild(img);
+            } else if (b.type === "pdf") {
+              if (gallery) { box.appendChild(gallery); gallery = null; }
+              const a = document.createElement("a");
+              a.className = "charity-doc";
+              a.href = b.src || "#";
+              a.target = "_blank";
+              a.rel = "noopener";
+              a.textContent = "📎 " + (b.label || "PDF 文档");
+              box.appendChild(a);
+            }
+          });
+          if (gallery) box.appendChild(gallery);
+        }
+        fetch("content.json?t=" + Date.now(), { cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            const exp = (data.experience || []).find(function (e) { return e.id === "exp-yucai"; });
+            render(exp && exp.blocks ? exp.blocks : []);
+          })
+          .catch(function (err) {
+            box.innerHTML = '<p class="charity-text" style="color:var(--muted)">内容加载失败，请刷新重试。</p>';
+          });
+      })();
+    </script>
 
-    <h2>项目成果（可补充）</h2>
-    <ul>
-      <li>累计对接 / 帮扶学生若干名。（请补充具体数据）</li>
-      <li>策划并落地公益活动若干场。（请补充具体场次与规模）</li>
-    </ul>
-
-    <p style="color:var(--muted);font-size:15px">※ 本页内容可在登录编辑模式后直接修改，或替换封面图 assets/charity-cover.jpg。</p>
+    <p class="charity-hint">※ 本页内容来自可视化编辑器，编辑后点「保存并发布」即可同步。</p>
 
     <div class="footer">© 2026 李欣怡 · 内容策划 / 短视频编导作品集</div>
   </div>
