@@ -303,7 +303,9 @@ const expPreviewBody = document.getElementById("exp-preview-body");
 async function loadContent() {
   try {
     const path = (SITE_CONFIG.github && SITE_CONFIG.github.contentPath) || "content.json";
-    const res = await fetch(path, { cache: "no-store" });
+    // 强制绕过 GitHub Pages / CDN 缓存，每次刷新都拉最新 content.json
+    const res = await fetch(path + "?t=" + Date.now(), { cache: "no-store" });
+    console.log("[loadContent] fetch", path, res.ok, res.status);
     if (res.ok) {
       const data = await res.json();
       texts = (data.texts && typeof data.texts === "object") ? data.texts : {};
@@ -1405,6 +1407,7 @@ function closeWorkModal() {
 async function saveWorkModal() {
   const saveBtn = document.getElementById("wm-save");
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "保存中…"; }
+  console.log("[saveWorkModal] start", wmWork ? "edit" : "new", wmWork && wmWork.id);
   try {
     const title = document.getElementById("wm-title-input").value.trim();
     if (!title) { alert("请填写作品标题"); return; }
@@ -1428,6 +1431,7 @@ async function saveWorkModal() {
         return o;
       })
     };
+    console.log("[saveWorkModal] collected data.media count", data.media.length);
     if (wmWork) {
       Object.assign(wmWork, data);
     } else {
@@ -1439,11 +1443,17 @@ async function saveWorkModal() {
       }, data);
       works.push(w);
     }
-    closeWorkModal();
-    paint();
     // 保存即发布：作品修改（含上传的图片/视频）一键上线
     saveDraft(); // 同步更新本地草稿，避免后续首页编辑时旧草稿覆盖作品
     await saveContent();
+    closeWorkModal();
+    paint();
+    setStatus("已保存到 GitHub ✓");
+    console.log("[saveWorkModal] success");
+  } catch (err) {
+    console.error("[saveWorkModal] error", err);
+    setStatus("保存失败：" + err.message + "（请重试）");
+    alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "保存"; }
   }
@@ -2181,9 +2191,10 @@ let saveContentLock = false;
 async function saveContent() {
   if (saveContentLock) {
     setStatus("保存进行中，请勿重复点击…");
-    return;
+    throw new Error("保存正在进行中，请稍后再试");
   }
   saveContentLock = true;
+  console.log("[saveContent] start");
   try {
   // 收集文本覆盖（剔除样式点，避免污染数据）
   document.querySelectorAll("[data-edit]").forEach((el) => {
@@ -2259,13 +2270,16 @@ async function saveContent() {
       await commitToGitHub(str);
       clearDraft();
       setStatus("已保存到 GitHub ✓（本地草稿已清除）");
+      console.log("[saveContent] success");
     } catch (err) {
+      console.error("[saveContent] error", err);
       setStatus("保存失败：" + err.message + "（已下载备份）");
       downloadJson(str);
       pendingImageFiles.forEach((pi) => downloadFile(pi.file, basename(pi.name)));
       pendingImageFiles.length = 0;
       pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
       pendingVideoFiles.length = 0;
+      throw err; // 必须向上抛，让调用方知道保存失败
     }
   } else {
     downloadJson(str);
@@ -2273,7 +2287,9 @@ async function saveContent() {
     pendingImageFiles.length = 0;
     pendingVideoFiles.forEach((pv) => downloadFile(pv.file, basename(pv.name)));
     pendingVideoFiles.length = 0;
-    setStatus("已下载 content.json、图片与视频文件，请放入对应 assets/ 目录并重新部署");
+    const msg = "未配置 GitHub 仓库或 Token，内容已下载到本地，请手动部署";
+    setStatus(msg);
+    throw new Error(msg);
   }
   } finally {
     saveContentLock = false;
