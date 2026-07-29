@@ -158,6 +158,9 @@ function loadDraft() {
 function clearDraft() {
   localStorage.removeItem(DRAFT_KEY);
   if (draftAutoSaveTimer) { clearInterval(draftAutoSaveTimer); draftAutoSaveTimer = null; }
+  // 关键：保存成功后移除 beforeunload 自动存草稿，避免刷新时又把草稿写回、
+  // 触发“恢复草稿”弹窗把已发布内容覆盖掉
+  window.removeEventListener("beforeunload", saveDraft);
 }
 /* 草稿合并：对 works/experiences 这类在详情页单独编辑的数据，
    不能直接用旧草稿覆盖线上最新内容。按“内容丰富度”合并，
@@ -1444,15 +1447,15 @@ async function saveWorkModal() {
       works.push(w);
     }
     // 保存即发布：作品修改（含上传的图片/视频）一键上线
-    saveDraft(); // 同步更新本地草稿，避免后续首页编辑时旧草稿覆盖作品
     await saveContent();
     closeWorkModal();
     paint();
     setStatus("已保存到 GitHub ✓");
     console.log("[saveWorkModal] success");
   } catch (err) {
+    saveDraft(); // 保存失败：保留草稿，便于刷新后从“恢复草稿”恢复
     console.error("[saveWorkModal] error", err);
-    setStatus("保存失败：" + err.message + "（请重试）");
+    setStatus("保存失败：" + err.message + "（已保留本地草稿）");
     alert("保存失败：" + err.message + "\n请检查 GitHub Token 是否有效，或查看页面顶部状态栏。");
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "保存"; }
