@@ -758,13 +758,26 @@ function bindWorkEdit(card, w) {
   const layoutBtn = card.querySelector(".card__layout");
   if (layoutBtn) layoutBtn.addEventListener("click", (e) => {
     e.stopPropagation();
+    // 摄影作品单独使用「项目详情」同款可视化编辑页（封面不变）
+    if (w.id === "photography") {
+      window.location.href = "photo-detail.html?id=" + encodeURIComponent(w.id) + "&edit=1";
+      return;
+    }
     // 直接打开弹窗并进入编辑排版，不再只读预览
     openModal(w);
     const modalLayoutBtn = document.getElementById("modal-layout-btn");
     if (modalLayoutBtn && modalLayoutBtn.style.display !== "none") modalLayoutBtn.click();
   });
   const wmBtn = card.querySelector(".card__wm");
-  if (wmBtn) wmBtn.addEventListener("click", (e) => { e.stopPropagation(); openWorkModal(w); });
+  if (wmBtn) wmBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    // 摄影作品单独使用「项目详情」同款的可视化编辑页（PortfolioEditor），封面保持不变
+    if (w.id === "photography") {
+      window.location.href = "photo-detail.html?id=" + encodeURIComponent(w.id) + "&edit=1";
+    } else {
+      openWorkModal(w);
+    }
+  });
 }
 
 /* ---------- 分类筛选 ---------- */
