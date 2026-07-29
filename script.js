@@ -23,7 +23,7 @@ const DEFAULT_WORKS = [
     role: "导演组实习生：嘉宾内容策划、现场拍摄统筹、多版本视频剪辑。",
     cover: "linear-gradient(135deg, #2A3654, #3E4D70)", videoUrls: [],
     metrics: [{ label: "播出", value: "卫视版登陆海南卫视" }],
-    description: "梳理嘉宾人物背景与故事脉络，参与访谈逻辑提纲设计，独立撰写拍摄脚本框架；统筹对接嘉宾、摄影及现场执行团队；独立完成多版本视频（含卫视版）粗剪与精剪，其中卫视版在海南卫视播出。",
+    description: "",
     content: "", links: []
   },
   {
@@ -32,7 +32,7 @@ const DEFAULT_WORKS = [
     role: "内容运营实习生：现场拍摄、多平台剪辑、KOC 拓展、社媒内容支持。",
     cover: "linear-gradient(135deg, #D4A574, #C47E54)", videoUrls: [],
     metrics: [{ label: "触达", value: "10,000+" }, { label: "每场报名", value: "约 10 人（线上）" }, { label: "涨粉", value: "800+" }],
-    description: "完成 AI Next 疯享会线下活动全程现场拍摄；线上筛选并对接活动相关 KOC，累计触达 10,000+ 人，额外带动每场约 10 人经线上渠道自主报名；为小红书 / 即刻账号提供剪辑与文案，支撑冷启动涨粉 800+。",
+    description: "",
     content: "", links: [{ platform: "小红书", url: "" }, { platform: "即刻", url: "" }]
   },
   {
@@ -41,7 +41,7 @@ const DEFAULT_WORKS = [
     role: "活动社媒内容支持：负责短视频剪辑与种草文案产出，支撑账号冷启动。",
     cover: "linear-gradient(135deg, #8DA361, #A9BF7D)", videoUrls: [],
     metrics: [{ label: "涨粉", value: "800+" }, { label: "关注者", value: "含大几千至万粉量级用户" }],
-    description: "负责小红书、即刻双平台活动账号的短视频剪辑与种草文案产出，支撑账号从 0 到 1 冷启动；相关内容发布后账号累计涨粉 800+，吸引含大几千至万粉量级的行业用户关注。",
+    description: "",
     content: "", links: [{ platform: "小红书", url: "" }, { platform: "即刻", url: "" }]
   },
   {
@@ -50,7 +50,7 @@ const DEFAULT_WORKS = [
     role: "创作核心成员：主导脚本撰写、现场拍摄、后期全片剪辑。",
     cover: "linear-gradient(135deg, #5A5A5A, #8A8A8A)", videoUrls: [],
     metrics: [{ label: "奖项", value: "北京赛区三等奖" }, { label: "时长", value: "约 60s" }],
-    description: "作为创作核心成员，主导 1 支品牌广告短片从创意策划、脚本撰写、现场拍摄到后期剪辑的全流程；统筹学生摄制组完成场地勘景、演员调度与分镜设计；运用 PR / 剪映完成节奏剪辑与视觉包装，最终获大广赛北京赛区三等奖。",
+    description: "",
     content: "", links: []
   }
 ];
@@ -972,7 +972,10 @@ function openModal(w) {
   modalRole.textContent = "";
   document.getElementById("modal-metrics").innerHTML =
     (w.metrics || []).map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
-  document.getElementById("modal-desc").textContent = w.description;
+  // 精选作品弹窗不再展示 description 长文字，避免空白占位
+  const modalDesc = document.getElementById("modal-desc");
+  modalDesc.textContent = "";
+  modalDesc.style.display = "none";
 
   // 策划 / 文案类作品：渲染正文
   const docEl = document.getElementById("modal-content");
