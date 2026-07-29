@@ -564,8 +564,10 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 }
 .login-entry:hover { opacity: 1; color: var(--sage-dark); }
 
-/* 站长登录弹窗 */
+/* 站长登录弹窗 / token 弹窗 */
 .login-modal { position: fixed; inset: 0; z-index: 250; display: none; align-items: center; justify-content: center; padding: 24px; }
+/* token 弹窗必须压在所有编辑弹窗之上（项目详情/作品弹窗 z-index 350），避免保存时 token 框被挡住导致卡住 */
+.token-modal { z-index: 500; }
 .login-modal.is-open { display: flex; }
 .login-modal__backdrop { position: absolute; inset: 0; background: rgba(30, 22, 16, .55); backdrop-filter: blur(3px); }
 .login-modal__panel {
