@@ -105,7 +105,11 @@
       "links": [
         {
           "platform": "爱奇艺",
-          "url": ""
+          "url": "https://www.iqiyi.com/v_xe8txy1ei8.html?e2=58ba187fea0e6c0b1aec45d08786bfce&qyTrace=Ip5A8WxbgQ1WrAUK"
+        },
+        {
+          "platform": "视频号",
+          "url": "https://weixin.qq.com/sph/AzomBJtQcU"
         }
       ],
       "media": []
