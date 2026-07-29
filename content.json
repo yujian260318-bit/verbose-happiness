@@ -563,15 +563,6 @@
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
           "label": "《主厨密码》王兴顺完整物料.pdf"
-        },
-        {
-          "type": "pdf",
-          "x": 1,
-          "y": 123,
-          "w": 418,
-          "h": 87,
-          "src": "assets/1785306746567_名厨《主厨密码》-Talib_采访视频策划方案.pdf",
-          "label": "名厨《主厨密码》-Talib 采访视频策划方案.pdf"
         }
       ]
     },
@@ -642,9 +633,9 @@
         {
           "type": "pdf",
           "x": 3,
-          "y": 681,
-          "w": 287,
-          "h": 83,
+          "y": 679,
+          "w": 273,
+          "h": 82,
           "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
           "label": "《超能》19秒策划案.pdf"
         },
