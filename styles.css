@@ -419,11 +419,14 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 .modal__meta { color: var(--muted); font-size: 14.5px; }
 .modal__role { color: #4a5060; font-size: 15px; margin-top: 8px; }
 .modal__metrics { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-.modal__desc { margin-top: 14px; color: #3a4050; font-size: 16px; }
+.modal__desc { display: none; }
 .modal__doc { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.modal__doc:empty,
+.modal__links:empty { display: none !important; }
 .modal__doc-title { font-family: var(--display); font-size: 18px; margin-bottom: 10px; }
 .modal__doc-body { white-space: pre-wrap; color: #3a4050; font-size: 15.5px; line-height: 1.85; }
 .modal__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.modal__links:empty { margin-top: 0; }
 .modal__links .tag { background: var(--sage); color: #fff; }
 .modal__link-card { text-align: center; padding: 28px 20px; background: var(--surface); }
 .modal__link-card-title { color: var(--muted); margin-bottom: 14px; }
