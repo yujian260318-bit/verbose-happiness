@@ -330,6 +330,22 @@
           "name": "assets/works/photography/1785325044530-6.6拍摄0197.JPG",
           "caption": ""
         }
+      ],
+      "blocks": [
+        {
+          "type": "image",
+          "x": 86,
+          "y": 28,
+          "w": 280,
+          "src": "assets/1785327494455_4dce04951e87856d061e419a595c4a8e.jpg"
+        },
+        {
+          "type": "image",
+          "x": 457,
+          "y": 26,
+          "w": 280,
+          "src": "assets/1785327515194_e78ca6b2b3cd5afbaa0b4f57611c3016.jpg"
+        }
       ]
     }
   ],
