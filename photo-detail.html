@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>摄影作品编辑 · 李欣怡作品集</title>
+  <link rel="stylesheet" href="styles.css?v=65" />
+  <style>
+    :root {
+      --sage: #A9BF7D; --sage-dark: #8DA361; --sage-soft: #E3EBD1;
+      --ink: #2A3654; --bg: #E6E7DE; --surface: #FFFFFF; --muted: #6B7280;
+      --radius: 20px; --maxw: 820px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.9; padding: 48px 20px 80px; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; }
+    .back { display: inline-flex; align-items: center; gap: 6px; color: var(--sage-dark); text-decoration: none; font-weight: 600; margin-bottom: 28px; font-size: 15px; }
+    .back:hover { color: var(--ink); }
+    .tag { display: inline-block; background: var(--sage-soft); color: var(--sage-dark); padding: 4px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 16px; }
+    h1 { font-family: 'Outfit','Montserrat','Noto Sans SC',sans-serif; font-size: 32px; line-height: 1.4; }
+    .company { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+    .footer { margin-top: 48px; text-align: center; color: var(--muted); font-size: 13px; }
+    .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+    .ed-head { margin-bottom: 8px; }
+    .ed-canvas { position: relative; margin-top: 24px; min-height: 200px; }
+    .ed-block { position: absolute; }
+    .ed-canvas--edit { min-height: 420px; border: 2px dashed var(--sage); border-radius: 16px; padding: 8px; background: rgba(227,235,209,0.25); }
+    .ed-canvas--edit .ed-block { background: #fff; border: 1px solid #D1D5C7; border-radius: 12px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .ed-block--text .ed-text { outline: none; font-size: 17px; color: #3a4050; line-height: 1.9; }
+    .ed-block--image .ed-img, .ed-block--video { width: 100%; display: block; border-radius: 10px; }
+    .ed-block--heading .ed-heading { font-size: 21px; margin: 0; color: var(--ink); outline: none; }
+    .ed-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .ed-links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--sage-soft); color: var(--sage-dark); border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .ed-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: grab; }
+    .ed-grip { font-size: 12px; color: var(--muted); user-select: none; }
+    .ed-del { margin-left: auto; border: none; background: #e57373; color: #fff; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
+    .ed-resize { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; background: var(--sage-dark); border-radius: 3px; cursor: nwse-resize; }
+    .ed-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .ed-toolbar button { padding: 8px 14px; border: none; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; }
+    .ed-toolbar .ed-save { background: var(--sage-dark); }
+    .ed-head .tag { margin-bottom: 16px; }
+    .ed-head h1 { margin-bottom: 8px; }
+    .ed-hint { background: #FFF7E6; border: 1px solid #FFE08A; color: #8a6d00; padding: 10px 14px; border-radius: 10px; margin: 16px 0; font-size: 14px; }
+    .ed-note { background: #E8F0FE; border: 1px solid #B9CDFB; color: #1a4fb4; padding: 10px 14px; border-radius: 10px; margin-top: 16px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <script>
+    (function () {
+      var CURRENT = 65;
+      fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && d.version && d.version !== CURRENT) location.reload(true); })
+        .catch(function () {});
+    })();
+  </script>
+  <div class="wrap">
+    <a class="back" href="index.html#portfolio">← 返回作品集</a>
+    <div id="content"><div class="empty">加载中…</div></div>
+    <div class="footer">© 2026 李欣怡 · 内容策划 / 短视频编导作品集</div>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const editMode = params.get("edit") === "1";
+      const box = document.getElementById("content");
+
+      fetch("content.json?t=" + Date.now(), { cache: "no-store" })
+        .then((r) => r.json())
+        .then((data) => {
+          const list = Array.isArray(data.works) ? data.works : [];
+          const work = list.find((e) => e.id === id) || (list[0] || null);
+          if (!work) { box.innerHTML = '<div class="empty">未找到对应作品。</div>'; return; }
+
+          // 初始化 blocks：若当前 blocks 为空但 media 有图片，把现有图片转成图片块，
+          // 让已有的摄影作品内容在编辑界面可见、可拖拽、可增删。封面（work.cover）不动。
+          if ((!Array.isArray(work.blocks) || !work.blocks.length) && Array.isArray(work.media) && work.media.length) {
+            work.blocks = work.media.map((m, i) => ({
+              type: "image",
+              src: m.url || "",
+              caption: m.caption || "",
+              x: 20,
+              y: 20 + i * 340,
+              w: 480,
+              h: 340
+            }));
+          }
+
+          // 头部用 title 顶替 role（PortfolioEditor 头部取 role/company），封面信息不参与编辑
+          const recForEdit = Object.assign({}, work, { role: work.title || work.category });
+          PortfolioEditor.render(box, recForEdit, {
+            editable: editMode,
+            source: "work",
+            skipHead: false,
+            postSave: (savedBlocks) => {
+              try {
+                const raw = localStorage.getItem("portfolio_draft_v1");
+                const draft = raw ? JSON.parse(raw) : {};
+                draft.works = Array.isArray(draft.works) ? draft.works : [];
+                const idx = draft.works.findIndex((e) => e.id === id);
+                const savedWork = Object.assign({}, work, { blocks: savedBlocks });
+                if (idx >= 0) draft.works[idx] = savedWork;
+                else draft.works.push(savedWork);
+                draft.savedAt = Date.now();
+                localStorage.setItem("portfolio_draft_v1", JSON.stringify(draft));
+              } catch (_) {}
+            }
+          });
+
+          if (editMode) {
+            const note = document.createElement("p");
+            note.className = "ed-note";
+            note.innerHTML = "ℹ️ 本页只调整作品<b>内容排版</b>（文字 / 图片 / 视频），<b>作品封面保持不变</b>。改完点工具栏「💾 保存」，按提示输入一次 GitHub Token 即可上线。";
+            box.appendChild(note);
+          }
+        })
+        .catch((err) => {
+          box.innerHTML = '<div class="empty">内容加载失败：' + (err && err.message ? err.message : "") + '</div>';
+        });
+    })();
+  </script>
+
+  <script src="editor.js?v=65"></script>
+  <script src="experience-modal.js?v=65"></script>
+</body>
+</html>
