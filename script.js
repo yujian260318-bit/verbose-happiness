@@ -974,13 +974,16 @@ function openModal(w) {
     (w.metrics || []).map((m) => `<span class="tag">${m.label}：${m.value}</span>`).join("");
   // 精选作品弹窗不再展示 description 长文字，避免空白占位
   const modalDesc = document.getElementById("modal-desc");
-  modalDesc.textContent = "";
-  modalDesc.style.display = "none";
+  if (modalDesc) {
+    modalDesc.textContent = "";
+    modalDesc.style.display = "none";
+  }
 
-  // 策划 / 文案类作品：渲染正文
+  // 策划 / 文案类作品：渲染正文；空内容时彻底隐藏，防止 CSS 覆盖 hidden 属性露出白框
   const docEl = document.getElementById("modal-content");
   if (w.content && w.content.trim()) {
     docEl.hidden = false;
+    docEl.style.display = "";
     docEl.innerHTML = "";
     const h = document.createElement("h4");
     h.className = "modal__doc-title";
@@ -992,12 +995,15 @@ function openModal(w) {
     docEl.appendChild(body);
   } else {
     docEl.hidden = true;
+    docEl.style.display = "none";
     docEl.innerHTML = "";
   }
 
-  document.getElementById("modal-links").innerHTML = w.links && w.links.length
+  const linksEl = document.getElementById("modal-links");
+  linksEl.innerHTML = w.links && w.links.length
     ? w.links.map((l) => `<a class="tag" href="${l.url || "#"}" target="_blank" rel="noopener">${l.platform}${l.url ? " ↗" : "（待补充）"}</a>`).join("")
     : "";
+  linksEl.style.display = (w.links && w.links.length) ? "" : "none";
 
   // 媒体区：如果已有 blocks 排版，就用可视化编辑器渲染；否则沿用 videoUrls/media 分组
   modalMedia.innerHTML = "";
