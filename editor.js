@@ -59,13 +59,24 @@
     return tryPut(0);
   }
   function putAsset(relPath, b64, token) {
-    return api("GET", relPath, null, token).then(({ status, text }) => {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const isRetryable = (status, text) => status === 403 && /timed out validating rule|validation timed out/i.test(text);
+    const tryUpload = async (attempt) => {
+      const { status, text } = await api("GET", relPath, null, token);
       if (status !== 200 && status !== 404) throw new Error(`读取 ${relPath} 失败 (${status})：${text.slice(0, 240)}`);
       if (status === 200 && !text.trim()) throw new Error(`读取 ${relPath} 失败：服务器返回空响应`);
       const body = { message: "Upload " + relPath, content: b64, branch: BRANCH };
       if (status === 200) body.sha = JSON.parse(text).sha;
-      return api("PUT", relPath, body, token);
-    });
+      const res = await api("PUT", relPath, body, token);
+      if (isRetryable(res.status, res.text) && attempt < 4) {
+        const wait = 1000 * Math.pow(2, attempt);
+        console.warn(`[editor] putAsset ${relPath} 403 validation timeout, retry ${attempt + 1}/4 after ${wait}ms`);
+        await sleep(wait);
+        return tryUpload(attempt + 1);
+      }
+      return res;
+    };
+    return tryUpload(0);
   }
 
   // 渲染一个 block 为可拖拽/可缩放节点
@@ -377,6 +388,8 @@
             const res = await putAsset(rel, b64, ED.token);
             if (res.status >= 400) throw new Error(`${b.type === "pdf" ? "PDF" : "图片"}上传失败 (${res.status})：${res.text.slice(0, 240)}`);
             b.src = rel; delete b._file; delete b._name;
+            // 连续上传间隔，降低 GitHub 校验超时概率
+            await new Promise((r) => setTimeout(r, 400));
           }
         }
         if (typeof onSave === "function") {
