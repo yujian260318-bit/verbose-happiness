@@ -370,17 +370,87 @@
       "blocks": [
         {
           "type": "image",
-          "x": 86,
-          "y": 28,
-          "w": 280,
-          "src": "assets/1785327494455_4dce04951e87856d061e419a595c4a8e.jpg"
+          "src": "assets/works/photography/4dce04951e87856d061e419a595c4a8e.jpg",
+          "x": 20,
+          "y": 20,
+          "w": 360
         },
         {
           "type": "image",
-          "x": 457,
-          "y": 26,
-          "w": 280,
-          "src": "assets/1785327515194_e78ca6b2b3cd5afbaa0b4f57611c3016.jpg"
+          "src": "assets/works/photography/581d35f2d88537bcd617a2cbf9727ea1.jpg",
+          "x": 400,
+          "y": 20,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0126.JPG",
+          "x": 20,
+          "y": 380,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0130.JPG",
+          "x": 400,
+          "y": 380,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0146.JPG",
+          "x": 20,
+          "y": 740,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0167.JPG",
+          "x": 400,
+          "y": 740,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0187.JPG",
+          "x": 20,
+          "y": 1100,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/6.6拍摄0197.JPG",
+          "x": 400,
+          "y": 1100,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/a300e78160c2f80064d41c057d638bd7.jpg",
+          "x": 20,
+          "y": 1460,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/a8fd3903c079b7629ed8a1b60c6e9d4a.jpg",
+          "x": 400,
+          "y": 1460,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/e78ca6b2b3cd5afbaa0b4f57611c3016.jpg",
+          "x": 20,
+          "y": 1820,
+          "w": 360
+        },
+        {
+          "type": "image",
+          "src": "assets/works/photography/eebb31f961ab1baaf3a79f90b27ac696.jpg",
+          "x": 400,
+          "y": 1820,
+          "w": 360
         }
       ]
     }
