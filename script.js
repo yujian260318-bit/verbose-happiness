@@ -1022,9 +1022,16 @@ function openModal(w) {
 
   // 媒体区：如果已有 blocks 排版，就用可视化编辑器渲染；否则沿用 videoUrls/media 分组
   modalMedia.innerHTML = "";
-  if (w.blocks && w.blocks.length && window.PortfolioEditor) {
+  // 摄影作品在公开弹窗使用统一网格布局，避免绝对定位导致的重叠/裁剪问题
+  if (w.id === "photography") {
+    modalMedia.classList.add("modal-media--photography");
+    modalMedia.innerHTML = renderMediaGroups(w);
+    initVideoWraps(modalMedia);
+  } else if (w.blocks && w.blocks.length && window.PortfolioEditor) {
+    modalMedia.classList.remove("modal-media--photography");
     window.PortfolioEditor.render(modalMedia, w, { editable: false, source: "work", skipHead: true });
   } else {
+    modalMedia.classList.remove("modal-media--photography");
     modalMedia.innerHTML = renderMediaGroups(w);
     initVideoWraps(modalMedia);
   }
