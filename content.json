@@ -287,7 +287,7 @@
       "company": "",
       "period": "",
       "role": "",
-      "cover": "linear-gradient(135deg, #6B7280, #9CA3AF)",
+      "cover": "assets/works/photography/4dce04951e87856d061e419a595c4a8e.jpg",
       "videoUrls": [],
       "metrics": [],
       "description": "",
@@ -296,38 +296,74 @@
       "media": [
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785324983635-4dce04951e87856d061e419a595c4a8e.jpg",
-          "name": "assets/works/photography/1785324983635-4dce04951e87856d061e419a595c4a8e.jpg",
+          "url": "assets/works/photography/4dce04951e87856d061e419a595c4a8e.jpg",
+          "name": "assets/works/photography/4dce04951e87856d061e419a595c4a8e.jpg",
           "caption": ""
         },
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785325020888-e78ca6b2b3cd5afbaa0b4f57611c3016.jpg",
-          "name": "assets/works/photography/1785325020888-e78ca6b2b3cd5afbaa0b4f57611c3016.jpg",
+          "url": "assets/works/photography/581d35f2d88537bcd617a2cbf9727ea1.jpg",
+          "name": "assets/works/photography/581d35f2d88537bcd617a2cbf9727ea1.jpg",
           "caption": ""
         },
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785325026916-6.6拍摄0126.JPG",
-          "name": "assets/works/photography/1785325026916-6.6拍摄0126.JPG",
+          "url": "assets/works/photography/6.6拍摄0126.JPG",
+          "name": "assets/works/photography/6.6拍摄0126.JPG",
           "caption": ""
         },
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785325032901-6.6拍摄0130.JPG",
-          "name": "assets/works/photography/1785325032901-6.6拍摄0130.JPG",
+          "url": "assets/works/photography/6.6拍摄0130.JPG",
+          "name": "assets/works/photography/6.6拍摄0130.JPG",
           "caption": ""
         },
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785325037987-6.6拍摄0167.JPG",
-          "name": "assets/works/photography/1785325037987-6.6拍摄0167.JPG",
+          "url": "assets/works/photography/6.6拍摄0146.JPG",
+          "name": "assets/works/photography/6.6拍摄0146.JPG",
           "caption": ""
         },
         {
           "kind": "图片",
-          "url": "assets/works/photography/1785325044530-6.6拍摄0197.JPG",
-          "name": "assets/works/photography/1785325044530-6.6拍摄0197.JPG",
+          "url": "assets/works/photography/6.6拍摄0167.JPG",
+          "name": "assets/works/photography/6.6拍摄0167.JPG",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/6.6拍摄0187.JPG",
+          "name": "assets/works/photography/6.6拍摄0187.JPG",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/6.6拍摄0197.JPG",
+          "name": "assets/works/photography/6.6拍摄0197.JPG",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/a300e78160c2f80064d41c057d638bd7.jpg",
+          "name": "assets/works/photography/a300e78160c2f80064d41c057d638bd7.jpg",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/a8fd3903c079b7629ed8a1b60c6e9d4a.jpg",
+          "name": "assets/works/photography/a8fd3903c079b7629ed8a1b60c6e9d4a.jpg",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/e78ca6b2b3cd5afbaa0b4f57611c3016.jpg",
+          "name": "assets/works/photography/e78ca6b2b3cd5afbaa0b4f57611c3016.jpg",
+          "caption": ""
+        },
+        {
+          "kind": "图片",
+          "url": "assets/works/photography/eebb31f961ab1baaf3a79f90b27ac696.jpg",
+          "name": "assets/works/photography/eebb31f961ab1baaf3a79f90b27ac696.jpg",
           "caption": ""
         }
       ],
