@@ -715,8 +715,10 @@ function renderCards(list) {
     ).join("");
     const firstPoster = (w.videoUrls && w.videoUrls[0] && w.videoUrls[0].poster) ? w.videoUrls[0].poster : "";
     const hasVideo = !!(w.videoUrls && w.videoUrls.length);
-    const coverStyle = firstPoster ? "" : `style="background:${w.cover}"`;
-    const coverMedia = firstPoster ? `<img src="${firstPoster}" alt="${w.title}" />` : "";
+    // 封面支持图片 URL（如摄影作品），不再只当作 CSS gradient
+    const isImageCover = w.cover && !/gradient/i.test(w.cover) && (/^assets\//.test(w.cover) || /^https?:\/\//.test(w.cover) || w.cover.startsWith("/"));
+    const coverStyle = (firstPoster || isImageCover) ? "" : `style="background:${w.cover}"`;
+    const coverMedia = firstPoster ? `<img src="${firstPoster}" alt="${w.title}" />` : (isImageCover ? `<img src="${w.cover}" alt="${w.title}" />` : "");
     const playBadge = hasVideo ? `<div class="card__play"><span>▶</span></div>` : "";
     card.innerHTML = `
       <div class="card__cover" ${coverStyle}>
