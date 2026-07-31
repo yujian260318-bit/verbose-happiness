@@ -341,30 +341,6 @@
           "url": "assets/works/photography/photo-08.jpg",
           "name": "assets/works/photography/photo-08.jpg",
           "caption": ""
-        },
-        {
-          "kind": "图片",
-          "url": "assets/works/photography/photo-09.jpg",
-          "name": "assets/works/photography/photo-09.jpg",
-          "caption": ""
-        },
-        {
-          "kind": "图片",
-          "url": "assets/works/photography/photo-10.jpg",
-          "name": "assets/works/photography/photo-10.jpg",
-          "caption": ""
-        },
-        {
-          "kind": "图片",
-          "url": "assets/works/photography/photo-11.jpg",
-          "name": "assets/works/photography/photo-11.jpg",
-          "caption": ""
-        },
-        {
-          "kind": "图片",
-          "url": "assets/works/photography/photo-12.jpg",
-          "name": "assets/works/photography/photo-12.jpg",
-          "caption": ""
         }
       ],
       "blocks": [
@@ -422,34 +398,6 @@
           "src": "assets/works/photography/photo-08.jpg",
           "x": 400,
           "y": 1100,
-          "w": 360
-        },
-        {
-          "type": "image",
-          "src": "assets/works/photography/photo-09.jpg",
-          "x": 20,
-          "y": 1460,
-          "w": 360
-        },
-        {
-          "type": "image",
-          "src": "assets/works/photography/photo-10.jpg",
-          "x": 400,
-          "y": 1460,
-          "w": 360
-        },
-        {
-          "type": "image",
-          "src": "assets/works/photography/photo-11.jpg",
-          "x": 20,
-          "y": 1820,
-          "w": 360
-        },
-        {
-          "type": "image",
-          "src": "assets/works/photography/photo-12.jpg",
-          "x": 400,
-          "y": 1820,
           "w": 360
         }
       ]
