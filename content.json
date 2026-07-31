@@ -155,28 +155,31 @@
       "videoUrls": [
         {
           "type": "mp4",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/ainext-logo.mp4",
+          "url": "assets/videos/ainext-01.mp4",
           "label": "logo 版",
           "portrait": false,
-          "poster": "assets/images/ai-next-poster.jpg"
+          "poster": "assets/images/ainext-01-poster.jpg"
         },
         {
           "type": "mp4",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/ainext-vlog2.mp4",
+          "url": "assets/videos/ainext-02.mp4",
           "label": "vlog2 横版+logo",
-          "portrait": false
+          "portrait": false,
+          "poster": "assets/images/ainext-02-poster.jpg"
         },
         {
           "type": "mp4",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/ainext-630.mp4",
+          "url": "assets/videos/ainext-03.mp4",
           "label": "6.30 上海场预告",
-          "portrait": true
+          "portrait": true,
+          "poster": "assets/images/ainext-03-poster.jpg"
         },
         {
           "type": "mp4",
-          "url": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/ainext-710.mp4",
+          "url": "assets/videos/ainext-04.mp4",
           "label": "7.10 深圳场预告",
-          "portrait": true
+          "portrait": true,
+          "poster": "assets/images/ainext-04-poster.jpg"
         }
       ],
       "metrics": [
