@@ -479,6 +479,14 @@ body.is-editing .edu__img .img-slot__hint { pointer-events: none; }
 }
 .video-play:hover span { transform: scale(1.08); box-shadow: 0 12px 30px rgba(0, 0, 0, .24); }
 .video-wrap.is-playing .video-play { display: none; }
+/* 视频源加载失败（如网络限制）时优雅降级：显示提示，不黑屏卡死 */
+.video-wrap.video-error video { opacity: .25; }
+.video-wrap.video-error::after {
+  content: "视频加载失败，可能是网络限制，请换网络或稍后重试";
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 14px; color: #fff; background: rgba(20, 24, 33, .62);
+  font-size: 14px; line-height: 1.6; border-radius: 14px; pointer-events: none;
+}
 
 /* 作品编辑模态框 */
 .wm-modal__panel, .vm-modal__panel, .cat-modal__panel {
