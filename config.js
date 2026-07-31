@@ -24,5 +24,5 @@ window.SITE_CONFIG = {
     // sessionStorage：sessionStorage.setItem("gh_token", "ghp_xxx")
   },
   editQueryKey: "edit",   // 进入编辑模式：在网址后加 ?edit=1
-  editPasswordHash: "aa700178de7ba97853387e28364cdc4dcf324e460ae5e707fbe069b4f3f4fef4"
+  editPasswordHash: "c4e8389e05f860da61b4cad32de8cdba2c76dc9731a26c363ed63e6559fb382d"
 };
