@@ -816,7 +816,7 @@ function renderVideo(v) {
   const type = meta.type || detectVideo(url);
   if (type === "mp4") {
     const poster = meta.poster ? ` poster="${escAttr(meta.poster)}"` : "";
-    return `<div class="video-wrap"><video src="${escAttr(url)}"${poster} controls preload="metadata" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
+    return `<div class="video-wrap"><video src="${escAttr(url)}"${poster} controls preload="none" playsinline></video><div class="video-play" data-play><span>▶</span></div></div>`;
   }
   if (type === "iframe") {
     return `<iframe src="${escAttr(url)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
@@ -845,7 +845,10 @@ function initVideoWraps(root) {
     const video = wrap.querySelector("video");
     const play = wrap.querySelector(".video-play");
     if (!video || !play) return;
-    play.addEventListener("click", () => { video.play(); });
+    play.addEventListener("click", () => {
+      const p = video.play();
+      if (p && p.catch) p.catch(() => wrap.classList.add("video-error"));
+    });
     video.addEventListener("play", () => {
       wrap.classList.add("is-playing");
       // 同一弹窗内只保留一个正在播放的视频：开始播放时暂停其它视频
@@ -857,36 +860,45 @@ function initVideoWraps(root) {
     });
     video.addEventListener("pause", () => { if (!video.ended) wrap.classList.remove("is-playing"); });
     video.addEventListener("ended", () => wrap.classList.remove("is-playing"));
+    // 视频源加载失败（如 Releases 被网络限制）时优雅降级，显示提示而非黑屏卡死
+    video.addEventListener("error", () => { wrap.classList.add("video-error"); });
   });
-  // 等视频元数据加载后，校准每个视频的横竖版 class
+  // 用海报图判断方向（不依赖慢速视频 CDN），校准每个视频的横竖版 class
   reorderVideosByOrientation(root);
 }
 
 function reorderVideosByOrientation(root) {
-  // 等视频元数据加载后，按真实宽高比重新排序：横版在前，竖版三个一排放在最后
+  // 按宽高比重排：横版在前，竖版放在最后。
+  // 关键优化：方向判定改读「海报图」（由 Pages 提供，快且稳），
+  // 不再等待慢速视频 CDN（GitHub Releases）的元数据，避免进详情页卡 10+ 秒。
   const groups = (root || document).querySelectorAll(".modal__group-items--video");
   groups.forEach((group) => {
     const vids = Array.from(group.querySelectorAll(":scope > .modal__vid"));
     if (!vids.length) return;
     const promises = vids.map((vid) => new Promise((resolve) => {
       const video = vid.querySelector("video");
+      let settled = false;
       function finish(isPortrait) {
+        if (settled) return; settled = true;
         vid.classList.toggle("modal__vid--landscape", !isPortrait);
         vid.classList.toggle("modal__vid--portrait", isPortrait);
         resolve({ vid, isPortrait });
       }
       if (!video) { finish(false); return; }
-      function apply() {
-        if (!video.videoWidth || !video.videoHeight) { finish(false); return; }
-        finish(video.videoWidth / video.videoHeight < 1);
+      const poster = video.getAttribute("poster");
+      if (poster) {
+        const img = new Image();
+        img.onload = () => finish(img.naturalHeight > img.naturalWidth);
+        img.onerror = () => finish(false);
+        img.src = poster;
+        // 海报图 3s 内没就绪就按横版兜底，绝不阻塞布局
+        setTimeout(() => finish(false), 3000);
+      } else if (video.readyState >= 1) {
+        finish(video.videoHeight > video.videoWidth);
+      } else {
+        video.addEventListener("loadedmetadata", () => finish(video.videoHeight > video.videoWidth), { once: true });
+        setTimeout(() => { if (video.readyState >= 1) finish(video.videoHeight > video.videoWidth); else finish(false); }, 8000);
       }
-      if (video.readyState >= 1) apply();
-      else {
-        video.addEventListener("loadedmetadata", apply, { once: true });
-        video.addEventListener("loadeddata", apply, { once: true });
-      }
-      // 慢速 CDN（如 GitHub Pages 上的大视频）可能 3s 内还没就绪，放宽到 8s 再判定
-      setTimeout(() => { if (video.readyState >= 1) apply(); }, 8000);
     }));
     Promise.all(promises).then((results) => {
       results.sort((a, b) => a.isPortrait - b.isPortrait); // 横版 0 在前，竖版 1 在后
