@@ -4,10 +4,10 @@
     "hero-visual-placeholder": "精选栏目 · 主厨密码",
     "hero-hello": "您好，我是",
     "hero-name": "李欣怡",
-    "hero-role": "短视频编导 / 内容创作/ 内容运营",
-    "hero-tags": "<span class=\"tag\">短视频编导</span><span class=\"tag\">4A 广告公司导演组</span><span class=\"tag\">内容创作</span><span class=\"tag\">KOC 拓展</span>",
+    "hero-role": "品牌传播 / 内容策划 / 新媒体运营",
+    "hero-tags": "<span class=\"tag\">品牌传播<br></span><span class=\"tag\">内容策划<br></span><span class=\"tag\">视频创作<br></span><span class=\"tag\">KOC传播</span>",
     "title-about": "关于我",
-    "about-summary": "欢迎来到我的作品集！<br><br>从校园片场到真实项目，我一直在做同一件事：打磨优质内容。<div>中国传媒大学广告学2027 届本科毕业生，拥有<strong>短视频编导 、 4A 广告公司导演组与互联网大厂社媒内容创作</strong>三重实战背景。能够独立完成选题策划、脚本撰写、现场拍摄到后期剪辑的全链路内容创作。</div><div></div>",
+    "about-summary": "欢迎来到我的作品集！<div><br><p data-start=\"605\" data-end=\"627\">从校园创意到真实商业项目，我始终关注一件事：</p>\n<p data-start=\"632\" data-end=\"660\"><strong data-start=\"632\" data-end=\"660\">如何把品牌想表达的内容，转化为用户愿意看的内容。</strong></p>\n<p data-start=\"665\" data-end=\"766\">中国传媒大学广告学2027届本科生，拥有品牌传播、内容策划及视频创作实践经验，参与腾讯品牌活动传播、4A广告公司纪录片制作及品牌广告创作，能够完成内容策划、脚本撰写、拍摄执行及后期制作等全流程内容创作。</p><div></div></div>",
     "title-skills": "核心能力",
     "title-resume": "工作经验",
     "title-education": "教育背景",
@@ -26,7 +26,7 @@
     "tl-3-title": "全国大学生广告艺术大赛",
     "tl-3-desc": "创作核心成员｜品牌广告短片获北京赛区三等奖",
     "edu-school": "中国传媒大学 · 广告学",
-    "edu-time": "2023.09 – 2027.06",
+    "edu-time": "2023.09 – 2027.06（预计）",
     "edu-gpa": "GPA 3.8 / 4",
     "edu-honor": "<li>国家励志奖学金</li><li>校级三好学生</li><li>专业前 20%</li>",
     "edu-awards": "<li>影视广告与短视频创作（94）</li><li>数字视频技术（94）</li><li>广告策划（97）</li><li>广告创意（93）</li><li>影棚摄影（97）</li>",
@@ -815,7 +815,8 @@
     }
   },
   "styles": {
-    "about-summary": {}
+    "about-summary": {},
+    "hero-tags": {}
   },
   "skills": [
     {
