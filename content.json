@@ -657,7 +657,7 @@
         {
           "type": "pdf",
           "x": 424,
-          "y": 530,
+          "y": 534,
           "w": 373,
           "h": 87,
           "src": "assets/experience/exp-zhupassword/block-5.pdf",
@@ -739,62 +739,61 @@
       "description": "作为创作核心成员，完成品牌广告创意策划、导演统筹及后期剪辑，获北京赛区三等奖。",
       "link": "experience-detail.html?v=55&id=exp-adaward",
       "projectLink": "ad-award",
-      "detail": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。\n\n作为超能品牌营销策划项目核心成员，完成市场洞察、创意构思与传播路径设计，输出完整策划方案。",
+      "detail": "项目介绍：围绕超能品牌命题完成广告短片创作，负责广告片创意策划、现场拍摄统筹及后期剪辑，最终作品获第17届全国大学生广告艺术大赛北京赛区三等奖。\n\n广告片创作：负责广告片创意策划、脚本构思及现场拍摄统筹，协调学生摄制组完成广告片拍摄。\n\n后期制作：独立完成广告片剪辑及视觉包装，统一节奏与画面风格，输出最终成片。",
       "images": [],
       "blocks": [
         {
           "type": "image",
-          "x": 464,
-          "y": 121,
-          "w": 282,
-          "src": "assets/experience/exp-adaward/block-0.jpg",
-          "h": 251
-        },
-        {
-          "type": "image",
-          "x": 60,
-          "y": 120,
+          "x": 80,
+          "y": 410,
           "w": 280,
           "src": "assets/experience/exp-adaward/block-1.jpg"
         },
         {
           "type": "image",
-          "x": 59,
-          "y": 368,
+          "x": 76,
+          "y": 178,
           "w": 280,
           "src": "assets/experience/exp-adaward/block-2.jpg"
         },
         {
           "type": "image",
-          "x": 466,
-          "y": 364,
+          "x": 452,
+          "y": 177,
           "w": 280,
           "src": "assets/experience/exp-adaward/block-3.jpg"
         },
         {
           "type": "text",
-          "html": "作为创作核心成员，主导 1 支品牌广告短片的创意策划与脚本撰写，统筹学生摄制组完成勘景、分镜设计与演员调度；独立完成节奏剪辑与视觉包装，把控成片质量。",
-          "x": 3,
-          "y": 28,
-          "w": 801,
-          "h": 80
-        },
-        {
-          "type": "pdf",
-          "x": 4,
-          "y": 691,
-          "w": 273,
-          "h": 82,
-          "src": "https://github.com/yujian260318-bit/verbose-happiness/releases/download/videos/chaoneng-proposal.pdf",
-          "label": "《超能》19秒策划案.pdf"
+          "html": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">项目介绍：</span>围绕超能品牌命题完成广告短片创作，负责广告片创意策划、现场拍摄统筹及后期剪辑，最终作品获<strong data-start=\"199\" data-end=\"225\">第17届全国大学生广告艺术大赛北京赛区三等奖</strong>。",
+          "x": 2,
+          "y": -4,
+          "w": 799,
+          "h": 78
         },
         {
           "type": "text",
-          "html": "作为超能品牌营销策划项目核心成员，完成市场洞察、创意构思与传播路径设计，输出完整策划方案。",
-          "x": 2,
-          "y": 622,
-          "w": 806,
-          "h": 49
+          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">广告片创作：</span>负责广告片创意策划、脚本构思及现场拍摄统筹，协调学生摄制组完成广告片拍摄。",
+          "x": 0,
+          "y": 118,
+          "w": 798,
+          "h": 46
+        },
+        {
+          "type": "image",
+          "x": 450,
+          "y": 436,
+          "w": 290,
+          "src": "assets/1785923569218_f8da8fbf8a895283bbb4745cef7bc6e4.jpg",
+          "h": 198
+        },
+        {
+          "type": "text",
+          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">后期制作：</span>独立完成广告片剪辑及视觉包装，统一节奏与画面风格，输出最终成片。",
+          "x": 0,
+          "y": 679,
+          "w": 799,
+          "h": 47
         }
       ]
     }
