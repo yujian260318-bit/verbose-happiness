@@ -705,20 +705,6 @@
       "images": [],
       "blocks": [
         {
-          "type": "image",
-          "x": 78,
-          "y": 214,
-          "w": 280,
-          "src": "assets/1785315875642_eb2b1b9def95c913f74f6636a0e97867.jpg"
-        },
-        {
-          "type": "image",
-          "x": 451,
-          "y": 211,
-          "w": 280,
-          "src": "assets/1785315881122_微信图片_20260729155905_456_29.jpg"
-        },
-        {
           "type": "text",
           "html": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">项目介绍：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-kerning: none;\">湖北省育才教育基金会慈善助学项目，组织志愿者走访受助学生家庭，了解学习及生活情况，为后续资助评估提供参考。</span>",
           "x": 2,
@@ -733,6 +719,20 @@
           "y": 117,
           "w": 818,
           "h": 78
+        },
+        {
+          "type": "image",
+          "x": 78,
+          "y": 214,
+          "w": 280,
+          "src": "assets/1785315875642_eb2b1b9def95c913f74f6636a0e97867.jpg"
+        },
+        {
+          "type": "image",
+          "x": 451,
+          "y": 211,
+          "w": 280,
+          "src": "assets/1785315881122_微信图片_20260729155905_456_29.jpg"
         }
       ]
     },
