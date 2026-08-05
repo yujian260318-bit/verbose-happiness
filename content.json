@@ -701,37 +701,37 @@
       "period": "2025.08",
       "description": "参与43名受助学生实地走访及访谈，整理走访信息，为后续资助评估及帮扶工作提供支持。",
       "link": "charity-detail.html?v=55",
-      "detail": "我的职责：参与43名受助学生实地走访及行程协调，围绕学习情况、家庭环境及成长情况开展访谈交流，整理走访记录。\n\n项目介绍：湖北省育才教育基金会慈善助学项目，组织志愿者走访受助学生家庭，了解学习及生活情况，为后续资助评估提供参考。",
+      "detail": "项目介绍：湖北省育才教育基金会慈善助学项目，组织志愿者走访受助学生家庭，了解学习及生活情况，为后续资助评估提供参考。\n\n我的职责：参与43名受助学生实地走访及行程协调，围绕学习情况、家庭环境及成长情况开展访谈交流，整理走访记录。",
       "images": [],
       "blocks": [
         {
           "type": "image",
-          "x": 56,
-          "y": 220,
+          "x": 78,
+          "y": 214,
           "w": 280,
           "src": "assets/1785315875642_eb2b1b9def95c913f74f6636a0e97867.jpg"
         },
         {
           "type": "image",
-          "x": 483,
-          "y": 221,
+          "x": 451,
+          "y": 211,
           "w": 280,
           "src": "assets/1785315881122_微信图片_20260729155905_456_29.jpg"
         },
         {
           "type": "text",
-          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">我的职责：</span>参与43名受助学生实地走访及行程协调，围绕学习情况、家庭环境及成长情况开展访谈交流，整理走访记录。",
+          "html": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">项目介绍：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-kerning: none;\">湖北省育才教育基金会慈善助学项目，组织志愿者走访受助学生家庭，了解学习及生活情况，为后续资助评估提供参考。</span>",
           "x": 2,
-          "y": 126,
-          "w": 812,
-          "h": 82
+          "y": -9,
+          "w": 813,
+          "h": 75
         },
         {
           "type": "text",
-          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">项目介绍：</span>湖北省育才教育基金会慈善助学项目，组织志愿者走访受助学生家庭，了解学习及生活情况，为后续资助评估提供参考。",
-          "x": 4,
-          "y": -1,
-          "w": 810,
+          "html": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">我的职责：</span><span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-kerning: none;\">参与43名受助学生实地走访及行程协调，围绕学习情况、家庭环境及成长情况开展访谈交流，整理走访记录。</span>",
+          "x": 2,
+          "y": 117,
+          "w": 818,
           "h": 78
         }
       ]
