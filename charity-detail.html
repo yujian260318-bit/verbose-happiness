@@ -75,7 +75,7 @@
               if (gallery) { box.appendChild(gallery); gallery = null; }
               const el = document.createElement(b.type === "heading" ? "h2" : "p");
               el.className = b.type === "heading" ? "" : "charity-text";
-              el.textContent = (b.type === "text" ? (b.html || b.content || b.text || "") : (b.text || b.content || ""));
+              el.innerHTML = (b.type === "text" ? (b.html || b.content || b.text || "") : (b.text || b.content || ""));
               box.appendChild(el);
             } else if (b.type === "image") {
               if (!gallery) {
