@@ -418,7 +418,7 @@
       "description": "参与品牌活动传播，负责社媒内容创作、KOC传播执行及活动摄制，助力双平台账号冷启动。",
       "link": "experience-detail.html?v=55&id=exp-tencent",
       "projectLink": "ai-next",
-      "detail": "社媒内容创作：负责小红书、即刻双平台活动账号冷启动，围绕活动预热与品牌传播需求，完成短视频制作及传播文案撰写；产出内容同步用于社媒传播及企业内部宣传展示，双平台账号累计增长粉丝 800+。\n\nKOC传播执行：围绕活动传播目标，筛选并对接 30+ 位 AI 领域垂类 KOC，建立合作并跟进内容发布；维护传播 Tracking 表，合作 KOC 累计覆盖粉丝 10000+。\n\n&nbsp;活动摄制执行：完成 AI Next 疯享会现场拍摄，记录嘉宾互动等素材，为活动视频制作提供内容支持。&nbsp;\n\n项目介绍：AI Next 疯享会是腾讯青腾发起的 AI 创业者线下分享活动，围绕 AI 创业、产品实践及行业交流展开。我参与活动传播执行，负责社媒内容创作、KOC合作及活动摄制，协助完成活动线上线下内容传播。",
+      "detail": "社媒内容创作：负责小红书、即刻双平台活动账号冷启动，围绕活动预热与品牌传播需求，完成短视频制作及传播文案撰写；产出内容同步用于社媒传播及企业内部宣传展示，双平台账号累计增长粉丝 800+。\n\nKOC传播执行：围绕活动传播目标，筛选并对接 30+ 位 AI 领域垂类 KOC，建立合作并跟进内容发布；维护传播 Tracking 表，合作 KOC 累计覆盖粉丝 10000+。\n\n活动摄制执行：完成 AI Next 疯享会现场拍摄，记录嘉宾互动等素材，为活动视频制作提供内容支持。&nbsp;\n\n项目介绍：AI Next 疯享会是腾讯青腾发起的 AI 创业者线下分享活动，围绕 AI 创业、产品实践及行业交流展开。我参与活动传播执行，负责社媒内容创作、KOC合作及活动摄制，协助完成活动线上线下内容传播。",
       "images": [
         "assets/1784887607376_微信图片_20260724174446_408_29.jpg",
         "assets/1784887612679_微信图片_20260724174448_409_29.jpg"
@@ -426,7 +426,7 @@
       "blocks": [
         {
           "type": "text",
-          "html": "社媒内容创作：负责小红书、即刻双平台活动账号冷启动，围绕活动预热与品牌传播需求，完成短视频制作及传播文案撰写；产出内容同步用于社媒传播及企业内部宣传展示，双平台账号累计增长粉丝 800+。",
+          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">社媒内容创作：</span>负责小红书、即刻双平台活动账号冷启动，围绕活动预热与品牌传播需求，完成短视频制作及传播文案撰写；产出内容同步用于社媒传播及企业内部宣传展示，双平台账号累计增长粉丝 800+。",
           "x": 0,
           "y": 88,
           "w": 807,
@@ -450,7 +450,7 @@
         },
         {
           "type": "text",
-          "html": "KOC传播执行：围绕活动传播目标，筛选并对接 30+ 位 AI 领域垂类 KOC，建立合作并跟进内容发布；维护传播 Tracking 表，合作 KOC 累计覆盖粉丝 10000+。",
+          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">KOC传播执行：</span>围绕活动传播目标，筛选并对接 30+ 位 AI 领域垂类 KOC，建立合作并跟进内容发布；维护传播 Tracking 表，合作 KOC 累计覆盖粉丝 10000+。",
           "x": -1,
           "y": 552,
           "w": 806,
@@ -458,7 +458,7 @@
         },
         {
           "type": "text",
-          "html": "&nbsp;活动摄制执行：完成 AI Next 疯享会现场拍摄，记录嘉宾互动等素材，为活动视频制作提供内容支持。&nbsp;",
+          "html": "<span style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; font-weight: 700; caret-color: rgb(30, 30, 30);\">活动摄制执行：</span>完成 AI Next 疯享会现场拍摄，记录嘉宾互动等素材，为活动视频制作提供内容支持。&nbsp;",
           "x": 0,
           "y": 1019,
           "w": 807,
@@ -480,7 +480,7 @@
         },
         {
           "type": "text",
-          "html": "项目介绍：AI Next 疯享会是腾讯青腾发起的 AI 创业者线下分享活动，围绕 AI 创业、产品实践及行业交流展开。我参与活动传播执行，负责社媒内容创作、KOC合作及活动摄制，协助完成活动线上线下内容传播。",
+          "html": "<span class=\"a_GcMg font-feature-liga-off font-feature-clig-off font-feature-calt-off text-decoration-none text-strikethrough-none\" style=\"color: rgb(30, 30, 30); font-family: YAFmnEdlx1o_0, _fb_, auto; caret-color: rgb(30, 30, 30); --Ys-XuQ: none; font-weight: 700; font-kerning: none;\">项目介绍：</span>AI Next 疯享会是腾讯青腾发起的 AI 创业者线下分享活动，围绕 AI 创业、产品实践及行业交流展开。我参与活动传播执行，负责社媒内容创作、KOC合作及活动摄制，协助完成活动线上线下内容传播。",
           "x": 0,
           "y": -3,
           "w": 804,
