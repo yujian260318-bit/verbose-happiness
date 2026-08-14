@@ -204,7 +204,14 @@
           "url": "https://web.okjike.com/u/7242AC66-F2EC-48B6-90C7-03AB559A8E3A"
         }
       ],
-      "media": []
+      "media": [
+        {
+          "kind": "视频",
+          "url": "assets/videos/1786675888320-8.18深圳场预告黑框.mp4",
+          "name": "assets/videos/1786675888320-8.18深圳场预告黑框.mp4",
+          "label": ""
+        }
+      ]
     },
     {
       "id": "social",
